@@ -61,6 +61,21 @@
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-[#D9CDBA]/40">
+  <!-- Unified 5-Dashboard Suite Navigation (Aligned to 5-Color Palette) -->
+  <nav class="bg-[#223D79] text-[#D9CDBA] border-b-2 border-[#FFA530] text-xs px-6 py-2.5 flex flex-wrap items-center justify-between sticky top-0 z-50 shadow-md">
+    <div class="flex items-center space-x-3">
+      <span class="w-2.5 h-2.5 rounded-full bg-[#FFA530] animate-pulse"></span>
+      <span class="font-extrabold text-white tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
+      <a href="/" class="bg-[#FFA530] text-[#223D79] font-black shadow px-3 py-1 rounded-md">📱 Patient Kiosk</a>
+      <a href="/doctor" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">🩺 Doctor Portal</a>
+      <a href="/triage" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">🚨 Emergency Triage</a>
+      <a href="/ayush" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">🌿 AYUSH Dashavidha</a>
+      <a href="/admin" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">📊 Admin & ABDM Hub</a>
+    </div>
+  </nav>
+
     
 
 
@@ -125,7 +140,7 @@
   </div>
 
   <!-- Main Container -->
-  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 pt-6 pb-12 flex flex-col justify-start min-h-screen">
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 pt-6 pb-36 flex flex-col justify-start min-h-screen">
 
     <!-- =================================================================== -->
     <!-- SCREEN 1: LANGUAGE SELECTION -->
@@ -2083,6 +2098,37 @@
     }
   </script>
   
+
+  <!-- Fixed Bottom Bar: 1-Click Demo Patient Credentials (Aligned to 5-Color Palette) -->
+  <footer id="demo-footer-bar" class="fixed bottom-0 left-0 right-0 bg-[#223D79] text-white border-t-2 border-[#FFA530] shadow-2xl py-2 px-4 z-40 transition-all duration-200">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+      <div class="flex items-center justify-between w-full md:w-auto gap-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FFA530] animate-ping"></span>
+          <span class="text-xs font-black tracking-wider text-[#FFA530] uppercase">
+            🔑 Demo Profiles (1-Click Auto-Fill):
+          </span>
+        </div>
+        <button onclick="toggleDemoFooter()" class="text-[11px] bg-white/10 hover:bg-white/20 text-[#D9CDBA] px-2 py-0.5 rounded border border-[#D9CDBA]/30">
+          <span id="btn-toggle-footer-lbl">Hide ✕</span>
+        </button>
+      </div>
+      <div id="demo-buttons-container" class="flex flex-wrap items-center gap-2">
+        <button onclick="loadDemoPatient('pat-048291', 'Ramesh Chandra', 52, 'Male', '91-4829-1029-4821', 'ramesh.chandra@abdm', 'ABHA Scan & Share', true, 'Bilateral knee joint pain with crepitus', '9876543210', '892019204821')" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] border border-[#D9CDBA]/30 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>👴 Ramesh Chandra (52M - Knee OA)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-059102', 'Priya Sharma', 34, 'Female', '91-5910-2941-8402', 'priya.sharma@abdm', 'Mobile OTP (+91 98111 22334)', true, 'Epigastric burning & acid reflux', '9811122334', '771240193382')" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] border border-[#D9CDBA]/30 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>👩 Priya Sharma (34F - Acidity)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-077124', 'Mohan Das', 61, 'Male', '91-7712-4019-3382', 'mohan.das@abdm', 'UIDAI Aadhaar e-KYC', true, 'Severe crushing chest pain (Red-Flag)', '9777788899', '665544332211')" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] border border-[#D9CDBA]/30 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>🚨 Mohan Das (61M - Cardiac Red-Flag)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-091234', 'Ananya Verma', 28, 'Female', '91-9123-4567-8901', 'ananya.verma@abdm', 'ABDM M1 Govt Registration', true, 'High fever with chills', '9123456789', '998877665544')" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] border border-[#D9CDBA]/30 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>🆕 Ananya Verma (28F - New ABHA)</span>
+        </button>
+      </div>
+    </div>
+  </footer>
 
 </body>
 </html>
