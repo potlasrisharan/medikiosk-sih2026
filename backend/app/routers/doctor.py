@@ -18,11 +18,10 @@ ENCOUNTERS_STORE = [
         gender=Gender.MALE,
         chief_complaint="Bilateral knee pain with crepitus for 6 months, worsening with cold.",
         triage_priority=TriagePriority.ROUTINE,
-        system_type=SystemType.AYURVEDA,
-        ayush_provisional_diagnosis="Sandhigata Vata (Osteoarthritis)",
-        has_pmjay=True,
-        has_abnormal_labs=True,
-        wait_time_minutes=4
+        pmjay_eligible=True,
+        system_type=SystemType.AYURVEDIC,
+        created_at=datetime.datetime.now().strftime("%I:%M %p"),
+        status="WAITING"
     ),
     EncounterQueueItem(
         encounter_id="enc-0043",
@@ -32,11 +31,10 @@ ENCOUNTERS_STORE = [
         gender=Gender.FEMALE,
         chief_complaint="Epigastric burning, acid reflux, and nausea for 3 weeks.",
         triage_priority=TriagePriority.ROUTINE,
-        system_type=SystemType.AYURVEDA,
-        ayush_provisional_diagnosis="Amlapitta (Acid Peptic Disorder)",
-        has_pmjay=True,
-        has_abnormal_labs=False,
-        wait_time_minutes=11
+        pmjay_eligible=True,
+        system_type=SystemType.AYURVEDIC,
+        created_at=(datetime.datetime.now() - datetime.timedelta(minutes=7)).strftime("%I:%M %p"),
+        status="WAITING"
     )
 ]
 
@@ -89,26 +87,22 @@ async def create_new_encounter(payload: NewIntakePayload):
     token_str = f"#{TOKEN_COUNTER:03d}"
     enc_id = f"enc-{TOKEN_COUNTER:04d}"
     
-    # Create encounter item
     new_item = EncounterQueueItem(
         encounter_id=enc_id,
         token_number=token_str,
         patient_name=payload.patient_name,
         age=payload.age,
         gender=Gender.MALE if payload.gender.lower() == "male" else Gender.FEMALE,
-        chief_complaint=payload.symptoms,
+        chief_complaint=payload.symptoms or "General OPD Consultation",
         triage_priority=TriagePriority.ROUTINE,
-        system_type=SystemType.AYURVEDA,
-        ayush_provisional_diagnosis="Clinical Evaluation in Progress",
-        has_pmjay=True,
-        has_abnormal_labs=False,
-        wait_time_minutes=1
+        pmjay_eligible=True,
+        system_type=SystemType.AYURVEDIC,
+        created_at=datetime.datetime.now().strftime("%I:%M %p"),
+        status="WAITING"
     )
     
-    # Prepend to store
     ENCOUNTERS_STORE.insert(0, new_item)
     
-    # Create SOAP
     SOAP_STORE[enc_id] = SoapNote(
         encounter_id=enc_id,
         subjective=f"Patient {payload.patient_name} ({payload.age}Y) registered via MediKiosk ({payload.identifier_type.upper()}: {payload.identifier_value}). Chief Complaint: {payload.symptoms}.",
@@ -134,7 +128,6 @@ async def create_new_encounter(payload: NewIntakePayload):
 async def get_soap_note(encounter_id: str):
     if encounter_id in SOAP_STORE:
         return SOAP_STORE[encounter_id]
-    # Fallback to default template
     return SOAP_STORE["enc-0042"]
 
 @router.get("/encounter/{encounter_id}/fhir")
