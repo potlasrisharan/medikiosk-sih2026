@@ -845,9 +845,10 @@
       speakAudio(dict.ocrSuccessVoice);
     }
 
+    let isVoiceActive = true; // Started by default!
     let currentAudioPlayer = null;
 
-    function stopAudio() {
+    function stopAllAudio() {
       if (currentAudioPlayer) {
         currentAudioPlayer.pause();
         currentAudioPlayer.currentTime = 0;
@@ -858,14 +859,44 @@
       }
     }
 
+    function toggleVoiceAudio() {
+      isVoiceActive = !isVoiceActive;
+      const btn = document.getElementById("btn-voice-toggle");
+      
+      if (isVoiceActive) {
+        // Voice is now active -> Show Stop Voice option
+        if (btn) {
+          btn.className = "bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm";
+          btn.innerHTML = `
+            <span class="w-2 h-2 rounded-full bg-rose-600 animate-pulse"></span>
+            <svg class="w-4 h-4 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path></svg>
+            <span id="lbl-voice-toggle">Stop Voice</span>
+          `;
+          btn.title = "Voice is active. Click to Stop Voice.";
+        }
+        speakCurrentScreen();
+      } else {
+        // Voice is now stopped -> Show Start Voice option & silence immediately
+        stopAllAudio();
+        if (btn) {
+          btn.className = "bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm";
+          btn.innerHTML = `
+            <svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span id="lbl-voice-toggle">Start Voice</span>
+          `;
+          btn.title = "Voice is stopped. Click to Start Voice.";
+        }
+      }
+    }
 
     async function speakAudio(text) {
+      if (!isVoiceActive) {
+        return; // Zero audio plays when stopped!
+      }
+
       // 1. Try Live Sarvam AI Bulbul Sovereign Voice via Gateway Proxy
       try {
-        if (currentAudioPlayer) {
-          currentAudioPlayer.pause();
-          currentAudioPlayer = null;
-        }
+        stopAllAudio();
         const res = await fetch("http://localhost:8000/api/v1/ai/tts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -873,7 +904,7 @@
         });
         if (res.ok) {
           const data = await res.json();
-          if (data.audio_base64) {
+          if (data.audio_base64 && isVoiceActive) {
             currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
             await currentAudioPlayer.play();
             return;
@@ -884,7 +915,7 @@
       }
 
       // 2. Fallback to browser SpeechSynthesis
-      if ("speechSynthesis" in window) {
+      if ("speechSynthesis" in window && isVoiceActive) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = currentLanguage;
