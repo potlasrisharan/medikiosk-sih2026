@@ -153,15 +153,15 @@
     <!-- =================================================================== -->
     <section id="screen-identify" class="hidden space-y-6">
       <div class="text-center space-y-1.5 pb-2">
-        <h3 id="lbl-identify-title" class="font-extrabold text-xl md:text-2xl text-slate-900">మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారు? • How would you like to identify?</h3>
-        <p id="lbl-identify-sub" class="text-xs text-slate-600">క్రింది 4 పద్ధతుల్లో ఒకదానిపై నొక్కండి • Touch any one option below</p>
+        <h3 id="lbl-identify-title" class="font-extrabold text-xl md:text-2xl text-slate-900">How would you like to identify yourself?</h3>
+        <p id="lbl-identify-sub" class="text-xs text-slate-600">Touch any one option below to verify your health records</p>
       </div>
 
-      <!-- 4 Big Pictorial Option Cards (For rural / uneducated citizens) -->
+      <!-- 4 Big Pictorial Option Cards -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
         <!-- Option 1: QR Code Card -->
-        <button onclick="selectAuthMethod('qr')" id="card-auth-qr" class="p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/60 hover:bg-blue-100/80 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+        <button onclick="selectAuthMethod('qr')" id="card-auth-qr" class="p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition">
           <div class="w-20 h-20 rounded-2xl bg-white border border-blue-200 flex items-center justify-center p-3 shadow-sm">
             <svg class="w-14 h-14 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
               <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
@@ -171,11 +171,11 @@
             <span id="opt-qr-title" class="block font-black text-slate-900 text-sm md:text-base">Scan ABHA QR</span>
             <span id="opt-qr-sub" class="text-[11px] text-slate-500 mt-1 block">Point QR at camera scanner</span>
           </div>
-          <span class="text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+          <span id="btn-card-qr" class="text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full shadow-sm">✓ Selected</span>
         </button>
 
         <!-- Option 2: Mobile Number Card -->
-        <button onclick="selectAuthMethod('mobile')" id="card-auth-mobile" class="p-5 rounded-2xl border-2 border-slate-300 bg-white hover:border-blue-500 hover:bg-slate-50 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+        <button onclick="selectAuthMethod('mobile')" id="card-auth-mobile" class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100">
           <div class="w-20 h-20 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center p-3 shadow-sm">
             <svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
@@ -185,11 +185,11 @@
             <span id="opt-mob-title" class="block font-black text-slate-900 text-sm md:text-base">Mobile Number</span>
             <span id="opt-mob-sub" class="text-[11px] text-slate-500 mt-1 block">10-digit phone with OTP</span>
           </div>
-          <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+          <span id="btn-card-mobile" class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">Select</span>
         </button>
 
         <!-- Option 3: ABHA Card -->
-        <button onclick="selectAuthMethod('abha')" id="card-auth-abha" class="p-5 rounded-2xl border-2 border-slate-300 bg-white hover:border-blue-500 hover:bg-slate-50 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+        <button onclick="selectAuthMethod('abha')" id="card-auth-abha" class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100">
           <div class="w-20 h-20 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center p-3 shadow-sm">
             <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
@@ -199,11 +199,11 @@
             <span id="opt-abha-title" class="block font-black text-slate-900 text-sm md:text-base">14-Digit ABHA ID</span>
             <span id="opt-abha-sub" class="text-[11px] text-slate-500 mt-1 block">91-XXXX-XXXX-XXXX or name@abdm</span>
           </div>
-          <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+          <span id="btn-card-abha" class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">Select</span>
         </button>
 
         <!-- Option 4: Aadhaar Card -->
-        <button onclick="selectAuthMethod('aadhaar')" id="card-auth-aadhaar" class="p-5 rounded-2xl border-2 border-slate-300 bg-white hover:border-blue-500 hover:bg-slate-50 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+        <button onclick="selectAuthMethod('aadhaar')" id="card-auth-aadhaar" class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100">
           <div class="w-20 h-20 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center p-3 shadow-sm">
             <svg class="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -213,7 +213,7 @@
             <span id="opt-aadh-title" class="block font-black text-slate-900 text-sm md:text-base">Aadhaar Card</span>
             <span id="opt-aadh-sub" class="text-[11px] text-slate-500 mt-1 block">12-digit UIDAI number</span>
           </div>
-          <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+          <span id="btn-card-aadhaar" class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">Select</span>
         </button>
 
       </div>
@@ -248,7 +248,7 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
                 <span id="btn-txt-opencam">Open Camera to Scan QR</span>
               </button>
-              <button onclick="verifyDemoPatient('qr')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
+              <button onclick="verifyDemoPatient('qr')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-3 rounded-xl text-xs border border-slate-300 transition">
                 ⚡ Use Sample ABHA QR Card (Ramesh Chandra)
               </button>
             </div>
@@ -266,7 +266,7 @@
             <button onclick="verifyByMobile()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <span id="btn-txt-verifymob">Verify Mobile OTP & Fetch Records</span>
             </button>
-            <button onclick="fillSampleMobile()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
+            <button onclick="fillSampleMobile()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-3 rounded-xl text-xs border border-slate-300 transition">
               ⚡ Fill Sample Mobile (+91 98765 43210)
             </button>
           </div>
@@ -306,7 +306,7 @@
               RC
             </div>
             <div>
-              <h4 id="pat-name" class="font-black text-slate-900 text-base">Ramesh Chandra (రమేష్ చంద్ర)</h4>
+              <h4 id="pat-name" class="font-black text-slate-900 text-base">Ramesh Chandra</h4>
               <p id="pat-meta" class="text-xs text-slate-600">52 Yrs • Male • Khammam, Telangana</p>
             </div>
           </div>
@@ -332,8 +332,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
             <div>
-              <p id="lbl-pmjay-title" class="font-extrabold text-xs text-amber-900">ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్</p>
-              <p id="lbl-pmjay-desc" class="text-[11px] text-amber-800">₹5,00,000 వార్షిక కవరేజ్ • ఉచిత వైద్యం & మందులు</p>
+              <p id="lbl-pmjay-title" class="font-extrabold text-xs text-amber-900">Ayushman Bharat PM-JAY Active</p>
+              <p id="lbl-pmjay-desc" class="text-[11px] text-amber-800">₹5,00,000 Annual Coverage • Cashless OPD Approved</p>
             </div>
           </div>
 
@@ -343,7 +343,7 @@
               <span>Back</span>
             </button>
             <button id="btn-proceed-voice" onclick="proceedToVoiceIntake()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow">
-              లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue
+              Continue to Voice Symptom Intake ➔
             </button>
           </div>
         </div>
@@ -546,7 +546,7 @@
     const I18N = {
       "en-IN": {
         langName: "English",
-        welcomeVoice: "English selected. Please choose how you want to identify yourself.",
+        welcomeVoice: "English selected. Please choose how you want to identify yourself: scan your A B H A Q R code, enter your mobile number, your fourteen digit A B H A I D, or your Aadhaar card.",
         identifyTitle: "How would you like to identify yourself?",
         identifySub: "Touch any one option below to verify your health records",
         optQrTitle: "Scan ABHA QR",
@@ -597,7 +597,7 @@
       },
       "te-IN": {
         langName: "తెలుగు",
-        welcomeVoice: "తెలుగు భాష ఎంచుకోబడింది. దయచేసి మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారో ఎంచుకోండి.",
+        welcomeVoice: "తెలుగు భాష ఎంచుకోబడింది. దయచేసి మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారో ఎంచుకోండి: క్యూఆర్ కోడ్ స్కాన్, మొబైల్ నంబర్, ఆభా కార్డ్, లేదా ఆధార్ కార్డ్.",
         identifyTitle: "మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారు?",
         identifySub: "క్రింది 4 పద్ధతుల్లో ఒకదానిపై నొక్కండి",
         optQrTitle: "QR స్కాన్ చేయండి",
@@ -648,7 +648,7 @@
       },
       "hi-IN": {
         langName: "हिन्दी",
-        welcomeVoice: "हिन्दी भाषा चुनी गई है। कृपया अपनी पहचान का तरीका चुनें।",
+        welcomeVoice: "हिन्दी भाषा चुनी गई है। कृपया अपनी पहचान का तरीका चुनें: QR कोड स्कैन करें, मोबाइल नंबर दर्ज करें, ABHA कार्ड, या आधार कार्ड।",
         identifyTitle: "आप अपनी पहचान कैसे सत्यापित करना चाहते हैं?",
         identifySub: "नीचे दिए गए 4 विकल्पों में से एक चुनें",
         optQrTitle: "QR कोड स्कैन करें",
@@ -850,25 +850,47 @@
     }
 
     function selectAuthMethod(methodKey) {
+      const cardVoicePrompts = {
+        "qr": {
+          "en-IN": "Scan A B H A Q R code selected. Please hold your Q R code in front of the camera.",
+          "te-IN": "క్యూఆర్ కోడ్ స్కాన్ ఎంచుకోబడింది. దయచేసి కెమెరా ముందు ఉంచండి.",
+          "hi-IN": "QR कोड स्कैन चुना गया। कृपया कैमरे के सामने अपना QR कोड रखें।"
+        },
+        "mobile": {
+          "en-IN": "Mobile number selected. Please enter your ten digit mobile number to receive an O T P.",
+          "te-IN": "మొబైల్ నంబర్ ఎంచుకోబడింది. దయచేసి మీ పది అంకెల ఫోన్ నంబర్ నమోదు చేయండి.",
+          "hi-IN": "मोबाइल नंबर चुना गया। कृपया अपना 10-अंकीय मोबाइल नंबर दर्ज करें।"
+        },
+        "abha": {
+          "en-IN": "A B H A I D selected. Please enter your fourteen digit A B H A number or address.",
+          "te-IN": "ఆభా కార్డ్ ఎంచుకోబడింది. దయచేసి 14 అంకెల ఆభా సంఖ్య నమోదు చేయండి.",
+          "hi-IN": "ABHA ID चुना गया। कृपया अपना 14-अंकीय ABHA नंबर दर्ज करें।"
+        },
+        "aadhaar": {
+          "en-IN": "Aadhaar card selected. Please enter your twelve digit Aadhaar number for e K Y C verification.",
+          "te-IN": "ఆధార్ కార్డ్ ఎంచుకోబడింది. దయచేసి 12 అంకెల ఆధార్ సంఖ్య నమోదు చేయండి.",
+          "hi-IN": "आधार कार्ड चुना गया। कृपया अपना 12-अंकीय आधार नंबर दर्ज करें।"
+        }
+      };
+
       ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
         const card = document.getElementById(`card-auth-${k}`);
         const panel = document.getElementById(`auth-panel-${k}`);
+        const badge = document.getElementById(`btn-card-${k}`);
         if (!card || !panel) return;
 
         if (k === methodKey) {
           card.className = "p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition";
-          const badge = card.querySelector("span:last-child");
           if (badge) {
             badge.className = "text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full shadow-sm";
-            badge.innerText = currentLanguage === "en-IN" ? "✓ Selected" : "✓ ఎంచుకోబడింది";
+            badge.innerText = currentLanguage === "en-IN" ? "✓ Selected" : (currentLanguage === "hi-IN" ? "✓ चुना गया" : "✓ ఎంచుకోబడింది");
           }
           panel.classList.remove("hidden");
         } else {
           card.className = "p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100";
-          const badge = card.querySelector("span:last-child");
           if (badge) {
             badge.className = "text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full";
-            badge.innerText = currentLanguage === "en-IN" ? "Select" : "ఎంచుకోండి";
+            badge.innerText = currentLanguage === "en-IN" ? "Select" : (currentLanguage === "hi-IN" ? "चुनें" : "ఎంచుకోండి");
           }
           panel.classList.add("hidden");
         }
@@ -877,6 +899,9 @@
       if (methodKey !== "qr") {
         stopCameraStream();
       }
+
+      const spoken = (cardVoicePrompts[methodKey] && cardVoicePrompts[methodKey][currentLanguage]) || cardVoicePrompts[methodKey]["en-IN"];
+      if (spoken) speakAudio(spoken);
     }
 
     function fillSampleMobile() {
@@ -1161,38 +1186,54 @@
       }
     }
 
-    async function speakAudio(text) {
-      if (!isVoiceActive || !text) return;
+    function speakAudio(rawText) {
+      if (!isVoiceActive || !rawText) return;
 
-      try {
-        stopAllAudio();
-        const res = await fetch("http://localhost:8000/api/v1/ai/tts", {
+      stopAllAudio();
+
+      // Phonetic pronunciation normalization for natural medical audio
+      let spokenText = rawText
+        .replace(/ABHA/gi, "A B H A")
+        .replace(/PM-JAY/gi, "P M J A Y")
+        .replace(/UIDAI/gi, "U I D A I")
+        .replace(/OTP/gi, "O T P")
+        .replace(/QR/gi, "Q R")
+        .replace(/Rx/gi, "prescription")
+        .replace(/OPD/gi, "O P D");
+
+      // Try local Sarvam backend if available on localhost
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        fetch("http://localhost:8000/api/v1/ai/tts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: text, language_code: currentLanguage })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.audio_base64 && isVoiceActive) {
+          body: JSON.stringify({ text: spokenText, language_code: currentLanguage })
+        }).then(res => res.json()).then(data => {
+          if (data && data.audio_base64 && isVoiceActive) {
             currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
-            await currentAudioPlayer.play();
-            return;
+            currentAudioPlayer.play().catch(e => console.log("Audio play caught:", e));
           }
-        }
-      } catch (err) {
-        console.warn("Falling back to browser speech synthesis:", err);
+        }).catch(err => {
+          playBrowserSynthesis(spokenText);
+        });
+      } else {
+        // Instant synchronous browser speech on cloud (Vercel) to prevent gesture expiration
+        playBrowserSynthesis(spokenText);
       }
+    }
 
-      if ("speechSynthesis" in window && isVoiceActive) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = currentLanguage;
-        utterance.rate = 0.92;
-        const prefix = currentLanguage.split("-")[0];
-        const match = availableVoices.find(v => v.lang.startsWith(currentLanguage) || v.lang.startsWith(prefix));
-        if (match) utterance.voice = match;
-        window.speechSynthesis.speak(utterance);
-      }
+    function playBrowserSynthesis(text) {
+      if (!("speechSynthesis" in window) || !isVoiceActive) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = currentLanguage;
+      utterance.rate = 0.95;
+      utterance.pitch = 1.0;
+
+      const prefix = currentLanguage.split("-")[0];
+      const match = availableVoices.find(v => v.lang === currentLanguage || v.lang.startsWith(prefix));
+      if (match) utterance.voice = match;
+
+      window.speechSynthesis.speak(utterance);
     }
 
     function speakCurrentScreen() {
