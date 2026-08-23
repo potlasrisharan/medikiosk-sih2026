@@ -49,7 +49,7 @@
     body { font-family: "Plus Jakarta Sans", sans-serif; }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-[#223D79] min-h-screen flex flex-col">
+<body class="bg-[#f4f1ed] text-[#223D79] min-h-screen flex flex-col">
   <!-- Unified 5-Dashboard Suite Navigation -->
     <!-- Unified 5-Dashboard Suite Navigation (5-Color Palette: #223D79, #77797C, #FFFFFF, #D9CDBA, #FFA530) -->
   <nav class="bg-[#223D79] text-[#D9CDBA] border-b-2 border-[#FFA530] text-xs px-6 py-2.5 flex flex-wrap items-center justify-between sticky top-0 z-50 shadow-md">
@@ -58,11 +58,11 @@
       <span class="font-extrabold text-[#223D79] tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
-      <a href="/" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📱 Patient Kiosk</a>
-      <a href="/doctor" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🩺 Doctor Portal</a>
+      <a href="/" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📱 Patient Kiosk</a>
+      <a href="/doctor" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🩺 Doctor Portal</a>
       <a href="/triage" class="bg-[#FFA530] text-[#223D79] font-black shadow px-3 py-1 rounded-md">🚨 Emergency Triage</a>
-      <a href="/ayush" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🌿 AYUSH Dashavidha</a>
-      <a href="/admin" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📊 Admin & ABDM Hub</a>
+      <a href="/ayush" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🌿 AYUSH Dashavidha</a>
+      <a href="/admin" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📊 Admin & ABDM Hub</a>
     </div>
   </nav>
 
@@ -97,7 +97,7 @@
             <span class="text-3xl font-black text-red-400">#E-012</span>
             <div>
               <h3 class="font-bold text-[#223D79] text-base">Mohan Das (61M)</h3>
-              <p class="text-xs text-[#77797C]">Kiosk #2 (Main OPD Gate) • Intercept Latency: <span class="font-bold text-emerald-400">14.2ms</span></p>
+              <p class="text-xs text-[#77797C]">Kiosk #2 (Main OPD Gate) • Intercept Latency: <span class="font-bold text-emerald-700">14.2ms</span></p>
             </div>
           </div>
           <span class="bg-red-600 text-[#223D79] font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider">Cardiac Red-Flag</span>
@@ -116,7 +116,7 @@
           <button onclick="dispatchCrashCart()" class="flex-1 bg-red-600 hover:bg-red-500 text-[#223D79] font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
             <i data-lucide="bell-ring" class="w-4 h-4"></i> Dispatch Crash Cart & Nurse
           </button>
-          <button onclick="routeToBed()" class="flex-1 bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30 hover:bg-slate-700 text-[#223D79] font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
+          <button onclick="routeToBed()" class="flex-1 bg-[#223D79] text-white text-white border border-[#D9CDBA]/30 hover:bg-[#e8e4df] text-white font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
             <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> Route to Emergency Bed 1
           </button>
         </div>
@@ -125,13 +125,13 @@
       <!-- Past Triage History -->
       <div class="mt-6 space-y-2">
         <h3 class="text-xs font-bold text-[#77797C] uppercase tracking-wide">Resolved Triage Interceptions Today (4)</h3>
-        <div class="p-3 bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30/40 rounded-lg border border-[#D9CDBA]/60 flex items-center justify-between text-xs">
+        <div class="p-3 bg-[#223D79] text-white text-white border border-[#D9CDBA]/30/40 rounded-lg border border-[#D9CDBA]/60 flex items-center justify-between text-xs">
           <span><span class="font-bold text-[#223D79]">#E-011</span> • Sita Ram (45F) — Acute Asthmatic Attack</span>
-          <span class="text-emerald-400 font-semibold">Stabilized in ER</span>
+          <span class="text-emerald-700 font-semibold">Stabilized in ER</span>
         </div>
-        <div class="p-3 bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30/40 rounded-lg border border-[#D9CDBA]/60 flex items-center justify-between text-xs">
+        <div class="p-3 bg-[#223D79] text-white text-white border border-[#D9CDBA]/30/40 rounded-lg border border-[#D9CDBA]/60 flex items-center justify-between text-xs">
           <span><span class="font-bold text-[#223D79]">#E-010</span> • Vinod Kumar (58M) — Slurred Speech (Stroke Protocol)</span>
-          <span class="text-emerald-400 font-semibold">CT Scan Completed</span>
+          <span class="text-emerald-700 font-semibold">CT Scan Completed</span>
         </div>
       </div>
     </section>
@@ -140,24 +140,24 @@
     <section class="col-span-12 lg:col-span-5 space-y-6">
       <div class="bg-white border border-[#D9CDBA]/80 shadow-sm rounded-2xl border border-[#D9CDBA]/60 p-6 space-y-4">
         <h3 class="font-bold text-sm text-[#223D79] flex items-center gap-2">
-          <i data-lucide="activity" class="w-4 h-4 text-blue-400"></i> AI Interceptor Latency Telemetry
+          <i data-lucide="activity" class="w-4 h-4 text-[#223D79]"></i> AI Interceptor Latency Telemetry
         </h3>
         <div class="space-y-3 text-xs">
           <div>
             <div class="flex justify-between text-[#77797C] mb-1">
               <span>Average Keyword Scan Latency:</span>
-              <span class="font-bold text-emerald-400">12.5 ms (Target < 150ms)</span>
+              <span class="font-bold text-emerald-700">12.5 ms (Target < 150ms)</span>
             </div>
-            <div class="w-full bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30 h-2 rounded-full overflow-hidden">
+            <div class="w-full bg-[#223D79] text-white text-white border border-[#D9CDBA]/30 h-2 rounded-full overflow-hidden">
               <div class="bg-[#D9CDBA]/300 h-full w-[8%]"></div>
             </div>
           </div>
           <div>
             <div class="flex justify-between text-[#77797C] mb-1">
               <span>Sarvam Saaras STT Processing:</span>
-              <span class="font-bold text-blue-400">210 ms</span>
+              <span class="font-bold text-[#223D79]">210 ms</span>
             </div>
-            <div class="w-full bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30 h-2 rounded-full overflow-hidden">
+            <div class="w-full bg-[#223D79] text-white text-white border border-[#D9CDBA]/30 h-2 rounded-full overflow-hidden">
               <div class="bg-[#D9CDBA]/200 h-full w-[25%]"></div>
             </div>
           </div>
@@ -166,7 +166,7 @@
 
       <div class="bg-white border border-[#D9CDBA]/80 shadow-sm rounded-2xl border border-[#D9CDBA]/60 p-6 space-y-3 text-xs">
         <h3 class="font-bold text-sm text-[#223D79] flex items-center gap-2">
-          <i data-lucide="book-open" class="w-4 h-4 text-purple-400"></i> Emergency Red-Flag Protocols
+          <i data-lucide="book-open" class="w-4 h-4 text-[#FFA530]"></i> Emergency Red-Flag Protocols
         </h3>
         <ul class="space-y-2 text-[#77797C] list-disc pl-4 leading-relaxed">
           <li><strong>Cardiac:</strong> Chest tightness, left arm radiation, diaphoresis.</li>
@@ -179,7 +179,7 @@
   </main>
   <!-- Notification Modal -->
   <div id="triage-notif" class="hidden fixed bottom-6 right-6 bg-white border border-[#D9CDBA]/80 shadow-sm border-2 border-emerald-500 text-[#223D79] p-4 rounded-xl shadow-2xl z-50 flex items-center space-x-3">
-    <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>
+    <i data-lucide="check-circle" class="w-6 h-6 text-emerald-700"></i>
     <div>
       <p id="triage-msg-title" class="font-bold text-sm">Action Confirmed</p>
       <p id="triage-msg-desc" class="text-xs text-[#77797C]">Staff alerted and emergency protocol activated.</p>

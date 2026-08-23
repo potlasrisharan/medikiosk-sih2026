@@ -49,7 +49,7 @@
     body { font-family: "Plus Jakarta Sans", sans-serif; }
   </style>
 </head>
-<body class="bg-[#f8fafc] text-[#223D79] min-h-screen flex flex-col">
+<body class="bg-[#f4f1ed] text-[#223D79] min-h-screen flex flex-col">
   <!-- Unified 5-Dashboard Suite Navigation -->
     <!-- Unified 5-Dashboard Suite Navigation (5-Color Palette: #223D79, #77797C, #FFFFFF, #D9CDBA, #FFA530) -->
   <nav class="bg-[#223D79] text-[#D9CDBA] border-b-2 border-[#FFA530] text-xs px-6 py-2.5 flex flex-wrap items-center justify-between sticky top-0 z-50 shadow-md">
@@ -58,10 +58,10 @@
       <span class="font-extrabold text-[#223D79] tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
-      <a href="/" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📱 Patient Kiosk</a>
-      <a href="/doctor" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🩺 Doctor Portal</a>
-      <a href="/triage" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🚨 Emergency Triage</a>
-      <a href="/ayush" class="text-[#D9CDBA] hover:text-[#223D79] font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🌿 AYUSH Dashavidha</a>
+      <a href="/" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📱 Patient Kiosk</a>
+      <a href="/doctor" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🩺 Doctor Portal</a>
+      <a href="/triage" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🚨 Emergency Triage</a>
+      <a href="/ayush" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🌿 AYUSH Dashavidha</a>
       <a href="/admin" class="bg-[#FFA530] text-[#223D79] font-black shadow px-3 py-1 rounded-md">📊 Admin & ABDM Hub</a>
     </div>
   </nav>
@@ -79,7 +79,7 @@
       </div>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-      <button onclick="pingAbdmSandbox()" class="bg-[#223D79] hover:bg-[#223D79] text-white text-[#223D79] text-xs font-bold px-3 py-2 rounded-xl border border-[#D9CDBA]/30 flex items-center gap-1.5 transition shadow">
+      <button onclick="pingAbdmSandbox()" class="bg-[#223D79] hover:bg-[#223D79] text-white text-white text-xs font-bold px-3 py-2 rounded-xl border border-[#D9CDBA]/30 flex items-center gap-1.5 transition shadow">
         <i data-lucide="activity" class="w-3.5 h-3.5 text-[#FFA530]"></i>
         <span>Ping ABDM Gateway</span>
       </button>
@@ -87,8 +87,8 @@
         <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
         <span>Simulate NHCX Claim</span>
       </button>
-      <button onclick="viewLiveFhirBundle()" class="bg-slate-800 hover:bg-slate-700 text-[#D9CDBA] text-xs font-bold px-3 py-2 rounded-xl border border-[#D9CDBA]/60 flex items-center gap-1.5 transition">
-        <i data-lucide="file-code" class="w-3.5 h-3.5 text-blue-400"></i>
+      <button onclick="viewLiveFhirBundle()" class="bg-white shadow-sm hover:bg-[#e8e4df] text-[#D9CDBA] text-xs font-bold px-3 py-2 rounded-xl border border-[#D9CDBA]/60 flex items-center gap-1.5 transition">
+        <i data-lucide="file-code" class="w-3.5 h-3.5 text-[#223D79]"></i>
         <span>View FHIR R4 Bundle</span>
       </button>
     </div>
@@ -100,27 +100,27 @@
       <div class="bg-white border border-[#D9CDBA]/80 shadow-sm p-5 rounded-2xl border border-[#D9CDBA]/60 hover:border-[#FFA530]/40 transition shadow-sm">
         <p class="text-xs text-[#77797C] font-bold uppercase tracking-wider">Total OPD Intakes Today</p>
         <p id="stat-opd-intakes" class="text-3xl font-black text-[#223D79] mt-1">4,284</p>
-        <p class="text-[11px] text-emerald-400 mt-1 font-semibold flex items-center gap-1">
+        <p class="text-[11px] text-emerald-700 mt-1 font-semibold flex items-center gap-1">
           <i data-lucide="trending-up" class="w-3 h-3"></i> ↑ 14% vs traditional manual queue
         </p>
       </div>
 
       <div class="bg-white border border-[#D9CDBA]/80 shadow-sm p-5 rounded-2xl border border-[#D9CDBA]/60 hover:border-blue-500/40 transition shadow-sm">
         <p class="text-xs text-[#77797C] font-bold uppercase tracking-wider">Avg Doctor Review Time</p>
-        <p class="text-3xl font-black text-blue-400 mt-1">14.2 sec</p>
+        <p class="text-3xl font-black text-[#223D79] mt-1">14.2 sec</p>
         <p class="text-[11px] text-[#77797C] mt-1">Reduced from 2.8 mins (90% cut)</p>
       </div>
 
       <div class="bg-white border border-[#D9CDBA]/80 shadow-sm p-5 rounded-2xl border border-[#D9CDBA]/60 hover:border-[#FFA530]/40 transition shadow-sm">
         <p class="text-xs text-[#77797C] font-bold uppercase tracking-wider">PM-JAY Cashless Claims</p>
         <p class="text-3xl font-black text-[#FFA530] mt-1">₹14.8 Lakh</p>
-        <p class="text-[11px] text-amber-300 mt-1 font-semibold">316 Verified Beneficiaries</p>
+        <p class="text-[11px] text-[#77797C] mt-1 font-semibold">316 Verified Beneficiaries</p>
       </div>
 
       <div class="bg-white border border-[#D9CDBA]/80 shadow-sm p-5 rounded-2xl border border-[#D9CDBA]/60 hover:border-emerald-500/40 transition shadow-sm">
         <p class="text-xs text-[#77797C] font-bold uppercase tracking-wider">ABDM Records Synced</p>
-        <p class="text-3xl font-black text-emerald-400 mt-1">100% (M1–M3)</p>
-        <p class="text-[11px] text-emerald-300 mt-1 font-semibold">Eka Care Gateway Healthy</p>
+        <p class="text-3xl font-black text-emerald-700 mt-1">100% (M1–M3)</p>
+        <p class="text-[11px] text-[#223D79] mt-1 font-semibold">Eka Care Gateway Healthy</p>
       </div>
     </div>
 
@@ -130,10 +130,10 @@
       <div class="bg-white border border-[#D9CDBA]/80 shadow-sm rounded-2xl border border-[#D9CDBA]/60 p-5 space-y-4">
         <div class="flex items-center justify-between border-b border-[#D9CDBA]/60 pb-3">
           <h2 class="font-bold text-sm text-[#223D79] flex items-center gap-2">
-            <i data-lucide="network" class="w-4 h-4 text-blue-400"></i>
+            <i data-lucide="network" class="w-4 h-4 text-[#223D79]"></i>
             National Health Ecosystem Health
           </h2>
-          <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-500/30">All Services Operational</span>
+          <span class="text-[10px] bg-emerald-500/20 text-[#223D79] font-bold px-2 py-0.5 rounded border border-emerald-500/30">All Services Operational</span>
         </div>
 
         <div class="space-y-3">
@@ -142,7 +142,7 @@
               <p class="font-bold text-xs text-[#223D79]">Eka Care ABDM Gateway (M1 ABHA / M2 HIP / M3 HIU)</p>
               <p class="text-[11px] text-[#77797C] mt-0.5">NHA Certified Production Gateway (Uptime: 99.98%)</p>
             </div>
-            <span class="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-500/30">ONLINE</span>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-500/30">ONLINE</span>
           </div>
 
           <div class="p-3 bg-[#f8fafc] border border-[#D9CDBA]/60 rounded-xl border border-[#D9CDBA]/60/80 flex items-center justify-between">
@@ -150,7 +150,7 @@
               <p class="font-bold text-xs text-[#223D79]">NHA NHCX Claims Exchange Engine</p>
               <p class="text-[11px] text-[#77797C] mt-0.5">CoverageEligibilityRequest & Claim FHIR Endpoints</p>
             </div>
-            <span class="text-xs font-bold text-[#FFA530] bg-amber-950/60 px-2.5 py-1 rounded border border-[#FFA530]/30">ACTIVE</span>
+            <span class="text-xs font-bold text-[#FFA530] bg-[#FFA530]/20 px-2.5 py-1 rounded border border-[#FFA530]/30">ACTIVE</span>
           </div>
 
           <div class="p-3 bg-[#f8fafc] border border-[#D9CDBA]/60 rounded-xl border border-[#D9CDBA]/60/80 flex items-center justify-between">
@@ -158,7 +158,7 @@
               <p class="font-bold text-xs text-[#223D79]">NRCeS FHIR R4 DocumentBundle Validator</p>
               <p class="text-[11px] text-[#77797C] mt-0.5">bdl-11 Invariant Compliance Engine (100% Compliant)</p>
             </div>
-            <span class="text-xs font-bold text-blue-400 bg-blue-950/60 px-2.5 py-1 rounded border border-blue-500/30">VALIDATED</span>
+            <span class="text-xs font-bold text-white bg-[#223D79]/10 px-2.5 py-1 rounded border border-blue-500/30">VALIDATED</span>
           </div>
         </div>
       </div>
@@ -187,7 +187,7 @@
               <p class="font-bold text-xs text-[#223D79]">Sarvam Saaras STT (8 Indic Languages)</p>
               <p class="text-[11px] text-[#77797C] mt-0.5">Telugu, Hindi, Tamil, Kannada, Marathi, Bengali, Gujarati, English</p>
             </div>
-            <span class="text-xs font-bold text-emerald-400">96.4% Accuracy</span>
+            <span class="text-xs font-bold text-emerald-700">96.4% Accuracy</span>
           </div>
 
           <div class="p-3 bg-[#f8fafc] border border-[#D9CDBA]/60 rounded-xl border border-[#D9CDBA]/60/80 flex items-center justify-between">
@@ -195,7 +195,7 @@
               <p class="font-bold text-xs text-[#223D79]">Sarvam Vision 3B VLM (Prescription OCR)</p>
               <p class="text-[11px] text-[#77797C] mt-0.5">Cursive Handwriting & Multi-column Lab Extractor</p>
             </div>
-            <span class="text-xs font-bold text-blue-400">94.8% Recognition</span>
+            <span class="text-xs font-bold text-[#223D79]">94.8% Recognition</span>
           </div>
         </div>
       </div>
@@ -206,12 +206,12 @@
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#D9CDBA]/60 pb-3">
         <div>
           <h2 class="font-bold text-sm text-[#223D79] flex items-center gap-2">
-            <i data-lucide="list-ordered" class="w-4 h-4 text-emerald-400"></i>
+            <i data-lucide="list-ordered" class="w-4 h-4 text-emerald-700"></i>
             Live Real-Time Hospital OPD Intake & ABDM Transaction Feed
           </h2>
           <p class="text-xs text-[#77797C] mt-0.5">Streaming real-time transactions from Patient Kiosks and Doctor Consultation Chambers</p>
         </div>
-        <button onclick="refreshTransactionFeed()" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] text-xs font-bold py-1.5 px-3 rounded-lg border border-[#D9CDBA]/30 transition flex items-center gap-1.5">
+        <button onclick="refreshTransactionFeed()" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-white text-[#D9CDBA] text-xs font-bold py-1.5 px-3 rounded-lg border border-[#D9CDBA]/30 transition flex items-center gap-1.5">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
           <span>Refresh Feed</span>
         </button>
@@ -243,12 +243,12 @@
     <div class="bg-white border border-[#D9CDBA]/80 shadow-sm border border-[#D9CDBA]/60 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
       <div class="p-4 border-b border-[#D9CDBA]/60 flex items-center justify-between">
         <h3 class="font-bold text-[#223D79] text-sm flex items-center gap-2">
-          <i data-lucide="file-code" class="w-4 h-4 text-blue-400"></i>
+          <i data-lucide="file-code" class="w-4 h-4 text-[#223D79]"></i>
           NRCeS HL7 FHIR R4 DocumentBundle Inspector
         </h3>
         <button onclick="closeFhirModal()" class="text-[#77797C] hover:text-[#223D79] text-sm font-bold">✕ Close</button>
       </div>
-      <div class="p-4 flex-1 overflow-y-auto font-mono text-xs text-blue-300/90 bg-[#f8fafc] text-[#223D79] border border-[#D9CDBA]/60">
+      <div class="p-4 flex-1 overflow-y-auto font-mono text-xs text-[#223D79]/90 bg-[#f8fafc] border border-[#D9CDBA]/60">
         <pre id="fhir-json-display"></pre>
       </div>
     </div>
@@ -345,7 +345,7 @@
       if (!tbody) return;
 
       tbody.innerHTML = allTx.map((tx, idx) => `
-        <tr class="hover:bg-white border border-[#D9CDBA]/80 shadow-sm transition ${tx.isEmergency ? "bg-rose-950/20" : ""}">
+        <tr class="hover:bg-white border border-[#D9CDBA]/80 shadow-sm transition ${tx.isEmergency ? "bg-rose-50" : ""}">
           <td class="p-3 font-black ${tx.isEmergency ? "text-rose-400" : "text-[#FFA530]"}">
             ${tx.token}
           </td>
@@ -359,7 +359,7 @@
             ${tx.complaint}
           </td>
           <td class="p-3">
-            <span class="bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded text-[11px] border border-emerald-500/30">
+            <span class="bg-emerald-500/20 text-[#223D79] font-bold px-2 py-0.5 rounded text-[11px] border border-emerald-500/30">
               ✓ ${tx.abdmStatus}
             </span>
           </td>
@@ -369,7 +369,7 @@
             </span>
           </td>
           <td class="p-3 text-right space-x-1.5">
-            <button onclick="viewPatientFhir('${tx.name}', '${tx.abha}', '${tx.complaint}')" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] px-2.5 py-1 rounded text-[11px] font-bold border border-[#D9CDBA]/30 transition">
+            <button onclick="viewPatientFhir('${tx.name}', '${tx.abha}', '${tx.complaint}')" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-white text-[#D9CDBA] px-2.5 py-1 rounded text-[11px] font-bold border border-[#D9CDBA]/30 transition">
               FHIR R4
             </button>
           </td>
