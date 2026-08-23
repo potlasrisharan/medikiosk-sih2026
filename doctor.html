@@ -145,27 +145,29 @@
 
       <!-- 15-Second Clinical SOAP Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
-        <!-- Subjective (Cross-Lingual Native Voice + Standardized Medical Translation) -->
-        <div class="p-4 rounded-xl bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30/70 border border-[#D9CDBA]/60/80 space-y-2.5">
-          <div class="flex items-center justify-between border-b border-[#D9CDBA]/60 pb-2">
-            <div class="flex items-center gap-2 text-xs font-bold text-blue-400 uppercase tracking-wide">
-              <i data-lucide="languages" class="w-4 h-4 text-blue-400"></i>
-              <span>S: Subjective (Cross-Lingual AI Transcription & Translation)</span>
+        <!-- S: Subjective (Cross-Lingual Native Voice + Standardized Medical Translation) -->
+        <div class="p-5 rounded-2xl bg-white border border-[#D9CDBA] shadow-sm space-y-3 text-[#223D79]">
+          <div class="flex items-center justify-between border-b border-[#D9CDBA]/60 pb-2.5">
+            <div class="flex items-center gap-2 text-xs font-black text-[#223D79] uppercase tracking-wide">
+              <i data-lucide="languages" class="w-4 h-4 text-[#FFA530]"></i>
+              <span>S: Subjective (Cross-Lingual Voice Intake)</span>
             </div>
-            <span class="text-[10px] bg-[#D9CDBA]/200/20 text-blue-300 font-bold px-2 py-0.5 rounded border border-blue-500/30">
+            <span class="text-[10px] bg-[#223D79] text-[#FFA530] font-bold px-2 py-0.5 rounded border border-[#FFA530]/40">
               Sarvam AI Saaras ➔ Clinical English
             </span>
           </div>
 
           <!-- Original Patient Spoken Words in Mother Tongue -->
-          <div class="p-2.5 bg-white border border-[#D9CDBA]/80 shadow-sm rounded-lg border border-[#D9CDBA]/60 space-y-1">
+          <div class="p-3 bg-[#f8fafc] rounded-xl border border-[#D9CDBA]/60 space-y-1">
             <div class="flex items-center justify-between">
               <span class="text-[10px] text-[#77797C] font-bold uppercase">
                 🗣️ Patient Spoken Words (Native Mother Tongue):
               </span>
-              <span id="patient-lang-badge" class="text-[10px] text-[#FFA530] font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-[#FFA530]/40">తెలుగు (Telugu)</span>
+              <span id="patient-lang-badge" class="text-[10px] text-[#223D79] font-black bg-[#FFA530]/30 px-2 py-0.5 rounded border border-[#FFA530]/50">
+                తెలుగు (Telugu)
+              </span>
             </div>
-            <p id="soap-native-text" class="text-xs text-amber-200/90 italic font-medium">
+            <p id="soap-native-text" class="text-xs text-[#223D79] italic font-semibold leading-relaxed">
               "నాకు గత 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది. ఉదయం లేవగానే బిగుతుగా ఉంటుంది, చలికాలంలో నొప్పి ఎక్కువవుతుంది."
             </p>
           </div>
@@ -173,52 +175,56 @@
           <!-- Standardized Translated Medical English for Consulting Doctor -->
           <div class="space-y-1">
             <span class="text-[10px] text-[#77797C] font-bold uppercase">
-              🇬🇧 Standardized Translated Clinical Note (English):
+              🇬🇧 Standardized Translated Clinical Note (English SOAP S):
             </span>
-            <p id="soap-s" class="text-xs text-[#223D79] leading-relaxed font-sans">
+            <p id="soap-s" class="text-xs text-[#223D79] leading-relaxed font-medium">
               52-year-old male reports severe bilateral knee pain with crepitus for 6 months, worsening during early mornings and cold weather. Walking distance reduced to ~200m. Denies acute trauma.
             </p>
           </div>
         </div>
 
-        <!-- Objective & Document OCR Labs -->
-        <div class="p-4 rounded-xl bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30/70 border border-[#D9CDBA]/60/80">
-          <div class="flex items-center gap-2 text-xs font-bold text-[#FFA530] mb-2 uppercase tracking-wide">
-            <i data-lucide="flask-conical" class="w-4 h-4"></i> Objective & Lab OCR
+        <!-- O: Objective & Document OCR Labs -->
+        <div class="p-5 rounded-2xl bg-white border border-[#D9CDBA] shadow-sm space-y-3 text-[#223D79]">
+          <div class="flex items-center gap-2 text-xs font-black text-[#223D79] mb-2 uppercase tracking-wide border-b border-[#D9CDBA]/60 pb-2.5">
+            <i data-lucide="flask-conical" class="w-4 h-4 text-[#FFA530]"></i>
+            <span>O: Objective & Lab OCR</span>
           </div>
-          <p id="soap-o" class="text-xs text-[#223D79] leading-relaxed mb-3">
-            Vitals: BP 130/84 mmHg, Pulse 76 bpm. Bilateral knee joint crepitus present.
+          <p id="soap-o" class="text-xs text-[#223D79] leading-relaxed mb-3 font-medium">
+            Clinical Vitals: [Pending In-Person Measurement in OPD Chamber]<br/>
+            Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tenderness.
           </p>
-          <div class="space-y-1.5">
-            <div class="flex justify-between items-center bg-rose-500/15 border border-rose-500/30 px-2.5 py-1 rounded text-xs">
-              <span class="font-semibold text-rose-300">Serum Uric Acid</span>
-              <span class="font-bold text-rose-400">7.8 mg/dL <span class="text-[10px] bg-rose-600 text-[#223D79] px-1.5 py-0.2 rounded font-black">HIGH</span></span>
+          <div class="space-y-2">
+            <div class="flex justify-between items-center bg-rose-50 border border-rose-300 px-3 py-1.5 rounded-xl text-xs">
+              <span class="font-bold text-rose-900">Serum Uric Acid</span>
+              <span class="font-black text-rose-700">7.8 mg/dL <span class="text-[10px] bg-rose-600 text-white px-1.5 py-0.5 rounded font-black">HIGH</span></span>
             </div>
-            <div class="flex justify-between items-center bg-white border border-[#D9CDBA]/80 shadow-sm/60 border border-[#D9CDBA]/60 px-2.5 py-1 rounded text-xs">
-              <span class="text-[#77797C]">HbA1c</span>
-              <span class="font-semibold text-[#223D79]">6.1 %</span>
+            <div class="flex justify-between items-center bg-[#f8fafc] border border-[#D9CDBA]/60 px-3 py-1.5 rounded-xl text-xs">
+              <span class="text-[#77797C] font-semibold">HbA1c</span>
+              <span class="font-bold text-[#223D79]">6.1 %</span>
             </div>
           </div>
         </div>
 
-        <!-- Assessment & Ayurvedic Dashavidha -->
-        <div class="p-4 rounded-xl bg-[#223D79] text-white text-[#223D79] border border-[#D9CDBA]/30/70 border border-[#D9CDBA]/60/80">
-          <div class="flex items-center gap-2 text-xs font-bold text-emerald-400 mb-2 uppercase tracking-wide">
-            <i data-lucide="stethoscope" class="w-4 h-4"></i> Assessment & Dashavidha Pariksha
+        <!-- A: Assessment & Ayurvedic Dashavidha -->
+        <div class="p-5 rounded-2xl bg-white border border-[#D9CDBA] shadow-sm space-y-3 text-[#223D79]">
+          <div class="flex items-center gap-2 text-xs font-black text-[#223D79] mb-2 uppercase tracking-wide border-b border-[#D9CDBA]/60 pb-2.5">
+            <i data-lucide="stethoscope" class="w-4 h-4 text-[#FFA530]"></i>
+            <span>A: Assessment & Dashavidha Pariksha</span>
           </div>
-          <p id="soap-a" class="text-xs text-[#223D79] leading-relaxed mb-2">
-            1. Osteoarthritis Bilateral Knees (Sandhigata Vata) with mild hyperuricemia.<br/>
-            2. Essential Hypertension (Controlled).
+          <p id="soap-a" class="text-xs text-[#223D79] leading-relaxed mb-2 font-medium">
+            1. Sandhigata Vata (Osteoarthritis / ICD-10 M17.0 / NAMASTE AYU-SAN-01)<br/>
+            2. Hyperuricemia (Serum Uric Acid 7.8 mg/dL [HIGH])<br/>
+            3. Mild Agnimandya (Manda Agni)
           </p>
-          <div class="grid grid-cols-2 gap-1.5 text-[11px] bg-white border border-[#D9CDBA]/80 shadow-sm p-2 rounded border border-[#D9CDBA]/60">
-            <div><span class="text-[#77797C]">Prakriti:</span> <span class="font-semibold text-emerald-300">Vata-Kapha</span></div>
-            <div><span class="text-[#77797C]">Agni:</span> <span class="font-semibold text-emerald-300">Manda Agni</span></div>
-            <div><span class="text-[#77797C]">Koshtha:</span> <span class="font-semibold text-emerald-300">Madhyama</span></div>
-            <div><span class="text-[#77797C]">Vikriti:</span> <span class="font-semibold text-emerald-300">Dhatu Kshaya</span></div>
+          <div class="grid grid-cols-2 gap-2 text-[11px] bg-[#f8fafc] p-2.5 rounded-xl border border-[#D9CDBA]/60">
+            <div><span class="text-[#77797C] font-semibold">Prakriti:</span> <span id="dash-prakriti" class="font-bold text-[#223D79]">Vata-Kapha</span></div>
+            <div><span class="text-[#77797C] font-semibold">Agni:</span> <span id="dash-agni" class="font-bold text-[#223D79]">Manda Agni</span></div>
+            <div><span class="text-[#77797C] font-semibold">Koshtha:</span> <span id="dash-koshtha" class="font-bold text-[#223D79]">Madhyama</span></div>
+            <div><span class="text-[#77797C] font-semibold">Vikriti:</span> <span id="dash-vikriti" class="font-bold text-[#223D79]">Dhatu Kshaya</span></div>
           </div>
         </div>
 
-        <!-- P: Dynamic Clinical Plan & Sovereign Groq Prescription Pad -->
+<!-- P: Dynamic Clinical Plan & Sovereign Groq Prescription Pad -->
         <div class="p-5 rounded-xl bg-white border border-[#D9CDBA]/80 shadow-sm border border-[#D9CDBA]/60 space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D9CDBA]/60 pb-3">
             <div class="flex items-center gap-2 text-xs font-bold text-[#FFA530] uppercase tracking-wide">
