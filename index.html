@@ -1248,6 +1248,60 @@
     }
 
 
+    // Pre-configured Verified Patient Registry for Mock Validation & Lookups
+    const PATIENT_DATABASE = {
+      "9876543210": { name: "Ramesh Chandra", age: 52, gender: "Male", city: "Khammam, Telangana", abha: "91-4829-1029-4821", abhaAddr: "ramesh.chandra@abdm", pmjay: true, pmjayId: "PMJAY-TS-482910", symptom: "Bilateral knee joint pain with crepitus" },
+      "9811122334": { name: "Priya Sharma", age: 34, gender: "Female", city: "Hyderabad, Telangana", abha: "91-5910-2941-8402", abhaAddr: "priya.sharma@abdm", pmjay: true, pmjayId: "PMJAY-TS-591029", symptom: "Epigastric burning & acid reflux" },
+      "9777788899": { name: "Mohan Das", age: 61, gender: "Male", city: "Warangal, Telangana", abha: "91-7712-4019-3382", abhaAddr: "mohan.das@abdm", pmjay: true, pmjayId: "PMJAY-TS-771240", symptom: "Severe crushing chest pain (Red-Flag)" },
+      "9123456789": { name: "Ananya Verma", age: 28, gender: "Female", city: "Nizamabad, Telangana", abha: "91-9123-4567-8901", abhaAddr: "ananya.verma@abdm", pmjay: true, pmjayId: "PMJAY-TS-912345", symptom: "High fever with chills" }
+    };
+
+    function applyVerifiedPatientUI() {
+      const statusBadge = document.getElementById("badge-auth-status");
+      if (statusBadge) {
+        statusBadge.className = "text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300";
+        statusBadge.innerText = "✓ ABDM Verified";
+      }
+
+      // Update name strictly from currentPatient state
+      const patNameEl = document.getElementById("pat-name");
+      if (patNameEl && currentPatient.name) {
+        patNameEl.innerText = currentPatient.name;
+      }
+
+      // Update avatar initials
+      const avatar = document.getElementById("pat-avatar");
+      if (avatar && currentPatient.name) {
+        const initials = currentPatient.name.split(" ").map(n => n[0]).join("");
+        avatar.innerText = initials.substring(0, 2).toUpperCase();
+      }
+
+      // Update metadata (Age, Gender, City)
+      const patMetaEl = document.getElementById("pat-meta");
+      if (patMetaEl) {
+        const loc = currentPatient.city || "Telangana";
+        patMetaEl.innerText = `${currentPatient.age} Yrs • ${currentPatient.gender} • ${loc}`;
+      }
+
+      // Update Auth Method & ABHA Identifiers
+      const authMethodEl = document.getElementById("pat-auth-method");
+      if (authMethodEl) authMethodEl.innerText = currentPatient.authMethod || "ABDM Verified";
+      const abhaIdEl = document.getElementById("pat-abha-id");
+      if (abhaIdEl) abhaIdEl.innerText = currentPatient.abhaId || "91-4829-1029-4821";
+      const abhaAddrEl = document.getElementById("pat-abha-addr");
+      if (abhaAddrEl) abhaAddrEl.innerText = currentPatient.abhaAddress || "patient@abdm";
+
+      // Update PM-JAY status card
+      const pmjayBox = document.getElementById("pmjay-card-box");
+      if (pmjayBox) {
+        if (currentPatient.hasPmjay) {
+          pmjayBox.classList.remove("hidden");
+        } else {
+          pmjayBox.classList.add("hidden");
+        }
+      }
+    }
+
     // 1-Click Demo Patient Switcher (Updates all fields cleanly)
     function loadDemoPatient(id, name, age, gender, abhaNumber, abhaAddress, authMethod, pmjay, symptom) {
       currentPatient.id = id;
