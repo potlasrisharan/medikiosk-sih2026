@@ -1331,11 +1331,12 @@
       if (el) el.value = "9876543210";
     }
 
-    function loadDemoPatient(id, name, age, gender, abhaNumber, abhaAddress, authMethod, pmjay, symptom) {
+    function loadDemoPatient(id, name, age, gender, abhaNumber, abhaAddress, authMethod, pmjay, symptom, phone, aadhaar) {
       currentPatient.id = id;
       currentPatient.name = name;
       currentPatient.age = age;
       currentPatient.gender = gender;
+      currentPatient.city = "Khammam, Telangana";
       currentPatient.abhaId = abhaNumber;
       currentPatient.abhaAddress = abhaAddress;
       currentPatient.authMethod = authMethod;
@@ -1343,9 +1344,38 @@
       currentPatient.isVerified = true;
       currentPatient.selectedSymptom = symptom;
 
+      // 1. Auto-fill all input fields across all 5 identification tabs
+      const mobInput = document.getElementById("input-mobile");
+      if (mobInput) mobInput.value = phone || "9876543210";
+
+      const abhaInput = document.getElementById("input-abha-id");
+      if (abhaInput) abhaInput.value = abhaNumber || "91-4829-1029-4821";
+
+      const aadhInput = document.getElementById("input-aadhaar");
+      if (aadhInput) aadhInput.value = aadhaar || "892019204821";
+
+      const regName = document.getElementById("reg-name");
+      if (regName) regName.value = name;
+
+      const regAge = document.getElementById("reg-age");
+      if (regAge) regAge.value = age;
+
+      const regGender = document.getElementById("reg-gender");
+      if (regGender) regGender.value = gender;
+
+      const regPhone = document.getElementById("reg-phone");
+      if (regPhone) regPhone.value = phone || "9876543210";
+
+      const regAadhaar = document.getElementById("reg-aadhaar");
+      if (regAadhaar) regAadhaar.value = aadhaar || "892019204821";
+
+      // 2. Update the Right-Side Verified Patient Status Card
       applyVerifiedPatientUI();
+
+      // 3. Ensure we are on Step 2 (Identity Screen)
       goToScreen("screen-identify");
 
+      // 4. Voice confirmation
       speakAudio(`${name} verified from database. Ayushman Bharat PM-JAY is active.`);
     }
 
@@ -1987,5 +2017,31 @@
       goToScreen("screen-language");
     }
   </script>
+  <!-- Fixed Bottom Bar: 1-Click Demo Patient Credentials (SQLite DB Synced) -->
+  <footer class="fixed bottom-0 left-0 right-0 bg-[#223D79] text-white border-t-2 border-[#FFA530] shadow-2xl py-3 px-4 z-50">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2.5">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-[#FFA530] animate-ping"></span>
+        <span class="text-xs font-black tracking-wider text-[#FFA530] uppercase">
+          🔑 Demo Patient Profiles (1-Click Fill & Login):
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadDemoPatient('pat-048291', 'Ramesh Chandra', 52, 'Male', '91-4829-1029-4821', 'ramesh.chandra@abdm', 'ABHA Scan & Share', true, 'Bilateral knee joint pain with crepitus', '9876543210', '892019204821')" class="bg-white/10 hover:bg-[#FFA530] hover:text-[#223D79] text-white border border-[#D9CDBA]/40 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>👴 Ramesh Chandra (52M - Knee OA)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-059102', 'Priya Sharma', 34, 'Female', '91-5910-2941-8402', 'priya.sharma@abdm', 'Mobile OTP (+91 98111 22334)', true, 'Epigastric burning & acid reflux', '9811122334', '771240193382')" class="bg-white/10 hover:bg-[#FFA530] hover:text-[#223D79] text-white border border-[#D9CDBA]/40 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>👩 Priya Sharma (34F - Acidity)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-077124', 'Mohan Das', 61, 'Male', '91-7712-4019-3382', 'mohan.das@abdm', 'UIDAI Aadhaar e-KYC', true, 'Severe crushing chest pain (Red-Flag)', '9777788899', '665544332211')" class="bg-white/10 hover:bg-[#FFA530] hover:text-[#223D79] text-white border border-[#D9CDBA]/40 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>🚨 Mohan Das (61M - Cardiac Red-Flag)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-091234', 'Ananya Verma', 28, 'Female', '91-9123-4567-8901', 'ananya.verma@abdm', 'ABDM M1 Govt Registration', true, 'High fever with chills', '9123456789', '998877665544')" class="bg-white/10 hover:bg-[#FFA530] hover:text-[#223D79] text-white border border-[#D9CDBA]/40 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
+          <span>🆕 Ananya Verma (28F - New ABHA)</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
