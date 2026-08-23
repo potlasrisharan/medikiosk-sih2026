@@ -967,37 +967,9 @@
       if (el) el.value = "9876543210";
     }
 
-    function verifyByMobile() {
-      const mob = document.getElementById("input-mobile")?.value.trim() || "9876543210";
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "Mobile OTP (+91 " + mob + ")";
-      applyVerifiedPatientUI();
-    }
 
-    function verifyByAbhaId() {
-      const abha = document.getElementById("input-abha-id")?.value.trim() || "91-4829-1029-4821";
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "14-Digit ABHA ID";
-      currentPatient.abhaId = abha;
-      applyVerifiedPatientUI();
-    }
-
-    function verifyByAadhaar() {
-      const aadh = document.getElementById("input-aadhaar")?.value.trim() || "8920-1920-4821";
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "UIDAI Aadhaar e-KYC";
-      applyVerifiedPatientUI();
-    }
-
-    function verifyDemoPatient(method) {
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "ABHA Scan & Share";
-      applyVerifiedPatientUI();
-    }
-
-
-    // 1-Click Demo Patient Loader & Database Sync
-    function loadDemoPatient(id, name, age, gender, abhaNumber, abhaAddress, authMethod, symptom) {
+    // 1-Click Demo Patient Switcher (Updates all fields cleanly)
+    function loadDemoPatient(id, name, age, gender, abhaNumber, abhaAddress, authMethod, pmjay, symptom) {
       currentPatient.id = id;
       currentPatient.name = name;
       currentPatient.age = age;
@@ -1005,95 +977,145 @@
       currentPatient.abhaId = abhaNumber;
       currentPatient.abhaAddress = abhaAddress;
       currentPatient.authMethod = authMethod;
+      currentPatient.hasPmjay = pmjay;
       currentPatient.isVerified = true;
       currentPatient.selectedSymptom = symptom;
-
-      const avatar = document.getElementById("pat-avatar");
-      if (avatar) {
-        const initials = name.split(" ").map(n => n[0]).join("");
-        avatar.innerText = initials;
-      }
 
       applyVerifiedPatientUI();
       goToScreen("screen-identify");
 
-      speakAudio(`${name} selected from database. Ayushman Bharat PM-JAY is active.`);
-      alert(`✅ Patient Loaded from Local SQLite Database:\n\nName: ${name}\nID: ${id}\nABHA: ${abhaNumber}\nPM-JAY: Active`);
+      speakAudio(`${name} verified from database. Ayushman Bharat PM-JAY is active.`);
     }
 
-    async function registerNewPatientFromForm() {
-      const name = document.getElementById("reg-name").value.trim() || "Ananya Verma";
-      const age = parseInt(document.getElementById("reg-age").value) || 28;
-      const gender = document.getElementById("reg-gender").value;
-      const phone = document.getElementById("reg-phone").value.trim() || "+91 91234 56789";
-      const aadhaar = document.getElementById("reg-aadhaar").value.trim() || "8920-1920-8901";
+    // Input Validation & Verification: Mobile Number (10 Digits strictly starting with 6,7,8,9)
+    function verifyByMobile() {
+      const input = document.getElementById("input-mobile");
+      let mob = (input ? input.value.trim() : "").replace(/\D/g, "");
 
-      const randDigits = Math.floor(1000 + Math.random() * 9000).toString();
-      const generatedAbha = `91-${randDigits}-4567-8901`;
-      const generatedAbhaAddr = `${name.toLowerCase().replace(/\s+/g, ".")}${randDigits}@abdm`;
-      const generatedPatId = `pat-${Math.floor(100000 + Math.random() * 900000)}`;
-
-      try {
-        const res = await fetch("http://localhost:8000/api/v1/patient/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            full_name: name,
-            age: age,
-            gender: gender,
-            phone: phone,
-            aadhaar: aadhaar
-          })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          currentPatient.id = data.id;
-          currentPatient.abhaId = data.abha_number;
-          currentPatient.abhaAddress = data.abha_address;
-        } else {
-          currentPatient.id = generatedPatId;
-          currentPatient.abhaId = generatedAbha;
-          currentPatient.abhaAddress = generatedAbhaAddr;
-        }
-      } catch (err) {
-        currentPatient.id = generatedPatId;
-        currentPatient.abhaId = generatedAbha;
-        currentPatient.abhaAddress = generatedAbhaAddr;
+      if (!mob || mob.length !== 10 || !/^[6-9]/.test(mob)) {
+        alert("⚠️ Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.\n\nExample: 9876543210 or 9811122334");
+        return;
       }
 
-      currentPatient.name = name;
-      currentPatient.age = age;
-      currentPatient.gender = gender;
-      currentPatient.phone = phone;
-      currentPatient.authMethod = "New ABHA Registration";
+      // Check if number exists in mock database
+      if (PATIENT_DATABASE[mob]) {
+        const p = PATIENT_DATABASE[mob];
+        currentPatient.name = p.name;
+        currentPatient.age = p.age;
+        currentPatient.gender = p.gender;
+        currentPatient.city = p.city;
+        currentPatient.abhaId = p.abha;
+        currentPatient.abhaAddress = p.abhaAddr;
+        currentPatient.hasPmjay = p.pmjay;
+        currentPatient.authMethod = `Mobile OTP (+91 ${mob.substring(0,5)} ${mob.substring(5)})`;
+        currentPatient.isVerified = true;
+        currentPatient.selectedSymptom = p.symptom;
+      } else {
+        // Generate valid dynamic patient profile for custom entered mobile number
+        const randNum = mob.substring(6);
+        currentPatient.name = `Citizen User (${mob.substring(0,4)}...)`;
+        currentPatient.age = 38;
+        currentPatient.gender = "Female";
+        currentPatient.city = "Hyderabad, Telangana";
+        currentPatient.abhaId = `91-${mob.substring(0,4)}-${mob.substring(4,8)}-${mob.substring(8)}21`;
+        currentPatient.abhaAddress = `user.${mob.substring(0,5)}@abdm`;
+        currentPatient.hasPmjay = true;
+        currentPatient.authMethod = `Mobile OTP (+91 ${mob})`;
+        currentPatient.isVerified = true;
+      }
+
+      applyVerifiedPatientUI();
+      speakAudio(`Mobile number verified. Welcome ${currentPatient.name}.`);
+    }
+
+    // Input Validation & Verification: 14-Digit ABHA ID or username@abdm
+    function verifyByAbhaId() {
+      const input = document.getElementById("input-abha-id");
+      let abha = (input ? input.value.trim() : "");
+
+      if (!abha || (abha.length < 10)) {
+        alert("⚠️ Please enter a valid 14-digit ABHA Number (e.g. 91-4829-1029-4821) or ABHA Address (e.g. priya.sharma@abdm)");
+        return;
+      }
+
+      // Match known ABHA records
+      let matched = null;
+      for (const k in PATIENT_DATABASE) {
+        if (PATIENT_DATABASE[k].abha === abha || PATIENT_DATABASE[k].abhaAddr === abha) {
+          matched = PATIENT_DATABASE[k];
+          break;
+        }
+      }
+
+      if (matched) {
+        currentPatient.name = matched.name;
+        currentPatient.age = matched.age;
+        currentPatient.gender = matched.gender;
+        currentPatient.city = matched.city;
+        currentPatient.abhaId = matched.abha;
+        currentPatient.abhaAddress = matched.abhaAddr;
+        currentPatient.hasPmjay = matched.pmjay;
+        currentPatient.authMethod = "14-Digit ABHA ID Lookup";
+        currentPatient.isVerified = true;
+        currentPatient.selectedSymptom = matched.symptom;
+      } else {
+        currentPatient.name = "Verified ABHA Patient";
+        currentPatient.age = 45;
+        currentPatient.gender = "Male";
+        currentPatient.city = "Telangana";
+        currentPatient.abhaId = abha.includes("@") ? "91-8821-4920-1920" : abha;
+        currentPatient.abhaAddress = abha.includes("@") ? abha : "patient.abha@abdm";
+        currentPatient.hasPmjay = true;
+        currentPatient.authMethod = "14-Digit ABHA ID Lookup";
+        currentPatient.isVerified = true;
+      }
+
+      applyVerifiedPatientUI();
+      speakAudio(`A B H A profile fetched for ${currentPatient.name}.`);
+    }
+
+    // Input Validation & Verification: 12-Digit Aadhaar UIDAI e-KYC
+    function verifyByAadhaar() {
+      const input = document.getElementById("input-aadhaar");
+      let aadh = (input ? input.value.trim() : "").replace(/\D/g, "");
+
+      if (!aadh || aadh.length !== 12) {
+        alert("⚠️ Please enter a valid 12-digit Aadhaar number.\n\nExample: 892019204821");
+        return;
+      }
+
+      const masked = `XXXX-XXXX-${aadh.substring(8)}`;
+      currentPatient.name = "Aadhaar e-KYC Beneficiary";
+      currentPatient.age = 40;
+      currentPatient.gender = "Female";
+      currentPatient.city = "Warangal, Telangana";
+      currentPatient.abhaId = `91-${aadh.substring(0,4)}-${aadh.substring(4,8)}-${aadh.substring(8)}`;
+      currentPatient.abhaAddress = `aadhaar.${aadh.substring(8)}@abdm`;
+      currentPatient.hasPmjay = true;
+      currentPatient.authMethod = `UIDAI Aadhaar e-KYC (${masked})`;
       currentPatient.isVerified = true;
 
       applyVerifiedPatientUI();
-      speakAudio(`New ABHA created for ${name}. Registration complete.`);
-      alert(`🎉 New Patient Registered & Saved to Local SQLite Database!\n\nName: ${name}\nGenerated ABHA: ${currentPatient.abhaId}\nDatabase Record: ${currentPatient.id}`);
+      speakAudio(`Aadhaar e K Y C verified successfully for ${currentPatient.name}.`);
     }
 
-    function applyVerifiedPatientUI() {
-      const statusBadge = document.getElementById("badge-auth-status");
-      if (statusBadge) {
-        statusBadge.className = "text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300";
-        statusBadge.innerText = "✓ ABDM Verified";
-      }
-      const dict = I18N[currentLanguage] || I18N["en-IN"];
-      const patNameEl = document.getElementById("pat-name");
-      if (patNameEl) patNameEl.innerText = dict.patName || currentPatient.name;
-      const patMetaEl = document.getElementById("pat-meta");
-      if (patMetaEl) patMetaEl.innerText = dict.patMeta || `${currentPatient.age} Yrs • ${currentPatient.gender} • Khammam, Telangana`;
+    function verifyDemoPatient(method) {
+      const p = PATIENT_DATABASE["9876543210"];
+      currentPatient.name = p.name;
+      currentPatient.age = p.age;
+      currentPatient.gender = p.gender;
+      currentPatient.city = p.city;
+      currentPatient.abhaId = p.abha;
+      currentPatient.abhaAddress = p.abhaAddr;
+      currentPatient.hasPmjay = p.pmjay;
+      currentPatient.authMethod = "ABHA Scan & Share";
+      currentPatient.isVerified = true;
+      currentPatient.selectedSymptom = p.symptom;
 
-      const authMethodEl = document.getElementById("pat-auth-method");
-      if (authMethodEl) authMethodEl.innerText = currentPatient.authMethod;
-      const abhaIdEl = document.getElementById("pat-abha-id");
-      if (abhaIdEl) abhaIdEl.innerText = currentPatient.abhaId;
-      const abhaAddrEl = document.getElementById("pat-abha-addr");
-      if (abhaAddrEl) abhaAddrEl.innerText = currentPatient.abhaAddress;
-
-      speakAudio(dict.scanSuccessVoice);
+      applyVerifiedPatientUI();
+      speakAudio(`A B H A card scanned. Welcome ${currentPatient.name}.`);
     }
+
 
     function showDpdpaConsentModal() {
       const modal = document.getElementById("modal-dpdpa-consent");
@@ -1541,5 +1563,31 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Input formatters & limits
+    document.addEventListener("DOMContentLoaded", () => {
+      const mobInput = document.getElementById("input-mobile");
+      if (mobInput) {
+        mobInput.addEventListener("input", (e) => {
+          e.target.value = e.target.value.replace(/\D/g, "").substring(0, 10);
+        });
+      }
+      const aadhInput = document.getElementById("input-aadhaar");
+      if (aadhInput) {
+        aadhInput.addEventListener("input", (e) => {
+          let val = e.target.value.replace(/\D/g, "").substring(0, 12);
+          if (val.length > 8) {
+            e.target.value = `${val.substring(0,4)}-${val.substring(4,8)}-${val.substring(8)}`;
+          } else if (val.length > 4) {
+            e.target.value = `${val.substring(0,4)}-${val.substring(4)}`;
+          } else {
+            e.target.value = val;
+          }
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>
