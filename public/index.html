@@ -2019,7 +2019,17 @@
         isEmergency: isEmergency,
         nativeLang: currentLanguage === "te-IN" ? "తెలుగు (Telugu)" : (currentLanguage === "hi-IN" ? "हिन्दी (Hindi)" : (currentLanguage === "ta-IN" ? "தமிழ் (Tamil)" : "English")),
         nativeSpeech: `"${currentPatient.selectedSymptom}"`,
-        subjective: `${currentPatient.age}-year-old ${currentPatient.gender.toLowerCase()} presents with ${currentPatient.selectedSymptom}. Elicited via MediKiosk Sovereign Kiosk.`,
+        // Mock Translation Engine for Demo
+        const symptomLower = currentPatient.selectedSymptom.toLowerCase();
+        let englishSymptom = currentPatient.selectedSymptom;
+        if (symptomLower.includes("మోకాళ్ళ") || symptomLower.includes("घुटनों")) englishSymptom = "bilateral knee joint pain and stiffness";
+        else if (symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने")) englishSymptom = "acute crushing chest pain radiating to left arm";
+        else if (symptomLower.includes("జ్వరం") || symptomLower.includes("बुखार")) englishSymptom = "high grade fever with chills";
+        else if (symptomLower.includes("కడుపు") || symptomLower.includes("पेट")) englishSymptom = "severe stomach pain and acid reflux";
+        else if (currentLanguage !== "en-IN") englishSymptom = "generalized pain and discomfort (translated from native audio)";
+
+        subjective: `${currentPatient.age}-year-old ${currentPatient.gender.toLowerCase()} presents with ${englishSymptom}. Elicited via MediKiosk Sovereign Kiosk.`,
+
         objective: `Clinical Vitals: [Pending In-Person Chamber Measurement]\nVoice-Elicited Intake: ${currentPatient.selectedSymptom}`,
         assessment: isEmergency ? "1. Acute Coronary Syndrome (ACS / STEMI / ICD-10 I21.0)\n2. Priority 1 Critical Resuscitation Alert" : "1. General OPD Evaluation & AYUSH Clinical Management",
         dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dosha Dusti" },
