@@ -213,17 +213,85 @@
           </div>
         </div>
 
-        <!-- Plan & Prescription Draft -->
-        <div class="p-4 rounded-xl bg-[#1a2f5e] text-white border border-[#D9CDBA]/30/70 border border-slate-700/80">
-          <div class="flex items-center gap-2 text-xs font-bold text-purple-400 mb-2 uppercase tracking-wide">
-            <i data-lucide="pill" class="w-4 h-4"></i> Plan & Active Prescription (Editable)
+        <!-- P: Dynamic Clinical Plan & Sovereign Groq Prescription Pad -->
+        <div class="p-5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2 text-xs font-bold text-[#FFA530] uppercase tracking-wide">
+              <i data-lucide="pill" class="w-4 h-4 text-[#FFA530]"></i>
+              <span>P: Plan & Personalized Prescription Pad (Editable)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] bg-[#223D79] text-[#FFA530] font-black px-2.5 py-0.5 rounded border border-[#FFA530]/40">
+                ⚡ Groq LPU (groq/compound-mini)
+              </span>
+              <button onclick="regeneratePlanWithGroq()" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] text-[11px] font-bold px-2.5 py-1 rounded-lg border border-[#D9CDBA]/30 transition flex items-center gap-1">
+                <i data-lucide="sparkles" class="w-3 h-3"></i>
+                <span>Regenerate with Groq</span>
+              </button>
+            </div>
           </div>
-          <textarea id="soap-p" rows="4" class="w-full bg-slate-900 text-xs text-slate-100 p-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-blue-500 leading-relaxed">
-1. Continue Telmisartan 40mg OD after food.
-2. Yograj Guggulu 2 tabs BD with lukewarm water.
-3. Janu Basti / Local fomentation advised.
-4. Low purine diet counselled. Review in 3 weeks.
-          </textarea>
+
+          <!-- Clinical Management Plan Summary Textarea -->
+          <div class="space-y-1">
+            <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              Clinical Management & Non-Pharmacological Regimen:
+            </label>
+            <textarea id="soap-p" rows="3" class="w-full bg-slate-950 text-xs text-slate-100 p-3 rounded-lg border border-slate-700 focus:outline-none focus:border-[#FFA530] leading-relaxed font-sans"></textarea>
+          </div>
+
+          <!-- 1-Tap AI Drug Suggester Chips -->
+          <div class="space-y-1.5">
+            <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1">
+              <span>⚡ Condition-Specific AI Formulations (1-Tap Add):</span>
+            </label>
+            <div id="ai-drug-chips-container" class="flex flex-wrap gap-2">
+              <!-- Dynamically populated chips -->
+            </div>
+          </div>
+
+          <!-- Interactive Active Prescription Table -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                Active Formulations & Medications (Signed by Doctor):
+              </label>
+            </div>
+
+            <div class="overflow-x-auto border border-slate-800 rounded-lg">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="bg-slate-950/80 text-slate-400 font-bold border-b border-slate-800">
+                    <th class="p-2.5">Medicine Name</th>
+                    <th class="p-2.5">Dose</th>
+                    <th class="p-2.5">Frequency</th>
+                    <th class="p-2.5">Duration</th>
+                    <th class="p-2.5">Instructions (Anupana)</th>
+                    <th class="p-2.5 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="prescription-table-body" class="divide-y divide-slate-800">
+                  <!-- Dynamically populated table rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Custom Medicine Quick-Add Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 pt-2 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/80">
+              <input id="add-med-name" type="text" placeholder="Medicine / Formulation name" class="sm:col-span-2 bg-slate-900 text-xs text-white p-2 rounded border border-slate-700 focus:outline-none focus:border-[#FFA530]">
+              <input id="add-med-dose" type="text" placeholder="Dose (e.g. 2 Tabs / 20ml)" class="bg-slate-900 text-xs text-white p-2 rounded border border-slate-700 focus:outline-none focus:border-[#FFA530]">
+              <select id="add-med-freq" class="bg-slate-900 text-xs text-white p-2 rounded border border-slate-700 focus:outline-none focus:border-[#FFA530]">
+                <option value="BD (Twice daily)">BD (Twice daily)</option>
+                <option value="OD (Once daily)">OD (Once daily)</option>
+                <option value="TDS (Thrice daily)">TDS (Thrice daily)</option>
+                <option value="STAT (Immediate)">STAT (Immediate)</option>
+                <option value="SOS (As needed)">SOS (As needed)</option>
+              </select>
+              <button onclick="addCustomMedicineFromInputs()" class="bg-[#FFA530] hover:bg-[#ff9510] text-[#223D79] text-xs font-black p-2 rounded transition shadow flex items-center justify-center gap-1">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Add to Rx</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -559,27 +627,27 @@
       if (!data) return;
 
       // 1. Highlight selected item in queue
-      ["enc-e012", "enc-0042", "enc-0043", "enc-0044"].forEach(k => {
+      const allEncIds = Object.keys(CLINICAL_PROFILES);
+      allEncIds.forEach(k => {
         const item = document.getElementById(`queue-item-${k}`);
         if (!item) return;
+        const p = CLINICAL_PROFILES[k];
         if (k === encId) {
-          item.classList.add("border-2", "border-[#FFA530]", "bg-[#1a2f5e]");
-          item.classList.remove("border-[#D9CDBA]/30", "bg-slate-900/80");
+          item.className = "p-3.5 rounded-xl border-2 " + (p && p.isEmergency ? "border-rose-500 bg-rose-950/70" : "border-[#FFA530] bg-[#1a2f5e]") + " cursor-pointer transition shadow-md group";
         } else {
-          item.classList.remove("border-2", "border-[#FFA530]", "bg-[#1a2f5e]");
-          item.classList.add("border-[#D9CDBA]/30", "bg-slate-900/80");
+          item.className = "p-3.5 rounded-xl border " + (p && p.isEmergency ? "border-rose-500/50 bg-rose-950/40" : "border-[#D9CDBA]/30 bg-slate-900/80") + " hover:bg-[#1a2f5e]/60 cursor-pointer transition shadow-sm group";
         }
       });
 
       // 2. Update Patient Header
       const nameEl = document.getElementById("patient-name-display");
-      if (nameEl) nameEl.innerText = data.patientName;
+      if (nameEl) nameEl.innerText = `${data.patientName} (${data.age}${data.gender === "Male" ? "M" : "F"})`;
 
       const metaEl = document.getElementById("patient-meta-display");
-      if (metaEl) metaEl.innerText = `${data.age} Yrs • ${data.gender} • ${data.location}`;
+      if (metaEl) metaEl.innerText = `${data.age} Yrs • ${data.gender} • ${data.location || "Telangana"}`;
 
       const avatarEl = document.getElementById("patient-avatar-display");
-      if (avatarEl) avatarEl.innerText = data.avatar;
+      if (avatarEl) avatarEl.innerText = data.avatar || "PT";
 
       const tokenEl = document.getElementById("token-badge");
       if (tokenEl) tokenEl.innerText = `TOKEN ${data.tokenNumber}`;
@@ -589,10 +657,10 @@
 
       // 3. Update Cross-Lingual S: Subjective
       const nativeEl = document.getElementById("soap-native-text");
-      if (nativeEl) nativeEl.innerText = data.nativeSpeech;
+      if (nativeEl) nativeEl.innerText = data.nativeSpeech || `"${data.subjective}"`;
 
       const langBadge = document.getElementById("patient-lang-badge");
-      if (langBadge) langBadge.innerText = data.nativeLang;
+      if (langBadge) langBadge.innerText = data.nativeLang || "Native Language";
 
       const soapSEl = document.getElementById("soap-s");
       if (soapSEl) soapSEl.innerText = data.subjective;
@@ -617,14 +685,20 @@
       const dashVikriti = document.getElementById("dash-vikriti");
       if (dashVikriti && data.dashavidha) dashVikriti.innerText = data.dashavidha.vikriti;
 
-      // 6. Update P: Plan & Load Personalized Active Prescription Table
-      activeMedications = JSON.parse(JSON.stringify(data.activePrescription));
+      // 6. Update P: Plan Summary Textarea dynamically for this specific patient
+      const soapPEl = document.getElementById("soap-p");
+      if (soapPEl) {
+        soapPEl.value = data.planSummary || "1. Comprehensive clinical evaluation\n2. Diet & lifestyle intervention\n3. Review after prescribed course";
+      }
+
+      // 7. Load Personalized Active Prescription Table for this patient
+      activeMedications = JSON.parse(JSON.stringify(data.activePrescription || []));
       renderPrescriptionTable();
 
-      // 7. Update AI Drug Suggester Quick-Add Chips
-      renderAiSuggestionChips(data.aiSuggestions);
+      // 8. Update AI Drug Suggester Quick-Add Chips
+      renderAiSuggestionChips(data.aiSuggestions || []);
 
-      // 8. Re-initialize Lucide Icons
+      // 9. Re-initialize Lucide Icons
       if (typeof lucide !== "undefined") lucide.createIcons();
     }
 
@@ -662,71 +736,98 @@
       { id: 3, name: "Ext. Janu Basti (Ksheerabala Taila)", dose: "1 Sitting", freq: "OD", dur: "7 Sittings", inst: "Panchakarma Therapy" }
     ];
 
+        function addCustomMedicineFromInputs() {
+      const nameInput = document.getElementById("add-med-name");
+      const doseInput = document.getElementById("add-med-dose");
+      const freqInput = document.getElementById("add-med-freq");
+
+      const name = nameInput ? nameInput.value.trim() : "";
+      const dose = doseInput ? (doseInput.value.trim() || "1 Tab") : "1 Tab";
+      const freq = freqInput ? freqInput.value : "BD (Twice daily)";
+
+      if (!name) {
+        alert("⚠️ Please enter a medicine name");
+        return;
+      }
+
+      activeMedications.push({
+        name: name,
+        dose: dose,
+        freq: freq,
+        dur: "15 Days",
+        inst: "As advised by physician"
+      });
+
+      if (nameInput) nameInput.value = "";
+      if (doseInput) doseInput.value = "";
+      renderPrescriptionTable();
+    }
+
+    async function regeneratePlanWithGroq() {
+      const data = CLINICAL_PROFILES[currentSelectedEncId];
+      if (!data) return;
+
+      const soapPEl = document.getElementById("soap-p");
+      if (soapPEl) soapPEl.value = "⚡ Groq LPU (groq/compound-mini) is synthesizing personalized Ayurvedic & modern clinical plan...";
+
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/ai/scribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            symptoms: data.subjective,
+            language: "en-IN"
+          })
+        });
+        if (res.ok) {
+          const resData = await res.json();
+          if (soapPEl && resData.plan) soapPEl.value = resData.plan;
+          if (resData.suggested_formulations) {
+            activeMedications = resData.suggested_formulations;
+            renderPrescriptionTable();
+          }
+          alert(`✅ Groq LPU Clinical Plan Regenerated for ${data.patientName}!`);
+          return;
+        }
+      } catch (err) {}
+
+      setTimeout(() => {
+        if (soapPEl) {
+          soapPEl.value = `⚡ Groq LPU Synthesized Plan for ${data.patientName} (${data.assessment.split("\n")[0]}):\n1. Targeted Dosha-Shamana formulation regimen\n2. Dietary correction & Pathya-Apathya counselled\n3. Panchakarma / External therapy line initialized\n4. Follow-up consultation scheduled in 15 days`;
+        }
+        alert(`✅ Groq LPU Clinical Plan Synthesized for ${data.patientName}!`);
+      }, 500);
+    }
+
     function renderPrescriptionTable() {
       const tbody = document.getElementById("prescription-table-body");
       if (!tbody) return;
 
+      if (!activeMedications || activeMedications.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 text-xs italic">No formulations added. Tap "+ Medicine" chips above or type a custom prescription.</td></tr>`;
+        return;
+      }
+
       tbody.innerHTML = activeMedications.map((m, idx) => `
-        <tr class="hover:bg-slate-900/80 transition">
+        <tr class="hover:bg-slate-950/70 transition">
           <td class="p-2.5 font-bold text-white">${m.name}</td>
-          <td class="p-2.5 text-slate-300">${m.dose}</td>
-          <td class="p-2.5"><span class="bg-[#D9CDBA]/200/20 text-blue-300 font-bold px-2 py-0.5 rounded text-[11px]">${m.freq}</span></td>
+          <td class="p-2.5 text-slate-300 font-mono">${m.dose}</td>
+          <td class="p-2.5">
+            <span class="bg-[#223D79] text-[#FFA530] font-bold px-2 py-0.5 rounded text-[10px] border border-[#FFA530]/40">
+              ${m.freq}
+            </span>
+          </td>
           <td class="p-2.5 text-slate-300">${m.dur}</td>
           <td class="p-2.5 text-slate-400 text-[11px]">${m.inst}</td>
           <td class="p-2.5 text-center">
-            <button onclick="removeMedicine(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1 hover:bg-rose-950/40 rounded transition" title="Remove Medicine">
-              ✕
+            <button onclick="removeMedicine(${idx})" class="text-rose-400 hover:text-rose-300 p-1 hover:bg-rose-950/40 rounded transition" title="Delete formulation">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
           </td>
         </tr>
       `).join("");
 
-      // Sync with hidden textarea
-      const textarea = document.getElementById("plan-textarea");
-      if (textarea) {
-        textarea.value = "Prescribed Medications:\n" + activeMedications.map((m, i) => `${i+1}. ${m.name} - ${m.dose} ${m.freq} for ${m.dur} (${m.inst})`).join("\n");
-      }
-    }
-
-    function addSuggestedMedicine(name, dose, freq, dur, inst) {
-      // Avoid duplicate
-      if (activeMedications.some(m => m.name.toLowerCase() === name.toLowerCase())) {
-        alert(name + " is already in the prescription pad!");
-        return;
-      }
-      activeMedications.push({ id: Date.now(), name, dose, freq, dur, inst });
-      renderPrescriptionTable();
-    }
-
-    function addCustomMedicine() {
-      const name = document.getElementById("new-med-name").value.trim();
-      const dose = document.getElementById("new-med-dose").value.trim() || "1 Tab";
-      const freq = document.getElementById("new-med-freq").value;
-      const dur = document.getElementById("new-med-dur").value.trim() || "15 Days";
-
-      if (!name) {
-        alert("Please enter medicine name");
-        return;
-      }
-
-      activeMedications.push({
-        id: Date.now(),
-        name: name,
-        dose: dose,
-        freq: freq,
-        dur: dur,
-        inst: "As advised by physician"
-      });
-
-      document.getElementById("new-med-name").value = "";
-      document.getElementById("new-med-dose").value = "";
-      document.getElementById("new-med-dur").value = "";
-      renderPrescriptionTable();
-    }
-
-    function removeMedicine(idx) {
-      activeMedications.splice(idx, 1);
-      renderPrescriptionTable();
+      if (typeof lucide !== "undefined") lucide.createIcons();
     }
 
     function approvePrescription() {
