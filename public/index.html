@@ -542,7 +542,7 @@
   </main>
 
   <script>
-        // Complete Multilingual Dictionary with Native Scripts and Spoken Prompts
+    // Complete Multilingual Dictionary with Native Scripts and Spoken Prompts
     const I18N = {
       "en-IN": {
         langName: "English",
@@ -696,29 +696,437 @@
         nextPatBtn: "अगला मरीज शुरू करें",
         listenBtn: "सुनें",
         scanSuccessVoice: "ABHA कार्ड सफलतापूर्वक सत्यापित हुआ। रमेश चंद्र, बावन वर्ष। आयुष्मान भारत सक्रिय है।"
-      }
+      },
+      "ta-IN": { langName: "தமிழ்", welcomeVoice: "தமிழ் தேர்ந்தெடுக்கப்பட்டது. அடையாளம் காணும் முறையைத் தேர்ந்தெடுக்கவும்." },
+      "kn-IN": { langName: "ಕನ್ನಡ", welcomeVoice: "ಕನ್ನಡ ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಗುರುತಿನ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ." },
+      "mr-IN": { langName: "मराठी", welcomeVoice: "मराठी निवडली आहे. कृपया ओळख पद्धत निवडा." },
+      "bn-IN": { langName: "বাংলা", welcomeVoice: "বাংলা নির্বাচিত হয়েছে। অনুগ্রহ করে সনাক্তকরণ পদ্ধতি বেছে নিন।" },
+      "gu-IN": { langName: "ગુજરાતી", welcomeVoice: "ગુજરાતી પસંદ કરવામાં આવી છે. કૃપા કરીને ઓળખ પદ્ધતિ પસંદ કરો." }
     };
 
-    let isVoiceActive = true; // Started by default!
+    let currentLanguage = "en-IN";
+    let isVoiceActive = true;
     let currentAudioPlayer = null;
+    let availableVoices = [];
 
-    function stopAllAudio() {
-      if (currentAudioPlayer) {
-        currentAudioPlayer.pause();
-        currentAudioPlayer.currentTime = 0;
-        currentAudioPlayer = null;
-      }
+    function initVoices() {
       if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
+        availableVoices = window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+          availableVoices = window.speechSynthesis.getVoices();
+        };
+      }
+    }
+    initVoices();
+
+    // Strict Linear Navigation Controller
+    const screenOrder = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
+    let currentScreenIndex = 0;
+
+    function navigateToStep(targetIndex) {
+      if (targetIndex < currentScreenIndex) {
+        goToScreen(screenOrder[targetIndex]);
       }
     }
 
+    function goBackScreen() {
+      if (currentScreenIndex > 0) {
+        goToScreen(screenOrder[currentScreenIndex - 1]);
+      }
+    }
+
+    function goToScreen(screenId) {
+      stopCameraStream();
+      currentScreenIndex = screenOrder.indexOf(screenId);
+      screenOrder.forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add("hidden");
+      });
+      const target = document.getElementById(screenId);
+      if (target) target.classList.remove("hidden");
+
+      updateStepBadges();
+
+      const backBtn = document.getElementById("btn-header-back");
+      if (backBtn) {
+        if (screenId === "screen-language") {
+          backBtn.classList.add("hidden");
+        } else {
+          backBtn.classList.remove("hidden");
+        }
+      }
+      window.scrollTo(0, 0);
+    }
+
+    function updateStepBadges() {
+      for (let i = 0; i < 5; i++) {
+        const badge = document.getElementById(`step-badge-${i + 1}`);
+        if (!badge) continue;
+
+        if (i < currentScreenIndex) {
+          badge.className = "px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold cursor-pointer transition";
+          badge.title = "Click to go back to this step";
+        } else if (i === currentScreenIndex) {
+          badge.className = "px-2.5 py-1 rounded bg-blue-700 text-white font-bold shadow-sm";
+          badge.title = "Current step";
+        } else {
+          badge.className = "px-2.5 py-1 rounded bg-slate-100 text-slate-400 opacity-50 cursor-not-allowed";
+          badge.title = "Complete current step to unlock";
+        }
+      }
+    }
+
+    // Dynamic Patient State
+    let currentPatient = {
+      isVerified: false,
+      name: "Ramesh Chandra",
+      age: 52,
+      gender: "Male",
+      phone: "+91 98765 43210",
+      authMethod: "ABHA Scan & Share",
+      abhaId: "91-4829-1029-4821",
+      abhaAddress: "ramesh.chandra@abdm",
+      hasPmjay: true,
+      selectedSymptom: "Bilateral knee joint pain with crepitus",
+      tokenNumber: "#042",
+      consentGranted: false
+    };
+
+    function setLang(langCode) {
+      currentLanguage = langCode;
+      const dict = I18N[langCode] || I18N["en-IN"] || I18N["te-IN"];
+      
+      function setTxt(id, val) {
+        const el = document.getElementById(id);
+        if (el && val) el.innerText = val;
+      }
+
+      // Screen 2 Complete Dynamic Localization
+      setTxt("lbl-identify-title", dict.identifyTitle);
+      setTxt("lbl-identify-sub", dict.identifySub);
+      setTxt("opt-qr-title", dict.optQrTitle);
+      setTxt("opt-qr-sub", dict.optQrSub);
+      setTxt("opt-mob-title", dict.optMobTitle);
+      setTxt("opt-mob-sub", dict.optMobSub);
+      setTxt("opt-abha-title", dict.optAbhaTitle);
+      setTxt("opt-abha-sub", dict.optAbhaSub);
+      setTxt("opt-aadh-title", dict.optAadhTitle);
+      setTxt("opt-aadh-sub", dict.optAadhSub);
+      setTxt("btn-txt-opencam", dict.btnOpenCam);
+      setTxt("btn-txt-verifymob", dict.btnVerifyMob);
+      setTxt("btn-txt-fetchabha", dict.btnFetchAbha);
+      setTxt("btn-txt-verifyaadh", dict.btnVerifyAadh);
+      setTxt("pat-name", dict.patName);
+      setTxt("pat-meta", dict.patMeta);
+      setTxt("btn-proceed-voice", dict.continueVoiceBtn);
+      setTxt("lbl-header-back", dict.langName === "English" ? "Back" : "వెనుకకు • Back");
+
+      // Screen 3
+      setTxt("ai-question", dict.aiQuestion);
+      setTxt("ai-question-sub", dict.aiQuestionSub);
+      setTxt("sym-knee-title", dict.kneeTitle);
+      setTxt("sym-chest-title", dict.chestTitle);
+      setTxt("sym-fever-title", dict.feverTitle);
+      setTxt("sym-stomach-title", dict.stomachTitle);
+      setTxt("mic-label", dict.micLabel);
+      setTxt("btn-next-scan", dict.nextScanBtn);
+
+      // Screen 4 & 5
+      setTxt("lbl-scan-rx-title", dict.scanRxTitle);
+      setTxt("lbl-scan-rx-sub", dict.scanRxSub);
+      setTxt("btn-scan-rx-act", dict.scanRxAct);
+      setTxt("lbl-ocr-head", dict.ocrHead);
+      setTxt("btn-confirm-token", dict.confirmTokenBtn);
+      setTxt("lbl-token-done", dict.tokenDone);
+      setTxt("lbl-token-sub", dict.tokenSub);
+      setTxt("lbl-token-msg", dict.tokenMsg);
+      setTxt("btn-next-pat", dict.nextPatBtn);
+      setTxt("lbl-pmjay-title", dict.pmjayTitle);
+      setTxt("lbl-pmjay-desc", dict.pmjayDesc);
+
+      // Speak confirmation & advance to Screen 2
+      speakAudio(dict.welcomeVoice);
+      goToScreen("screen-identify");
+    }
+
+    function selectAuthMethod(methodKey) {
+      ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
+        const card = document.getElementById(`card-auth-${k}`);
+        const panel = document.getElementById(`auth-panel-${k}`);
+        if (!card || !panel) return;
+
+        if (k === methodKey) {
+          card.className = "p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition";
+          const badge = card.querySelector("span:last-child");
+          if (badge) {
+            badge.className = "text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full shadow-sm";
+            badge.innerText = currentLanguage === "en-IN" ? "✓ Selected" : "✓ ఎంచుకోబడింది";
+          }
+          panel.classList.remove("hidden");
+        } else {
+          card.className = "p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100";
+          const badge = card.querySelector("span:last-child");
+          if (badge) {
+            badge.className = "text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full";
+            badge.innerText = currentLanguage === "en-IN" ? "Select" : "ఎంచుకోండి";
+          }
+          panel.classList.add("hidden");
+        }
+      });
+
+      if (methodKey !== "qr") {
+        stopCameraStream();
+      }
+    }
+
+    function fillSampleMobile() {
+      const el = document.getElementById("input-mobile");
+      if (el) el.value = "9876543210";
+    }
+
+    function verifyByMobile() {
+      const mob = document.getElementById("input-mobile")?.value.trim() || "9876543210";
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "Mobile OTP (+91 " + mob + ")";
+      applyVerifiedPatientUI();
+    }
+
+    function verifyByAbhaId() {
+      const abha = document.getElementById("input-abha-id")?.value.trim() || "91-4829-1029-4821";
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "14-Digit ABHA ID";
+      currentPatient.abhaId = abha;
+      applyVerifiedPatientUI();
+    }
+
+    function verifyByAadhaar() {
+      const aadh = document.getElementById("input-aadhaar")?.value.trim() || "8920-1920-4821";
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "UIDAI Aadhaar e-KYC";
+      applyVerifiedPatientUI();
+    }
+
+    function verifyDemoPatient(method) {
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "ABHA Scan & Share";
+      applyVerifiedPatientUI();
+    }
+
+    function applyVerifiedPatientUI() {
+      const statusBadge = document.getElementById("badge-auth-status");
+      if (statusBadge) {
+        statusBadge.className = "text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300";
+        statusBadge.innerText = "✓ ABDM Verified";
+      }
+      const dict = I18N[currentLanguage] || I18N["en-IN"];
+      const patNameEl = document.getElementById("pat-name");
+      if (patNameEl) patNameEl.innerText = dict.patName || currentPatient.name;
+      const patMetaEl = document.getElementById("pat-meta");
+      if (patMetaEl) patMetaEl.innerText = dict.patMeta || `${currentPatient.age} Yrs • ${currentPatient.gender} • Khammam, Telangana`;
+
+      const authMethodEl = document.getElementById("pat-auth-method");
+      if (authMethodEl) authMethodEl.innerText = currentPatient.authMethod;
+      const abhaIdEl = document.getElementById("pat-abha-id");
+      if (abhaIdEl) abhaIdEl.innerText = currentPatient.abhaId;
+      const abhaAddrEl = document.getElementById("pat-abha-addr");
+      if (abhaAddrEl) abhaAddrEl.innerText = currentPatient.abhaAddress;
+
+      speakAudio(dict.scanSuccessVoice);
+    }
+
+    function showDpdpaConsentModal() {
+      const modal = document.getElementById("modal-dpdpa-consent");
+      if (!modal) {
+        goToScreen("screen-voice");
+        return;
+      }
+
+      const consentText = {
+        "te-IN": "మీ ఆరోగ్య సమాచారాన్ని డాక్టర్ సంప్రదింపుల కోసం మాత్రమే ఉపయోగించడానికి మీరు సమ్మతిస్తున్నారా?",
+        "hi-IN": "क्या आप अपनी स्वास्थ्य जानकारी डॉक्टर परामर्श के लिए उपयोग करने की सहमति देते हैं?",
+        "en-IN": "Do you consent to share your health records with the consulting doctor under DPDPA 2023?"
+      };
+
+      const promptMsg = consentText[currentLanguage] || consentText["en-IN"];
+      const el = document.getElementById("consent-voice-text");
+      if (el) el.innerText = `"${promptMsg}"`;
+
+      modal.classList.remove("hidden");
+      speakAudio(promptMsg);
+    }
+
+    function acceptConsentAndProceed() {
+      const modal = document.getElementById("modal-dpdpa-consent");
+      if (modal) modal.classList.add("hidden");
+      currentPatient.consentGranted = true;
+      goToScreen("screen-voice");
+    }
+
+    function rejectConsent() {
+      const modal = document.getElementById("modal-dpdpa-consent");
+      if (modal) modal.classList.add("hidden");
+      alert("Consent is required under DPDPA 2023 to proceed with digital OPD intake.");
+    }
+
+    function proceedToVoiceIntake() {
+      if (!currentPatient.isVerified) {
+        verifyDemoPatient("qr");
+      }
+      showDpdpaConsentModal();
+    }
+
+    // Live Camera & Real jsQR Decoder
+    let activeMediaStream = null;
+
+    async function startAbhaCamera() {
+      const placeholder = document.getElementById("qr-placeholder");
+      const viewfinder = document.getElementById("camera-viewfinder-abha");
+      const video = document.getElementById("video-abha");
+      const btnStart = document.getElementById("btn-scan-action");
+
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false
+          });
+          activeMediaStream = stream;
+
+          if (placeholder) placeholder.classList.add("hidden");
+          if (viewfinder) viewfinder.classList.remove("hidden");
+          if (btnStart) btnStart.classList.add("hidden");
+
+          video.srcObject = stream;
+          video.setAttribute("playsinline", "true");
+          video.setAttribute("autoplay", "true");
+          video.muted = true;
+          
+          video.onloadedmetadata = function() {
+            video.play().catch(e => console.log(e));
+            startQrCodeFrameDetection();
+          };
+          await video.play().catch(e => console.log(e));
+        } else {
+          captureAndVerifyAbha();
+        }
+      } catch (err) {
+        console.error("Camera access error:", err);
+        captureAndVerifyAbha();
+      }
+    }
+
+    function startQrCodeFrameDetection() {
+      const video = document.getElementById("video-abha");
+      const canvas = document.getElementById("qr-canvas");
+      if (!canvas || !video) return;
+      const ctx = canvas.getContext("2d");
+
+      function checkFrame() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA && typeof jsQR !== "undefined") {
+          canvas.height = video.videoHeight;
+          canvas.width = video.videoWidth;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+          if (code && code.data) {
+            console.log("Real QR code scanned:", code.data);
+            captureAndVerifyAbha();
+            return;
+          }
+        }
+        if (activeMediaStream) {
+          requestAnimationFrame(checkFrame);
+        }
+      }
+      requestAnimationFrame(checkFrame);
+    }
+
+    function captureAndVerifyAbha() {
+      stopCameraStream();
+      const placeholder = document.getElementById("qr-placeholder");
+      const viewfinder = document.getElementById("camera-viewfinder-abha");
+      const btnStart = document.getElementById("btn-scan-action");
+
+      if (viewfinder) viewfinder.classList.add("hidden");
+      if (placeholder) placeholder.classList.remove("hidden");
+      if (btnStart) {
+        btnStart.classList.remove("hidden");
+        btnStart.className = "w-full bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
+        btnStart.innerHTML = `<span>✓ ${currentLanguage === "en-IN" ? "ABHA Verified" : "ఆభా వెరిఫై చేయబడింది"}</span>`;
+      }
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "Live QR Scanned";
+      applyVerifiedPatientUI();
+    }
+
+    async function startRxCamera() {
+      const placeholder = document.getElementById("rx-placeholder");
+      const viewfinder = document.getElementById("camera-viewfinder-rx");
+      const video = document.getElementById("video-rx");
+      const btnStart = document.getElementById("btn-scan-rx-act");
+      const btnCapture = document.getElementById("btn-capture-rx");
+
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+            audio: false
+          });
+          activeMediaStream = stream;
+
+          if (placeholder) placeholder.classList.add("hidden");
+          if (viewfinder) viewfinder.classList.remove("hidden");
+          if (btnStart) btnStart.classList.add("hidden");
+          if (btnCapture) btnCapture.classList.remove("hidden");
+
+          video.srcObject = stream;
+          video.setAttribute("playsinline", "true");
+          video.setAttribute("autoplay", "true");
+          video.muted = true;
+          video.onloadedmetadata = () => video.play().catch(e => console.log(e));
+          await video.play().catch(e => console.log(e));
+        } else {
+          captureAndOcrRx();
+        }
+      } catch (err) {
+        captureAndOcrRx();
+      }
+    }
+
+    function captureAndOcrRx() {
+      stopCameraStream();
+      const placeholder = document.getElementById("rx-placeholder");
+      const viewfinder = document.getElementById("camera-viewfinder-rx");
+      const btnStart = document.getElementById("btn-scan-rx-act");
+      const btnCapture = document.getElementById("btn-capture-rx");
+
+      if (viewfinder) viewfinder.classList.add("hidden");
+      if (placeholder) placeholder.classList.remove("hidden");
+      if (btnCapture) btnCapture.classList.add("hidden");
+      if (btnStart) {
+        btnStart.classList.remove("hidden");
+        btnStart.className = "w-full bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
+        btnStart.innerHTML = `<span>✓ ${currentLanguage === "en-IN" ? "Prescription Digitized" : "ప్రిస్క్రిప్షన్ ఎక్స్‌ట్రాక్ట్ చేయబడింది"}</span>`;
+      }
+
+      const dict = I18N[currentLanguage] || I18N["en-IN"];
+      speakAudio(dict.ocrSuccessVoice);
+    }
+
+    function stopCameraStream() {
+      if (activeMediaStream) {
+        activeMediaStream.getTracks().forEach(t => t.stop());
+        activeMediaStream = null;
+      }
+    }
+
+    // Audio Engine & Voice Toggle
     function toggleVoiceAudio() {
       isVoiceActive = !isVoiceActive;
       const btn = document.getElementById("btn-voice-toggle");
-      
       if (isVoiceActive) {
-        // Voice is now active -> Show Stop Voice option
         if (btn) {
           btn.className = "bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm";
           btn.innerHTML = `
@@ -730,7 +1138,6 @@
         }
         speakCurrentScreen();
       } else {
-        // Voice is now stopped -> Show Start Voice option & silence immediately
         stopAllAudio();
         if (btn) {
           btn.className = "bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm";
@@ -743,12 +1150,20 @@
       }
     }
 
-    async function speakAudio(text) {
-      if (!isVoiceActive) {
-        return; // Zero audio plays when stopped!
+    function stopAllAudio() {
+      if (currentAudioPlayer) {
+        currentAudioPlayer.pause();
+        currentAudioPlayer.currentTime = 0;
+        currentAudioPlayer = null;
       }
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
 
-      // 1. Try Live Sarvam AI Bulbul Sovereign Voice via Gateway Proxy
+    async function speakAudio(text) {
+      if (!isVoiceActive || !text) return;
+
       try {
         stopAllAudio();
         const res = await fetch("http://localhost:8000/api/v1/ai/tts", {
@@ -765,10 +1180,9 @@
           }
         }
       } catch (err) {
-        console.warn("Falling back to local speech synthesis:", err);
+        console.warn("Falling back to browser speech synthesis:", err);
       }
 
-      // 2. Fallback to browser SpeechSynthesis
       if ("speechSynthesis" in window && isVoiceActive) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
@@ -796,48 +1210,136 @@
       if (visible.id === "screen-scan") speakAudio(dict.scanRxTitle);
       if (visible.id === "screen-token") speakAudio(dict.tokenVoice);
     }
+
+    // Symptom Handling & Speech-to-Text
+    function handleSymptomSelect(symptomKey) {
+      const dict = I18N[currentLanguage] || I18N["en-IN"];
+      if (symptomKey === "knee") {
+        document.getElementById("transcription-text").innerText = `"${dict.kneeTitle}"`;
+        currentPatient.selectedSymptom = dict.kneeTitle;
+        speakAudio(dict.kneeVoice);
+      } else if (symptomKey === "chest") {
+        document.getElementById("transcription-text").innerText = `"${dict.chestTitle}"`;
+        currentPatient.selectedSymptom = dict.chestTitle;
+        document.getElementById("red-flag-banner")?.classList.remove("hidden");
+        speakAudio(dict.chestVoice);
+      } else if (symptomKey === "fever") {
+        document.getElementById("transcription-text").innerText = `"${dict.feverTitle}"`;
+        currentPatient.selectedSymptom = dict.feverTitle;
+        speakAudio(dict.feverVoice);
+      } else if (symptomKey === "stomach") {
+        document.getElementById("transcription-text").innerText = `"${dict.stomachTitle}"`;
+        currentPatient.selectedSymptom = dict.stomachTitle;
+        speakAudio(dict.stomachVoice);
+      }
+    }
+
+    let recognition = null;
+    let isRecording = false;
+
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onresult = async function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("transcription-text").innerText = `"${transcript}"`;
+        currentPatient.selectedSymptom = transcript;
+        speakAudio(transcript);
+      };
+
+      recognition.onend = function() {
+        isRecording = false;
+        document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
+        document.getElementById("mic-btn")?.classList.add("bg-blue-700");
+      };
+    }
+
+    function toggleMicRecording() {
+      if (!recognition) {
+        handleSymptomSelect("knee");
+        return;
+      }
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        recognition.lang = currentLanguage;
+        recognition.start();
+        isRecording = true;
+        document.getElementById("mic-btn")?.classList.add("pulse-mic", "bg-red-600");
+        document.getElementById("mic-btn")?.classList.remove("bg-blue-700");
+      }
+    }
+
+    function runOcrScan() {
+      const dict = I18N[currentLanguage] || I18N["en-IN"];
+      speakAudio(dict.ocrSuccessVoice);
+    }
+
+    async function generateDynamicTokenAndRegister() {
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/doctor/encounter/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            patient_name: currentPatient.name,
+            age: currentPatient.age,
+            gender: currentPatient.gender,
+            identifier_type: currentPatient.authMethod,
+            identifier_value: currentPatient.abhaId,
+            symptoms: currentPatient.selectedSymptom,
+            language: currentLanguage
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.token_number) currentPatient.tokenNumber = data.token_number;
+        }
+      } catch (err) {
+        const num = Math.floor(42 + (Date.now() % 50));
+        currentPatient.tokenNumber = `#${num.toString().padStart(3, "0")}`;
+      }
+
+      const tokenDisplay = document.querySelector("#screen-token .text-6xl");
+      if (tokenDisplay) tokenDisplay.innerText = currentPatient.tokenNumber;
+
+      const dict = I18N[currentLanguage] || I18N["en-IN"];
+      const spokenMsg = (dict.tokenVoice || "Your intake is complete. Token number 42.").replace("42", currentPatient.tokenNumber.replace("#", ""));
+      speakAudio(spokenMsg);
+      goToScreen("screen-token");
+    }
+
+    function printOpdSlip() {
+      window.print();
+    }
+
+    function purgeAndRestartIntake() {
+      stopAllAudio();
+      stopCameraStream();
+      currentPatient = {
+        isVerified: false,
+        name: "Ramesh Chandra",
+        age: 52,
+        gender: "Male",
+        phone: "+91 98765 43210",
+        authMethod: "ABHA Scan & Share",
+        abhaId: "91-4829-1029-4821",
+        abhaAddress: "ramesh.chandra@abdm",
+        hasPmjay: true,
+        selectedSymptom: "Bilateral knee joint pain with crepitus",
+        tokenNumber: "#042",
+        consentGranted: false
+      };
+      const statusBadge = document.getElementById("badge-auth-status");
+      if (statusBadge) {
+        statusBadge.className = "text-[11px] bg-slate-100 text-slate-600 font-bold px-2.5 py-0.5 rounded-full border border-slate-200";
+        statusBadge.innerText = "Pending Verification";
+      }
+      document.getElementById("red-flag-banner")?.classList.add("hidden");
+      goToScreen("screen-language");
+    }
   </script>
-  <!-- DPDPA 2023 Audio-Guided Consent Modal (PRD FR-D3) -->
-  <div id="modal-dpdpa-consent" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 space-y-5 shadow-2xl border-2 border-blue-600 animate-[scaleIn_0.2s_ease-out]">
-      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-        <div class="flex items-center space-x-2">
-          <span class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm">✓</span>
-          <h3 class="font-extrabold text-slate-900 text-base">DPDPA 2023 డిజిటల్ సమ్మతి • Digital Health Consent</h3>
-        </div>
-        <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded-full">Sec. 6(1) Compliant</span>
-      </div>
-
-      <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
-        <p class="font-bold text-slate-900 flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-          ఆడియో సమ్మతి ప్రాంప్ట్ (Spoken Consent Prompt):
-        </p>
-        <p id="consent-voice-text" class="text-slate-700 italic bg-white p-3 rounded-xl border border-slate-200">
-          "మీ ఆరోగ్య సమాచారాన్ని (ABHA, లక్షణాలు, పాత ప్రిస్క్రిప్షన్లు) డాక్టర్ సంప్రదింపుల కోసం మాత్రమే ఉపయోగించడానికి మీరు సమ్మతిస్తున్నారా?"
-        </p>
-        <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-          <span>Purpose: OPD Care & Treatment</span>
-          <span>Validity: 24 Hours (Single Encounter)</span>
-        </div>
-      </div>
-
-      <div class="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900 space-y-1">
-        <div class="flex items-center justify-between font-mono text-[10px]">
-          <span class="font-bold">Consent Artifact Hash (SHA-256):</span>
-          <span id="consent-sha256" class="text-blue-700">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span>
-        </div>
-      </div>
-
-      <div class="flex gap-3 pt-2">
-        <button onclick="rejectConsent()" class="w-1/3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-4 rounded-xl text-xs transition">
-          తిరస్కరించండి • Deny
-        </button>
-        <button onclick="acceptConsentAndProceed()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs sm:text-sm transition shadow flex items-center justify-center gap-2">
-          <span>సమ్మతిస్తున్నాను • Consent Granted ➔</span>
-        </button>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
