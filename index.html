@@ -43,15 +43,15 @@
       </button>
 
       <div class="hidden xl:flex items-center space-x-1.5 text-[11px] font-bold text-slate-600">
-        <button onclick="goToScreen('screen-language')" id="step-badge-1" class="px-2.5 py-1 rounded bg-blue-700 text-white">1. Lang</button>
+        <button onclick="navigateToStep(0)" id="step-badge-1" class="px-2.5 py-1 rounded bg-blue-700 text-white transition">1. Lang</button>
         <span class="text-slate-300">➔</span>
-        <button onclick="goToScreen('screen-identify')" id="step-badge-2" class="px-2.5 py-1 rounded bg-slate-200 text-slate-700">2. ID</button>
+        <button onclick="navigateToStep(1)" id="step-badge-2" class="px-2.5 py-1 rounded bg-slate-200 text-slate-400 opacity-60 cursor-not-allowed transition">2. ID</button>
         <span class="text-slate-300">➔</span>
-        <button onclick="goToScreen('screen-voice')" id="step-badge-3" class="px-2.5 py-1 rounded bg-slate-200 text-slate-700">3. Voice</button>
+        <button onclick="navigateToStep(2)" id="step-badge-3" class="px-2.5 py-1 rounded bg-slate-200 text-slate-400 opacity-60 cursor-not-allowed transition">3. Voice</button>
         <span class="text-slate-300">➔</span>
-        <button onclick="goToScreen('screen-scan')" id="step-badge-4" class="px-2.5 py-1 rounded bg-slate-200 text-slate-700">4. Scan</button>
+        <button onclick="navigateToStep(3)" id="step-badge-4" class="px-2.5 py-1 rounded bg-slate-200 text-slate-400 opacity-60 cursor-not-allowed transition">4. Scan</button>
         <span class="text-slate-300">➔</span>
-        <button onclick="goToScreen('screen-token')" id="step-badge-5" class="px-2.5 py-1 rounded bg-slate-200 text-slate-700">5. Token</button>
+        <button onclick="navigateToStep(4)" id="step-badge-5" class="px-2.5 py-1 rounded bg-slate-200 text-slate-400 opacity-60 cursor-not-allowed transition">5. Token</button>
       </div>
     </div>
 
@@ -794,9 +794,17 @@
     }
 
 
-    // Navigation History Stack
+    // Strict Linear Navigation Controller
     const screenOrder = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
     let currentScreenIndex = 0;
+
+    // Only allow navigating backward to previously visited steps
+    function navigateToStep(targetIndex) {
+      if (targetIndex < currentScreenIndex) {
+        goToScreen(screenOrder[targetIndex]);
+      }
+      // Strictly prevent jumping forward into uncompleted sections
+    }
 
     function goBackScreen() {
       if (currentScreenIndex > 0) {
@@ -807,9 +815,15 @@
     function goToScreen(screenId) {
       currentScreenIndex = screenOrder.indexOf(screenId);
       const screens = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
-      screens.forEach(s => document.getElementById(s).classList.add("hidden"));
-      document.getElementById(screenId).classList.remove("hidden");
-      updateStepBadges(screenId);
+      screens.forEach(s => {
+        const el = document.getElementById(s);
+        if (el) el.classList.add("hidden");
+      });
+      const target = document.getElementById(screenId);
+      if (target) target.classList.remove("hidden");
+
+      updateStepBadges();
+
       const backBtn = document.getElementById("btn-header-back");
       if (backBtn) {
         if (screenId === "screen-language") {
@@ -821,20 +835,25 @@
       window.scrollTo(0, 0);
     }
 
-    function updateStepBadges(screenId) {
-      const mapping = {
-        "screen-language": "step-badge-1",
-        "screen-identify": "step-badge-2",
-        "screen-voice": "step-badge-3",
-        "screen-scan": "step-badge-4",
-        "screen-token": "step-badge-5"
-      };
-      for (let i = 1; i <= 5; i++) {
-        const badge = document.getElementById(`step-badge-${i}`);
-        badge.className = "px-3 py-1.5 rounded-md bg-slate-200 text-slate-700";
+    function updateStepBadges() {
+      for (let i = 0; i < 5; i++) {
+        const badge = document.getElementById(`step-badge-${i + 1}`);
+        if (!badge) continue;
+
+        if (i < currentScreenIndex) {
+          // Completed past step: Clickable to go back
+          badge.className = "px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold cursor-pointer transition";
+          badge.title = "Click to go back to this step";
+        } else if (i === currentScreenIndex) {
+          // Active current step: Highlighted Blue
+          badge.className = "px-2.5 py-1 rounded bg-blue-700 text-white font-bold shadow-sm";
+          badge.title = "Current step";
+        } else {
+          // Future uncompleted step: Disabled / Not clickable
+          badge.className = "px-2.5 py-1 rounded bg-slate-100 text-slate-400 opacity-50 cursor-not-allowed";
+          badge.title = "Complete current step to unlock";
+        }
       }
-      const active = document.getElementById(mapping[screenId]);
-      if (active) active.className = "px-3 py-1.5 rounded-md bg-blue-700 text-white font-bold";
     }
 
     function scanAbhaSim() {
