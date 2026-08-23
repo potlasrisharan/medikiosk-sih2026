@@ -1448,6 +1448,7 @@
 
       applyVerifiedPatientUI();
       speakAudio(`Mobile number verified. Welcome ${currentPatient.name}.`);
+      setTimeout(() => proceedToVoiceIntake(), 2000);
     }
 
     function verifyByAbhaId() {
@@ -1627,6 +1628,7 @@
 
       applyVerifiedPatientUI();
       speakAudio(`A B H A card scanned. Welcome ${currentPatient.name}.`);
+      setTimeout(() => proceedToVoiceIntake(), 2000);
     }
 
     function showDpdpaConsentModal() {
