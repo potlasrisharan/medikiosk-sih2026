@@ -669,7 +669,7 @@
       }
     };
 
-    let currentLanguage = "te-IN";
+    let currentLanguage = "en-IN";
     let isRecording = false;
     let recognition = null;
     let availableVoices = [];
@@ -883,15 +883,19 @@
     }
 
     function speakCurrentScreen() {
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
       const visible = document.querySelector("main > section:not(.hidden)");
-      if (visible) {
-        if (visible.id === "screen-language") speakAudio("దయచేసి స్క్రీన్ పై మీ భాషను ఎంచుకోండి.");
-        if (visible.id === "screen-identify") speakAudio(dict.welcomeVoice);
-        if (visible.id === "screen-voice") speakAudio(dict.aiVoicePrompt);
-        if (visible.id === "screen-scan") speakAudio(dict.scanRxTitle);
-        if (visible.id === "screen-token") speakAudio(dict.tokenVoice);
+      if (!visible) return;
+
+      if (visible.id === "screen-language") {
+        speakAudio("Please select your preferred language on the screen to begin. कृपया अपनी भाषा चुनें.");
+        return;
       }
+
+      const dict = I18N[currentLanguage] || I18N["en-IN"];
+      if (visible.id === "screen-identify") speakAudio(dict.welcomeVoice);
+      if (visible.id === "screen-voice") speakAudio(dict.aiVoicePrompt);
+      if (visible.id === "screen-scan") speakAudio(dict.scanRxTitle);
+      if (visible.id === "screen-token") speakAudio(dict.tokenVoice);
     }
   </script>
 </body>
