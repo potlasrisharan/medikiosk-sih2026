@@ -152,89 +152,150 @@
     <!-- SCREEN 2: IDENTIFY (ABHA QR & NHCX PM-JAY) -->
     <!-- =================================================================== -->
     <section id="screen-identify" class="hidden space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <!-- Live Camera & QR Scan Box -->
-        <div class="bg-white border-2 border-slate-300 p-6 md:p-8 rounded-2xl text-center space-y-4 shadow-sm relative overflow-hidden">
-          <!-- Static QR Placeholder (shown when camera idle) -->
-          <div id="qr-placeholder" class="w-40 h-40 mx-auto bg-slate-50 border-2 border-dashed border-blue-600 rounded-2xl flex items-center justify-center p-3">
-            <svg class="w-28 h-28 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
-            </svg>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left Column: 4-Way Identification Methods (7 Cols) -->
+        <div class="md:col-span-7 bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-5 shadow-sm">
+          <div>
+            <h3 class="font-extrabold text-lg text-slate-900">పేషెంట్ గుర్తింపు • Patient Identification</h3>
+            <p class="text-xs text-slate-600 mt-0.5">Select any one method below to verify your health records (ABDM M1)</p>
           </div>
 
-          <!-- Live Camera Viewfinder (hidden until camera started) -->
-          <div id="camera-viewfinder-abha" class="hidden relative w-full h-56 bg-black rounded-2xl overflow-hidden border-2 border-blue-600 shadow-inner">
-            <video id="video-abha" autoplay playsinline muted class="w-full h-full object-cover"></video>
-            <!-- Animated Green Laser Scan Line -->
-            <div class="absolute inset-x-0 top-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399] animate-[bounce_2s_infinite]"></div>
-            <div class="absolute bottom-2 left-2 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded">
-              📷 Live Camera Active • Point at ABHA QR
+          <!-- 4 PRD Tabs -->
+          <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold">
+            <button id="tab-btn-qr" onclick="switchAuthTab('qr')" class="py-2 rounded-lg bg-blue-700 text-white shadow-sm transition">📸 Scan QR</button>
+            <button id="tab-btn-mobile" onclick="switchAuthTab('mobile')" class="py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition">📱 Mobile</button>
+            <button id="tab-btn-abha" onclick="switchAuthTab('abha')" class="py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition">🔢 ABHA ID</button>
+            <button id="tab-btn-aadhaar" onclick="switchAuthTab('aadhaar')" class="py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition">🪪 Aadhaar</button>
+          </div>
+
+          <!-- TAB 1: Live QR Scanner -->
+          <div id="auth-panel-qr" class="space-y-4">
+            <div id="qr-placeholder" class="w-36 h-36 mx-auto bg-slate-50 border-2 border-dashed border-blue-600 rounded-2xl flex items-center justify-center p-3">
+              <svg class="w-24 h-24 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
+              </svg>
+            </div>
+
+            <!-- Live Camera Viewfinder with jsQR real decoding canvas -->
+            <div id="camera-viewfinder-abha" class="hidden relative w-full h-56 bg-black rounded-2xl overflow-hidden border-2 border-blue-600 shadow-inner">
+              <video id="video-abha" autoplay playsinline muted class="w-full h-full object-cover"></video>
+              <canvas id="qr-canvas" class="hidden"></canvas>
+              <!-- Animated Green Laser Scan Line -->
+              <div class="absolute inset-x-0 top-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399] animate-[bounce_2s_infinite]"></div>
+              <div class="absolute bottom-2 left-2 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Real-time QR Scanner Active • Point at ABHA QR</span>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <button onclick="startAbhaCamera()" id="btn-scan-action" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                <span>కెమెరా ప్రారంభించండి • Open Camera to Scan QR</span>
+              </button>
+              <button onclick="verifyDemoPatient('qr')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
+                ⚡ Use Sample ABHA QR Card (Ramesh Chandra)
+              </button>
             </div>
           </div>
 
-          <div>
-            <h3 id="lbl-scan-title" class="font-bold text-lg text-slate-900">మీ ఆభా (ABHA) కార్డు / QR స్కాన్ చేయండి</h3>
-            <p id="lbl-scan-subtitle" class="text-xs text-slate-600 mt-1">Scan Your ABHA Card / QR Code</p>
+          <!-- TAB 2: Mobile Number Input -->
+          <div id="auth-panel-mobile" class="hidden space-y-4">
+            <div class="space-y-1.5">
+              <label class="text-xs font-bold text-slate-700">Enter Registered 10-Digit Mobile Number:</label>
+              <div class="flex">
+                <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-300 bg-slate-100 text-slate-600 font-bold text-sm">+91</span>
+                <input id="input-mobile" type="tel" maxlength="10" placeholder="98765 43210" class="flex-1 border border-slate-300 rounded-r-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
+              </div>
+            </div>
+            <button onclick="verifyByMobile()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+              <span>ఓటీపీ ధృవీకరించండి • Verify Mobile OTP & Fetch Records</span>
+            </button>
+            <button onclick="fillSampleMobile()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
+              ⚡ Fill Sample Mobile (+91 98765 43210)
+            </button>
           </div>
 
-          <div id="scan-btn-group" class="space-y-2">
-            <button onclick="startAbhaCamera()" id="btn-scan-action" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <span>కెమెరా ప్రారంభించి స్కాన్ చేయండి • Open Camera & Scan</span>
+          <!-- TAB 3: 14-Digit ABHA ID Input -->
+          <div id="auth-panel-abha" class="hidden space-y-4">
+            <div class="space-y-1.5">
+              <label class="text-xs font-bold text-slate-700">Enter 14-Digit ABHA Number or ABHA Address:</label>
+              <input id="input-abha-id" type="text" placeholder="91-4829-1029-4821 or name@abdm" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
+            </div>
+            <button onclick="verifyByAbhaId()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+              <span>ఆభా రికార్డ్ పొందండి • Fetch ABHA Profile</span>
             </button>
-            <button onclick="captureAndVerifyAbha()" id="btn-capture-abha" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-              <span>ధృవీకరించండి • Capture & Verify ABHA</span>
+          </div>
+
+          <!-- TAB 4: 12-Digit Aadhaar Input -->
+          <div id="auth-panel-aadhaar" class="hidden space-y-4">
+            <div class="space-y-1.5">
+              <label class="text-xs font-bold text-slate-700">Enter 12-Digit Aadhaar Number (UIDAI):</label>
+              <input id="input-aadhaar" type="text" maxlength="14" placeholder="XXXX-XXXX-XXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
+            </div>
+            <button onclick="verifyByAadhaar()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+              <span>ఆధార్ బయోమెట్రిక్ / ఓటీపీ • Verify Aadhaar e-KYC</span>
             </button>
           </div>
         </div>
 
-        <!-- Patient Profile & PM-JAY Card -->
-        <div id="patient-card" class="bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-4 shadow-sm">
-          <div class="flex items-center space-x-3 pb-4 border-b border-slate-200">
-            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-              </svg>
+        <!-- Right Column: Verified Patient Profile & PM-JAY Card (5 Cols) -->
+        <div class="md:col-span-5 bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-4 shadow-sm">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <span class="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Patient Status</span>
+            <span id="badge-auth-status" class="text-[11px] bg-slate-100 text-slate-600 font-bold px-2.5 py-0.5 rounded-full border border-slate-200">Pending Verification</span>
+          </div>
+
+          <div class="flex items-center space-x-3 pb-2">
+            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold text-lg" id="pat-avatar">
+              RC
             </div>
             <div>
-              <h4 class="font-bold text-slate-900 text-base">Ramesh Chandra (రమేష్ చంద్ర)</h4>
-              <p id="lbl-pat-meta" class="text-xs text-slate-600">52 Yrs • Male • Khammam, Telangana (తెలంగాణ)</p>
+              <h4 id="pat-name" class="font-black text-slate-900 text-base">Ramesh Chandra (రమేష్ చంద్ర)</h4>
+              <p id="pat-meta" class="text-xs text-slate-600">52 Yrs • Male • Khammam, Telangana</p>
             </div>
           </div>
 
-          <div class="space-y-1.5 text-xs text-slate-700">
-            <p><span class="font-bold text-slate-900">ABHA ID:</span> 91-4829-1029-4821</p>
-            <p><span class="font-bold text-slate-900">ABHA Address:</span> ramesh.chandra@abdm</p>
+          <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div class="flex justify-between py-1 border-b border-slate-200">
+              <span class="text-slate-500 font-medium">Auth Method:</span>
+              <span id="pat-auth-method" class="font-bold text-blue-700">ABHA Scan & Share</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-200">
+              <span class="text-slate-500 font-medium">ABHA ID:</span>
+              <span id="pat-abha-id" class="font-mono font-bold text-slate-900">91-4829-1029-4821</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-slate-500 font-medium">ABHA Address:</span>
+              <span id="pat-abha-addr" class="font-mono font-bold text-slate-900">ramesh.chandra@abdm</span>
+            </div>
           </div>
 
-          <!-- PM-JAY Verified Card -->
-          <div class="bg-amber-50 border border-amber-300 p-3.5 rounded-xl flex items-center space-x-3">
-            <svg class="w-6 h-6 text-amber-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- PM-JAY Verification Badge -->
+          <div id="pmjay-card-box" class="p-3.5 rounded-xl bg-amber-50 border border-amber-300 flex items-center space-x-3">
+            <svg class="w-7 h-7 text-amber-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
             <div>
-              <p id="lbl-pmjay-title" class="text-xs font-bold text-amber-900">ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్</p>
-              <p id="lbl-pmjay-desc" class="text-[11px] text-amber-800">₹5,00,000 Annual Coverage • Cashless OPD Approved</p>
+              <p id="lbl-pmjay-title" class="font-extrabold text-xs text-amber-900">ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్</p>
+              <p id="lbl-pmjay-desc" class="text-[11px] text-amber-800">₹5,00,000 వార్షిక కవరేజ్ • ఉచిత వైద్యం & మందులు</p>
             </div>
           </div>
 
-          <div class="flex gap-3 pt-2">
-            <button onclick="goToScreen('screen-language')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
+          <div class="flex gap-2 pt-1">
+            <button onclick="goToScreen('screen-language')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3 px-3.5 rounded-xl text-xs flex items-center justify-center gap-1 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
               <span>Back</span>
             </button>
-            <button onclick="goToScreen('screen-voice')" id="btn-continue-voice" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
-              లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue to Voice
+            <button id="btn-proceed-voice" onclick="proceedToVoiceIntake()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow">
+              లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue
             </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- =================================================================== -->
-    <!-- SCREEN 3: VOICE & PICTORIAL SYMPTOM INTAKE -->
-    <!-- =================================================================== -->
     <section id="screen-voice" class="hidden space-y-6">
       <!-- DSP Ambient Noise Suppression Status (PRD NFR 6) -->
       <div class="max-w-2xl mx-auto flex items-center justify-between px-4 py-2 bg-slate-900 text-slate-200 rounded-xl text-xs border border-slate-800 shadow-sm">
