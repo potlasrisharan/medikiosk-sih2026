@@ -11,6 +11,19 @@ TOKEN_COUNTER = 42
 
 ENCOUNTERS_STORE = [
     EncounterQueueItem(
+        encounter_id="enc-e012",
+        token_number="#E-012",
+        patient_name="Mohan Das",
+        age=61,
+        gender=Gender.MALE,
+        chief_complaint="🚨 ACUTE CHEST PAIN: Severe retrosternal pain radiating to left jaw & diaphoresis for 30 mins.",
+        triage_priority=TriagePriority.EMERGENCY,
+        pmjay_eligible=True,
+        system_type=SystemType.ALLOPATHIC,
+        created_at=datetime.datetime.now().strftime("%I:%M %p"),
+        status="EMERGENCY_TRIAGE"
+    ),
+    EncounterQueueItem(
         encounter_id="enc-0042",
         token_number="#042",
         patient_name="Ramesh Chandra",
