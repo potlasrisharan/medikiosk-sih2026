@@ -152,25 +152,84 @@
     <!-- SCREEN 2: IDENTIFY (ABHA QR & NHCX PM-JAY) -->
     <!-- =================================================================== -->
     <section id="screen-identify" class="hidden space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+      <div class="text-center space-y-1.5 pb-2">
+        <h3 id="lbl-identify-title" class="font-extrabold text-xl md:text-2xl text-slate-900">మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారు? • How would you like to identify?</h3>
+        <p id="lbl-identify-sub" class="text-xs text-slate-600">క్రింది 4 పద్ధతుల్లో ఒకదానిపై నొక్కండి • Touch any one option below</p>
+      </div>
+
+      <!-- 4 Big Pictorial Option Cards (For rural / uneducated citizens) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <!-- Left Column: 4-Way Identification Methods (7 Cols) -->
-        <div class="md:col-span-7 bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-5 shadow-sm">
+        <!-- Option 1: QR Code Card -->
+        <button onclick="selectAuthMethod('qr')" id="card-auth-qr" class="p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/60 hover:bg-blue-100/80 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+          <div class="w-20 h-20 rounded-2xl bg-white border border-blue-200 flex items-center justify-center p-3 shadow-sm">
+            <svg class="w-14 h-14 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
+            </svg>
+          </div>
           <div>
-            <h3 class="font-extrabold text-lg text-slate-900">పేషెంట్ గుర్తింపు • Patient Identification</h3>
-            <p class="text-xs text-slate-600 mt-0.5">Select any one method below to verify your health records (ABDM M1)</p>
+            <span class="block font-black text-slate-900 text-sm md:text-base">QR స్కాన్ చేయండి</span>
+            <span class="block text-xs font-bold text-blue-700">Scan ABHA QR Code</span>
+            <span class="text-[10px] text-slate-500 mt-1 block">కెమెరా ముందు ఉంచండి</span>
           </div>
+          <span class="text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+        </button>
 
-          <!-- 4 PRD Tabs -->
-          <div class="grid grid-cols-4 gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-bold">
-            <button id="tab-btn-qr" onclick="switchAuthTab('qr')" class="py-2 rounded-lg bg-blue-700 text-white shadow-sm transition">📸 Scan QR</button>
-            <button id="tab-btn-mobile" onclick="switchAuthTab('mobile')" class="py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition">📱 Mobile</button>
-            <button id="tab-btn-abha" onclick="switchAuthTab('abha')" class="py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition">🔢 ABHA ID</button>
-            <button id="tab-btn-aadhaar" onclick="switchAuthTab('aadhaar')" class="py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition">🪪 Aadhaar</button>
+        <!-- Option 2: Mobile Number Card -->
+        <button onclick="selectAuthMethod('mobile')" id="card-auth-mobile" class="p-5 rounded-2xl border-2 border-slate-300 bg-white hover:border-blue-500 hover:bg-slate-50 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+          <div class="w-20 h-20 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center p-3 shadow-sm">
+            <svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+            </svg>
           </div>
+          <div>
+            <span class="block font-black text-slate-900 text-sm md:text-base">మొబైల్ నంబర్</span>
+            <span class="block text-xs font-bold text-emerald-700">Mobile Number (OTP)</span>
+            <span class="text-[10px] text-slate-500 mt-1 block">10 అంకెల ఫోన్ నంబర్</span>
+          </div>
+          <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+        </button>
 
-          <!-- TAB 1: Live QR Scanner -->
-          <div id="auth-panel-qr" class="space-y-4">
+        <!-- Option 3: ABHA Card -->
+        <button onclick="selectAuthMethod('abha')" id="card-auth-abha" class="p-5 rounded-2xl border-2 border-slate-300 bg-white hover:border-blue-500 hover:bg-slate-50 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+          <div class="w-20 h-20 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center p-3 shadow-sm">
+            <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="block font-black text-slate-900 text-sm md:text-base">ఆభా (ABHA) కార్డ్</span>
+            <span class="block text-xs font-bold text-blue-700">14-Digit ABHA ID</span>
+            <span class="text-[10px] text-slate-500 mt-1 block">91-XXXX-XXXX-XXXX</span>
+          </div>
+          <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+        </button>
+
+        <!-- Option 4: Aadhaar Card -->
+        <button onclick="selectAuthMethod('aadhaar')" id="card-auth-aadhaar" class="p-5 rounded-2xl border-2 border-slate-300 bg-white hover:border-blue-500 hover:bg-slate-50 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer transform active:scale-95">
+          <div class="w-20 h-20 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-center p-3 shadow-sm">
+            <svg class="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+          </div>
+          <div>
+            <span class="block font-black text-slate-900 text-sm md:text-base">ఆధార్ కార్డ్</span>
+            <span class="block text-xs font-bold text-purple-700">Aadhaar Card (UIDAI)</span>
+            <span class="text-[10px] text-slate-500 mt-1 block">12 అంకెల ఆధార్ సంఖ్య</span>
+          </div>
+          <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
+        </button>
+
+      </div>
+
+      <!-- Action Panel for the Selected Method (Camera / Input) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start pt-2">
+        
+        <!-- Left: Selected Method Interactive Panel (7 Cols) -->
+        <div class="md:col-span-7 bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-4 shadow-sm">
+          
+          <!-- PANEL 1: Live QR Scanner -->
+          <div id="auth-panel-qr" class="space-y-4 text-center">
             <div id="qr-placeholder" class="w-36 h-36 mx-auto bg-slate-50 border-2 border-dashed border-blue-600 rounded-2xl flex items-center justify-center p-3">
               <svg class="w-24 h-24 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
@@ -181,7 +240,6 @@
             <div id="camera-viewfinder-abha" class="hidden relative w-full h-56 bg-black rounded-2xl overflow-hidden border-2 border-blue-600 shadow-inner">
               <video id="video-abha" autoplay playsinline muted class="w-full h-full object-cover"></video>
               <canvas id="qr-canvas" class="hidden"></canvas>
-              <!-- Animated Green Laser Scan Line -->
               <div class="absolute inset-x-0 top-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399] animate-[bounce_2s_infinite]"></div>
               <div class="absolute bottom-2 left-2 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -190,8 +248,8 @@
             </div>
 
             <div class="space-y-2">
-              <button onclick="startAbhaCamera()" id="btn-scan-action" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+              <button onclick="startAbhaCamera()" id="btn-scan-action" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
                 <span>కెమెరా ప్రారంభించండి • Open Camera to Scan QR</span>
               </button>
               <button onclick="verifyDemoPatient('qr')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
@@ -200,7 +258,7 @@
             </div>
           </div>
 
-          <!-- TAB 2: Mobile Number Input -->
+          <!-- PANEL 2: Mobile Number Input -->
           <div id="auth-panel-mobile" class="hidden space-y-4">
             <div class="space-y-1.5">
               <label class="text-xs font-bold text-slate-700">Enter Registered 10-Digit Mobile Number:</label>
@@ -209,7 +267,7 @@
                 <input id="input-mobile" type="tel" maxlength="10" placeholder="98765 43210" class="flex-1 border border-slate-300 rounded-r-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
               </div>
             </div>
-            <button onclick="verifyByMobile()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+            <button onclick="verifyByMobile()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <span>ఓటీపీ ధృవీకరించండి • Verify Mobile OTP & Fetch Records</span>
             </button>
             <button onclick="fillSampleMobile()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
@@ -217,30 +275,30 @@
             </button>
           </div>
 
-          <!-- TAB 3: 14-Digit ABHA ID Input -->
+          <!-- PANEL 3: 14-Digit ABHA ID Input -->
           <div id="auth-panel-abha" class="hidden space-y-4">
             <div class="space-y-1.5">
               <label class="text-xs font-bold text-slate-700">Enter 14-Digit ABHA Number or ABHA Address:</label>
               <input id="input-abha-id" type="text" placeholder="91-4829-1029-4821 or name@abdm" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
             </div>
-            <button onclick="verifyByAbhaId()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+            <button onclick="verifyByAbhaId()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <span>ఆభా రికార్డ్ పొందండి • Fetch ABHA Profile</span>
             </button>
           </div>
 
-          <!-- TAB 4: 12-Digit Aadhaar Input -->
+          <!-- PANEL 4: 12-Digit Aadhaar Input -->
           <div id="auth-panel-aadhaar" class="hidden space-y-4">
             <div class="space-y-1.5">
               <label class="text-xs font-bold text-slate-700">Enter 12-Digit Aadhaar Number (UIDAI):</label>
-              <input id="input-aadhaar" type="text" maxlength="14" placeholder="XXXX-XXXX-XXXX" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
+              <input id="input-aadhaar" type="text" maxlength="14" placeholder="8920-1920-4821" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
             </div>
-            <button onclick="verifyByAadhaar()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+            <button onclick="verifyByAadhaar()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <span>ఆధార్ బయోమెట్రిక్ / ఓటీపీ • Verify Aadhaar e-KYC</span>
             </button>
           </div>
         </div>
 
-        <!-- Right Column: Verified Patient Profile & PM-JAY Card (5 Cols) -->
+        <!-- Right: Verified Patient Profile & PM-JAY Card (5 Cols) -->
         <div class="md:col-span-5 bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-4 shadow-sm">
           <div class="flex items-center justify-between pb-3 border-b border-slate-200">
             <span class="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Patient Status</span>
@@ -988,6 +1046,37 @@
     };
 
     let qrScanInterval = null;
+
+
+    function selectAuthMethod(methodKey) {
+      ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
+        const card = document.getElementById(`card-auth-${k}`);
+        const panel = document.getElementById(`auth-panel-${k}`);
+        if (!card || !panel) return;
+
+        if (k === methodKey) {
+          card.className = "p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition";
+          const badge = card.querySelector("span:last-child");
+          if (badge) {
+            badge.className = "text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full shadow-sm";
+            badge.innerText = "✓ ఎంచుకోబడింది • Selected";
+          }
+          panel.classList.remove("hidden");
+        } else {
+          card.className = "p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100";
+          const badge = card.querySelector("span:last-child");
+          if (badge) {
+            badge.className = "text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full";
+            badge.innerText = "ఎంచుకోండి • Select";
+          }
+          panel.classList.add("hidden");
+        }
+      });
+
+      if (methodKey !== "qr") {
+        stopCameraStream();
+      }
+    }
 
     function switchAuthTab(tabKey) {
       ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
