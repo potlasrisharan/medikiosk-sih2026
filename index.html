@@ -46,17 +46,27 @@
       </div>
     </div>
 
-    <!-- Active Step Progress Badges -->
-    <div class="hidden md:flex items-center space-x-2 text-xs font-bold text-slate-600">
-      <span id="step-badge-1" class="px-3 py-1.5 rounded-md bg-blue-700 text-white">1. Language</span>
-      <span class="text-slate-300">➔</span>
-      <span id="step-badge-2" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">2. Identity</span>
-      <span class="text-slate-300">➔</span>
-      <span id="step-badge-3" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">3. Voice Intake</span>
-      <span class="text-slate-300">➔</span>
-      <span id="step-badge-4" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">4. Scan Paper Rx</span>
-      <span class="text-slate-300">➔</span>
-      <span id="step-badge-5" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">5. Token</span>
+    <!-- Back Button + Clickable Progress Badges -->
+    <div class="flex items-center space-x-3">
+      <!-- Universal Back Button (Hidden on screen 1) -->
+      <button id="btn-header-back" onclick="goBackScreen()" class="hidden bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm" title="Go back to previous step">
+        <svg class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        <span id="lbl-header-back">వెనుకకు • Back</span>
+      </button>
+
+      <div class="hidden md:flex items-center space-x-2 text-xs font-bold text-slate-600">
+        <button onclick="goToScreen('screen-language')" id="step-badge-1" class="px-3 py-1.5 rounded-md bg-blue-700 text-white hover:opacity-90 transition cursor-pointer">1. Language</button>
+        <span class="text-slate-300">➔</span>
+        <button onclick="goToScreen('screen-identify')" id="step-badge-2" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700 hover:bg-slate-300 transition cursor-pointer">2. Identity</button>
+        <span class="text-slate-300">➔</span>
+        <button onclick="goToScreen('screen-voice')" id="step-badge-3" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700 hover:bg-slate-300 transition cursor-pointer">3. Voice Intake</button>
+        <span class="text-slate-300">➔</span>
+        <button onclick="goToScreen('screen-scan')" id="step-badge-4" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700 hover:bg-slate-300 transition cursor-pointer">4. Scan Paper Rx</button>
+        <span class="text-slate-300">➔</span>
+        <button onclick="goToScreen('screen-token')" id="step-badge-5" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700 hover:bg-slate-300 transition cursor-pointer">5. Token</button>
+      </div>
     </div>
 
     <!-- Speak Page Audio Button -->
@@ -190,9 +200,15 @@
             </div>
           </div>
 
-          <button onclick="goToScreen('screen-voice')" id="btn-continue-voice" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
-            లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue to Voice
-          </button>
+          <div class="flex gap-3 pt-2">
+            <button onclick="goToScreen('screen-language')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              <span>Back</span>
+            </button>
+            <button onclick="goToScreen('screen-voice')" id="btn-continue-voice" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+              లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue to Voice
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -262,7 +278,11 @@
         <p id="mic-label" class="font-bold text-slate-900 text-sm">మాట్లాడటానికి మైక్ నొక్కండి • Tap to Speak</p>
         <p id="transcription-text" class="text-xs text-blue-700 font-semibold italic min-h-[18px]">"నాకు 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది"</p>
 
-        <div class="w-full pt-2 flex justify-end">
+        <div class="w-full pt-2 flex justify-between gap-3">
+          <button onclick="goToScreen('screen-identify')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3 px-5 rounded-xl text-xs flex items-center gap-1.5 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            <span>వెనుకకు • Back</span>
+          </button>
           <button onclick="goToScreen('screen-scan')" id="btn-next-scan" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl text-sm transition">
             ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx
           </button>
@@ -309,9 +329,15 @@
             </div>
           </div>
 
-          <button onclick="goToScreen('screen-token')" id="btn-confirm-token" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
-            ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token
-          </button>
+          <div class="flex gap-3 pt-2">
+            <button onclick="goToScreen('screen-voice')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              <span>Back</span>
+            </button>
+            <button onclick="goToScreen('screen-token')" id="btn-confirm-token" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+              ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token
+            </button>
+          </div>
         </div>
       </div>
     </section>
@@ -735,11 +761,31 @@
       goToScreen("screen-identify");
     }
 
+
+    // Navigation History Stack
+    const screenOrder = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
+    let currentScreenIndex = 0;
+
+    function goBackScreen() {
+      if (currentScreenIndex > 0) {
+        goToScreen(screenOrder[currentScreenIndex - 1]);
+      }
+    }
+
     function goToScreen(screenId) {
+      currentScreenIndex = screenOrder.indexOf(screenId);
       const screens = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
       screens.forEach(s => document.getElementById(s).classList.add("hidden"));
       document.getElementById(screenId).classList.remove("hidden");
       updateStepBadges(screenId);
+      const backBtn = document.getElementById("btn-header-back");
+      if (backBtn) {
+        if (screenId === "screen-language") {
+          backBtn.classList.add("hidden");
+        } else {
+          backBtn.classList.remove("hidden");
+        }
+      }
       window.scrollTo(0, 0);
     }
 
