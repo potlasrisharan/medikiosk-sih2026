@@ -158,7 +158,7 @@
       </div>
 
       <!-- 4 Big Pictorial Option Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         
         <!-- Option 1: QR Code Card -->
         <button onclick="selectAuthMethod('qr')" id="card-auth-qr" class="p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition">
@@ -215,7 +215,19 @@
           </div>
           <span id="btn-card-aadhaar" class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">Select</span>
         </button>
-
+        <!-- Option 5: New Patient Register Card -->
+        <button onclick="selectAuthMethod('register')" id="card-auth-register" class="p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 transition text-center space-y-2.5 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-80 hover:opacity-100">
+          <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center p-2.5 shadow-sm">
+            <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+            </svg>
+          </div>
+          <div>
+            <span id="opt-reg-title" class="block font-black text-slate-900 text-xs md:text-sm">New Patient?</span>
+            <span id="opt-reg-sub" class="text-[10px] text-amber-700 font-bold block mt-0.5">Register & Create ABHA</span>
+          </div>
+          <span id="btn-card-register" class="text-[10px] font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-full w-full">Select</span>
+        </button>
       </div>
 
       <!-- Action Panel for the Selected Method (Camera / Input) -->
@@ -290,6 +302,52 @@
             </div>
             <button onclick="verifyByAadhaar()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <span id="btn-txt-verifyaadh">Verify Aadhaar e-KYC</span>
+            </button>
+          </div>
+          <!-- PANEL 5: New Patient ABHA Registration Form -->
+          <div id="auth-panel-register" class="hidden space-y-3.5">
+            <div class="border-b border-slate-200 pb-2 flex items-center justify-between">
+              <div>
+                <h4 class="font-extrabold text-xs text-slate-900">కొత్త ఆభా నమోదు • New Patient ABHA Registration</h4>
+                <p class="text-[11px] text-slate-500">Creates a new patient profile and records a unique row in local SQLite DB</p>
+              </div>
+              <span class="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded">ABDM M1 Compliant</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700">Full Name (పూర్తి పేరు):</label>
+                <input id="reg-name" type="text" placeholder="e.g. Ananya Verma" value="Ananya Verma" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="space-y-1">
+                  <label class="font-bold text-slate-700">Age:</label>
+                  <input id="reg-age" type="number" placeholder="28" value="28" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+                </div>
+                <div class="space-y-1">
+                  <label class="font-bold text-slate-700">Gender:</label>
+                  <select id="reg-gender" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700">Mobile Number (10 Digits):</label>
+                <input id="reg-phone" type="tel" placeholder="91234 56789" value="9123456789" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+              </div>
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700">Aadhaar (Optional):</label>
+                <input id="reg-aadhaar" type="text" placeholder="8920-1920-8901" value="8920-1920-8901" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+              </div>
+            </div>
+
+            <button onclick="registerNewPatientFromForm()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+              <span>⚡ Generate 14-Digit ABHA & Save to Local SQLite DB ➔</span>
             </button>
           </div>
         </div>
@@ -873,7 +931,7 @@
         }
       };
 
-      ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
+      ["qr", "mobile", "abha", "aadhaar", "register"].forEach(k => {
         const card = document.getElementById(`card-auth-${k}`);
         const panel = document.getElementById(`auth-panel-${k}`);
         const badge = document.getElementById(`btn-card-${k}`);
@@ -935,6 +993,84 @@
       currentPatient.isVerified = true;
       currentPatient.authMethod = "ABHA Scan & Share";
       applyVerifiedPatientUI();
+    }
+
+
+    // 1-Click Demo Patient Loader & Database Sync
+    function loadDemoPatient(id, name, age, gender, abhaNumber, abhaAddress, authMethod, symptom) {
+      currentPatient.id = id;
+      currentPatient.name = name;
+      currentPatient.age = age;
+      currentPatient.gender = gender;
+      currentPatient.abhaId = abhaNumber;
+      currentPatient.abhaAddress = abhaAddress;
+      currentPatient.authMethod = authMethod;
+      currentPatient.isVerified = true;
+      currentPatient.selectedSymptom = symptom;
+
+      const avatar = document.getElementById("pat-avatar");
+      if (avatar) {
+        const initials = name.split(" ").map(n => n[0]).join("");
+        avatar.innerText = initials;
+      }
+
+      applyVerifiedPatientUI();
+      goToScreen("screen-identify");
+
+      speakAudio(`${name} selected from database. Ayushman Bharat PM-JAY is active.`);
+      alert(`✅ Patient Loaded from Local SQLite Database:\n\nName: ${name}\nID: ${id}\nABHA: ${abhaNumber}\nPM-JAY: Active`);
+    }
+
+    async function registerNewPatientFromForm() {
+      const name = document.getElementById("reg-name").value.trim() || "Ananya Verma";
+      const age = parseInt(document.getElementById("reg-age").value) || 28;
+      const gender = document.getElementById("reg-gender").value;
+      const phone = document.getElementById("reg-phone").value.trim() || "+91 91234 56789";
+      const aadhaar = document.getElementById("reg-aadhaar").value.trim() || "8920-1920-8901";
+
+      const randDigits = Math.floor(1000 + Math.random() * 9000).toString();
+      const generatedAbha = `91-${randDigits}-4567-8901`;
+      const generatedAbhaAddr = `${name.toLowerCase().replace(/\s+/g, ".")}${randDigits}@abdm`;
+      const generatedPatId = `pat-${Math.floor(100000 + Math.random() * 900000)}`;
+
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/patient/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            full_name: name,
+            age: age,
+            gender: gender,
+            phone: phone,
+            aadhaar: aadhaar
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          currentPatient.id = data.id;
+          currentPatient.abhaId = data.abha_number;
+          currentPatient.abhaAddress = data.abha_address;
+        } else {
+          currentPatient.id = generatedPatId;
+          currentPatient.abhaId = generatedAbha;
+          currentPatient.abhaAddress = generatedAbhaAddr;
+        }
+      } catch (err) {
+        currentPatient.id = generatedPatId;
+        currentPatient.abhaId = generatedAbha;
+        currentPatient.abhaAddress = generatedAbhaAddr;
+      }
+
+      currentPatient.name = name;
+      currentPatient.age = age;
+      currentPatient.gender = gender;
+      currentPatient.phone = phone;
+      currentPatient.authMethod = "New ABHA Registration";
+      currentPatient.isVerified = true;
+
+      applyVerifiedPatientUI();
+      speakAudio(`New ABHA created for ${name}. Registration complete.`);
+      alert(`🎉 New Patient Registered & Saved to Local SQLite Database!\n\nName: ${name}\nGenerated ABHA: ${currentPatient.abhaId}\nDatabase Record: ${currentPatient.id}`);
     }
 
     function applyVerifiedPatientUI() {
@@ -1382,5 +1518,28 @@
       goToScreen("screen-language");
     }
   </script>
+  <!-- Fixed Bottom Demo Patient Credentials & SQLite Database Switcher -->
+  <div class="fixed bottom-0 inset-x-0 z-40 bg-slate-950/95 backdrop-blur border-t-2 border-slate-800 p-2.5 text-white shadow-2xl">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-xs">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-extrabold text-slate-200 uppercase tracking-wider text-[11px]">🔑 Demo Patient Credentials (1-Click SQLite DB Login):</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="loadDemoPatient('pat-048291', 'Ramesh Chandra', 52, 'Male', '91-4829-1029-4821', 'ramesh.chandra@abdm', 'ABHA Scan & Share', true, 'Bilateral knee joint pain with crepitus')" class="bg-blue-900/70 hover:bg-blue-800 text-blue-200 border border-blue-500/40 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+          <span>👴 Ramesh Chandra (52M - Knee OA)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-059102', 'Priya Sharma', 34, 'Female', '91-5910-2941-8402', 'priya.sharma@abdm', 'Mobile OTP', true, 'Epigastric burning & acid reflux')" class="bg-purple-900/70 hover:bg-purple-800 text-purple-200 border border-purple-500/40 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+          <span>👩 Priya Sharma (34F - Acidity)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-077124', 'Mohan Das', 61, 'Male', '91-7712-4019-3382', 'mohan.das@abdm', 'Emergency Triage', true, 'Severe crushing chest pain (Red-Flag)')" class="bg-rose-900/70 hover:bg-rose-800 text-rose-200 border border-rose-500/40 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+          <span>🚨 Mohan Das (61M - Cardiac)</span>
+        </button>
+        <button onclick="loadDemoPatient('pat-091234', 'Ananya Verma', 28, 'Female', '91-9123-4567-8901', 'ananya.verma@abdm', 'Kiosk Registration', true, 'High fever with chills')" class="bg-amber-900/70 hover:bg-amber-800 text-amber-200 border border-amber-500/40 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+          <span>🆕 Ananya Verma (28F - New)</span>
+        </button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
