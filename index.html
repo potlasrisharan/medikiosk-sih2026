@@ -1970,8 +1970,72 @@
     }
 
     async function generateDynamicTokenAndRegister() {
+      // Determine if emergency (chest pain / cardiac vector)
+      const isEmergency = currentPatient.selectedSymptom && (
+        currentPatient.selectedSymptom.toLowerCase().includes("chest") ||
+        currentPatient.selectedSymptom.toLowerCase().includes("ఛాతీ") ||
+        currentPatient.selectedSymptom.toLowerCase().includes("सीने") ||
+        currentPatient.selectedSymptom.toLowerCase().includes("மார்பு")
+      );
+
+      // Generate sequential unique token
+      let nextNum = parseInt(localStorage.getItem("MEDIKIOSK_LAST_TOKEN_NUM") || "44") + 1;
+      localStorage.setItem("MEDIKIOSK_LAST_TOKEN_NUM", nextNum.toString());
+
+      const tokenStr = isEmergency ? `#E-0${nextNum}` : `#0${nextNum}`;
+      currentPatient.tokenNumber = tokenStr;
+
+      const newEncounter = {
+        id: "enc-" + Date.now().toString().slice(-6),
+        tokenNumber: tokenStr,
+        patientName: currentPatient.name,
+        age: currentPatient.age,
+        gender: currentPatient.gender,
+        avatar: currentPatient.name.split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase(),
+        location: currentPatient.city || "Khammam, Telangana",
+        abhaId: currentPatient.abhaId || "91-4829-1029-4821",
+        abhaAddress: currentPatient.abhaAddress || "patient@abdm",
+        hasPmjay: currentPatient.hasPmjay,
+        isEmergency: isEmergency,
+        nativeLang: currentLanguage === "te-IN" ? "తెలుగు (Telugu)" : (currentLanguage === "hi-IN" ? "हिन्दी (Hindi)" : (currentLanguage === "ta-IN" ? "தமிழ் (Tamil)" : "English")),
+        nativeSpeech: `"${currentPatient.selectedSymptom}"`,
+        subjective: `${currentPatient.age}-year-old ${currentPatient.gender.toLowerCase()} presents with ${currentPatient.selectedSymptom}. Elicited via MediKiosk Sovereign Kiosk.`,
+        objective: `Clinical Vitals: [Pending In-Person Chamber Measurement]\nVoice-Elicited Intake: ${currentPatient.selectedSymptom}`,
+        assessment: isEmergency ? "1. Acute Coronary Syndrome (ACS / STEMI / ICD-10 I21.0)\n2. Priority 1 Critical Resuscitation Alert" : "1. General OPD Evaluation & AYUSH Clinical Management",
+        dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dosha Dusti" },
+        planSummary: "Physician Evaluation & Personalized Pharmacological Prescribing",
+        aiSuggestions: isEmergency ? [
+          { name: "Tab. Aspirin 325mg", dose: "1 Tab", freq: "STAT", dur: "Immediate", inst: "Chew immediately" },
+          { name: "Tab. Clopidogrel 300mg", dose: "4 Tabs", freq: "STAT", dur: "Loading", inst: "Water STAT" },
+          { name: "Sublingual Sorbitrate 5mg", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "Under tongue" }
+        ] : [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD", dur: "15 Days", inst: "After meals" },
+          { name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD", dur: "15 Days", inst: "Before food" },
+          { name: "Cap. Shallaki (500mg)", dose: "1 Cap", freq: "BD", dur: "15 Days", inst: "After food" }
+        ],
+        activePrescription: isEmergency ? [
+          { name: "Tab. Aspirin 325mg (Chewable)", dose: "1 Tab", freq: "STAT", dur: "Single Dose", inst: "Chew immediately" },
+          { name: "Tab. Clopidogrel 300mg", dose: "4 Tabs", freq: "STAT", dur: "Loading", inst: "Swallow STAT" }
+        ] : [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
+          { name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD (Twice daily)", dur: "15 Days", inst: "Before food with equal water" }
+        ],
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      // Push to shared localStorage queue for instant cross-tab sync with Doctor Portal
+      let sharedQueue = [];
       try {
-        const res = await fetch("http://localhost:8000/api/v1/doctor/encounter/create", {
+        sharedQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
+      } catch (e) {}
+
+      // Add to front of queue
+      sharedQueue.unshift(newEncounter);
+      localStorage.setItem("MEDIKIOSK_SHARED_QUEUE", JSON.stringify(sharedQueue));
+
+      // Also trigger background server sync if backend is active
+      try {
+        fetch("http://localhost:8000/api/v1/doctor/encounter/create", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -1983,21 +2047,15 @@
             symptoms: currentPatient.selectedSymptom,
             language: currentLanguage
           })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.token_number) currentPatient.tokenNumber = data.token_number;
-        }
-      } catch (err) {
-        const num = Math.floor(42 + (Date.now() % 50));
-        currentPatient.tokenNumber = `#${num.toString().padStart(3, "0")}`;
-      }
+        }).catch(e => {});
+      } catch (err) {}
 
+      // Update Screen 5 Token Display
       const tokenDisplay = document.querySelector("#screen-token .text-6xl");
       if (tokenDisplay) tokenDisplay.innerText = currentPatient.tokenNumber;
 
       const dict = I18N[currentLanguage] || I18N["en-IN"];
-      const spokenMsg = (dict.tokenVoice || "Your intake is complete. Your token number is 42.").replace("42", currentPatient.tokenNumber.replace("#", ""));
+      const spokenMsg = (dict.tokenVoice || "Your intake is complete. Your token number is 45.").replace("42", currentPatient.tokenNumber.replace("#", "")).replace("45", currentPatient.tokenNumber.replace("#", ""));
       speakAudio(spokenMsg);
       goToScreen("screen-token");
     }

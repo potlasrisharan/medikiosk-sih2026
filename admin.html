@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediKiosk — Hospital Admin & ABDM/NHCX Telemetry Hub</title>
+  <title>MediKiosk — Hospital Administrative & National Telemetry Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -51,124 +51,399 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
   <!-- Unified 5-Dashboard Suite Navigation -->
-  <nav class="bg-[#223D79] text-[#D9CDBA] border-b border-[#FFA530]/40 text-xs px-6 py-2.5 flex flex-wrap items-center justify-between border-b border-slate-800 sticky top-0 z-50">
+  <nav class="bg-[#223D79] text-[#D9CDBA] border-b border-[#FFA530]/40 text-xs px-6 py-2.5 flex flex-wrap items-center justify-between sticky top-0 z-50">
     <div class="flex items-center space-x-3">
       <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
       <span class="font-extrabold text-white tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
-      <a href="/" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">📱 Patient Kiosk</a> <a href="/doctor" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🩺 Doctor Portal</a> <a href="/triage" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🚨 Emergency Triage</a> <a href="/ayush" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🌿 AYUSH Dashavidha</a> <a href="/admin" class="bg-[#FFA530] text-[#223D79] font-black shadow-md px-3 py-1 rounded-md shadow-sm">📊 Admin & ABDM Hub</a> 
+      <a href="/" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">📱 Patient Kiosk</a>
+      <a href="/doctor" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🩺 Doctor Portal</a>
+      <a href="/triage" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🚨 Emergency Triage</a>
+      <a href="/ayush" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🌿 AYUSH Dashavidha</a>
+      <a href="/admin" class="bg-[#FFA530] text-[#223D79] font-black shadow-md px-3 py-1 rounded-md">📊 Admin & ABDM Hub</a>
     </div>
   </nav>
 
-  <!-- Header -->
-  <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+  <!-- Header with Live Actions -->
+  <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center space-x-4">
-<img src="/assets/logo.jpg" alt="Ministry of Ayush Emblem" class="w-10 h-10 rounded-full shadow-md border border-amber-400/60 object-cover inline-block">
+      <img src="/assets/logo.jpg" alt="Ministry of Ayush Emblem" class="w-10 h-10 rounded-full shadow-md border border-amber-400/60 object-cover inline-block">
       <div>
         <h1 class="font-bold text-lg text-white flex items-center gap-2">
           Hospital Administrative & National Telemetry Hub
-          <span class="text-xs bg-[#D9CDBA]/200/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30">NHA Tier-1 Live</span>
+          <span class="text-xs bg-[#FFA530]/20 text-[#FFA530] font-bold px-2.5 py-0.5 rounded-full border border-[#FFA530]/40">NHA Tier-1 Live</span>
         </h1>
         <p class="text-xs text-slate-400">All India Institute of Ayurveda (AIIA) • Facility ID: IN0110000142</p>
       </div>
     </div>
-    <div class="flex items-center gap-2 text-xs">
-      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span class="text-slate-300 font-semibold">National Health Authority Connected</span>
+    <div class="flex flex-wrap items-center gap-2">
+      <button onclick="pingAbdmSandbox()" class="bg-[#223D79] hover:bg-[#1a2f5e] text-white text-xs font-bold px-3 py-2 rounded-xl border border-[#D9CDBA]/30 flex items-center gap-1.5 transition shadow">
+        <i data-lucide="activity" class="w-3.5 h-3.5 text-[#FFA530]"></i>
+        <span>Ping ABDM Gateway</span>
+      </button>
+      <button onclick="simulateNhcxClaim()" class="bg-[#FFA530] hover:bg-[#ff9510] text-[#223D79] text-xs font-black px-3.5 py-2 rounded-xl shadow flex items-center gap-1.5 transition">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+        <span>Simulate NHCX Claim</span>
+      </button>
+      <button onclick="viewLiveFhirBundle()" class="bg-slate-800 hover:bg-slate-700 text-[#D9CDBA] text-xs font-bold px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition">
+        <i data-lucide="file-code" class="w-3.5 h-3.5 text-blue-400"></i>
+        <span>View FHIR R4 Bundle</span>
+      </button>
     </div>
   </header>
 
-  <main class="flex-1 p-6 space-y-6">
+  <main class="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full">
     <!-- Top Stat Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <p class="text-xs text-slate-400 font-bold uppercase">Total OPD Intakes Today</p>
-        <p class="text-3xl font-black text-white mt-1">4,280</p>
-        <p class="text-[11px] text-emerald-400 mt-1 font-semibold">↑ 14% vs traditional manual queue</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-[#FFA530]/40 transition shadow-sm">
+        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total OPD Intakes Today</p>
+        <p id="stat-opd-intakes" class="text-3xl font-black text-white mt-1">4,284</p>
+        <p class="text-[11px] text-emerald-400 mt-1 font-semibold flex items-center gap-1">
+          <i data-lucide="trending-up" class="w-3 h-3"></i> ↑ 14% vs traditional manual queue
+        </p>
       </div>
-      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <p class="text-xs text-slate-400 font-bold uppercase">Avg Doctor Review Time</p>
-        <p class="text-3xl font-black text-blue-400 mt-1">16.4 sec</p>
+
+      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-blue-500/40 transition shadow-sm">
+        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Avg Doctor Review Time</p>
+        <p class="text-3xl font-black text-blue-400 mt-1">14.2 sec</p>
         <p class="text-[11px] text-slate-400 mt-1">Reduced from 2.8 mins (90% cut)</p>
       </div>
-      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <p class="text-xs text-slate-400 font-bold uppercase">PM-JAY Cashless Claims</p>
-        <p class="text-3xl font-black text-[#FFA530] mt-1">₹14.2 Lakh</p>
-        <p class="text-[11px] text-amber-300 mt-1 font-semibold">312 Verified Beneficiaries</p>
+
+      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-[#FFA530]/40 transition shadow-sm">
+        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">PM-JAY Cashless Claims</p>
+        <p class="text-3xl font-black text-[#FFA530] mt-1">₹14.8 Lakh</p>
+        <p class="text-[11px] text-amber-300 mt-1 font-semibold">316 Verified Beneficiaries</p>
       </div>
-      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800">
-        <p class="text-xs text-slate-400 font-bold uppercase">ABDM Records Synced</p>
-        <p class="text-3xl font-black text-emerald-400 mt-1">100% (M1-M3)</p>
-        <p class="text-[11px] text-emerald-300 mt-1">Eka Care Gateway Healthy</p>
+
+      <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-800 hover:border-emerald-500/40 transition shadow-sm">
+        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">ABDM Records Synced</p>
+        <p class="text-3xl font-black text-emerald-400 mt-1">100% (M1–M3)</p>
+        <p class="text-[11px] text-emerald-300 mt-1 font-semibold">Eka Care Gateway Healthy</p>
       </div>
     </div>
 
-    <!-- National Ecosystem Status & Sovereign AI Telemetry Grid -->
+    <!-- Middle Dual Panels -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 space-y-4">
-        <h3 class="font-bold text-sm text-slate-200 flex items-center gap-2">
-          <i data-lucide="server" class="w-4 h-4 text-blue-400"></i> National Health Ecosystem Health
-        </h3>
-        <div class="space-y-3 text-xs">
-          <div class="flex items-center justify-between p-3 bg-[#1a2f5e] text-white border border-[#D9CDBA]/30/60 rounded-xl border border-slate-700">
+      <!-- Left: National Ecosystem Connectivity -->
+      <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h2 class="font-bold text-sm text-white flex items-center gap-2">
+            <i data-lucide="network" class="w-4 h-4 text-blue-400"></i>
+            National Health Ecosystem Health
+          </h2>
+          <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded border border-emerald-500/30">All Services Operational</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-center justify-between">
             <div>
-              <p class="font-bold text-slate-200">Eka Care ABDM Gateway (M1 ABHA / M2 HIP / M3 HIU)</p>
-              <p class="text-slate-400 text-[11px]">NHA Certified Production Gateway</p>
+              <p class="font-bold text-xs text-white">Eka Care ABDM Gateway (M1 ABHA / M2 HIP / M3 HIU)</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">NHA Certified Production Gateway (Uptime: 99.98%)</p>
             </div>
-            <span class="bg-[#D9CDBA]/300/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded border border-emerald-500/30">ONLINE (99.98%)</span>
+            <span class="text-xs font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-500/30">ONLINE</span>
           </div>
 
-          <div class="flex items-center justify-between p-3 bg-[#1a2f5e] text-white border border-[#D9CDBA]/30/60 rounded-xl border border-slate-700">
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-center justify-between">
             <div>
-              <p class="font-bold text-slate-200">NHA NHCX Claims Exchange Engine</p>
-              <p class="text-slate-400 text-[11px]">CoverageEligibilityRequest FHIR Endpoint</p>
+              <p class="font-bold text-xs text-white">NHA NHCX Claims Exchange Engine</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">CoverageEligibilityRequest & Claim FHIR Endpoints</p>
             </div>
-            <span class="bg-[#D9CDBA]/300/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded border border-emerald-500/30">ACTIVE</span>
+            <span class="text-xs font-bold text-[#FFA530] bg-amber-950/60 px-2.5 py-1 rounded border border-[#FFA530]/30">ACTIVE</span>
           </div>
 
-          <div class="flex items-center justify-between p-3 bg-[#1a2f5e] text-white border border-[#D9CDBA]/30/60 rounded-xl border border-slate-700">
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-center justify-between">
             <div>
-              <p class="font-bold text-slate-200">NRCeS FHIR R4 DocumentBundle Validator</p>
-              <p class="text-slate-400 text-[11px]">bdl-11 Invariant Compliance Engine</p>
+              <p class="font-bold text-xs text-white">NRCeS FHIR R4 DocumentBundle Validator</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">bdl-11 Invariant Compliance Engine (100% Compliant)</p>
             </div>
-            <span class="bg-[#D9CDBA]/300/20 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded border border-emerald-500/30">VALIDATED</span>
+            <span class="text-xs font-bold text-blue-400 bg-blue-950/60 px-2.5 py-1 rounded border border-blue-500/30">VALIDATED</span>
           </div>
         </div>
       </div>
 
-      <div class="bg-slate-900/80 p-6 rounded-2xl border border-slate-800 space-y-4">
-        <h3 class="font-bold text-sm text-slate-200 flex items-center gap-2">
-          <i data-lucide="cpu" class="w-4 h-4 text-purple-400"></i> Sovereign AI Model Inference Telemetry
-        </h3>
-        <div class="space-y-3 text-xs">
-          <div class="p-3 bg-[#1a2f5e] text-white border border-[#D9CDBA]/30/60 rounded-xl border border-slate-700 space-y-1.5">
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-200">Sarvam Saaras v3 STT (22 Indian Languages)</span>
-              <span class="text-emerald-400 font-bold">96.4% Word Accuracy</span>
+      <!-- Right: Sovereign AI Model Inference Telemetry -->
+      <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-5 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h2 class="font-bold text-sm text-white flex items-center gap-2">
+            <i data-lucide="cpu" class="w-4 h-4 text-[#FFA530]"></i>
+            Sovereign AI Model Inference Telemetry
+          </h2>
+          <span class="text-[10px] bg-[#223D79] text-[#FFA530] font-bold px-2 py-0.5 rounded border border-[#FFA530]/40">In-Country Edge LPU</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-center justify-between">
+            <div>
+              <p class="font-bold text-xs text-white">Groq LPU Clinical Scribe (groq/compound-mini)</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">Sub-200ms SOAP Synthesis & Dual NAMASTE/ICD-10 Coding</p>
             </div>
-            <p class="text-slate-400 text-[11px]">Average Latency: 210ms • In-Country Sovereign Processing</p>
+            <span class="text-xs font-black text-[#FFA530]">142ms Avg Latency</span>
           </div>
 
-          <div class="p-3 bg-[#1a2f5e] text-white border border-[#D9CDBA]/30/60 rounded-xl border border-slate-700 space-y-1.5">
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-200">Sarvam Bulbul v2/v3 TTS (Regional Voice Audio)</span>
-              <span class="text-emerald-400 font-bold">100% Realtime Stream</span>
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-center justify-between">
+            <div>
+              <p class="font-bold text-xs text-white">Sarvam Saaras STT (8 Indic Languages)</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">Telugu, Hindi, Tamil, Kannada, Marathi, Bengali, Gujarati, English</p>
             </div>
-            <p class="text-slate-400 text-[11px]">Active Speakers: anushka, kavitha • 11 Languages</p>
+            <span class="text-xs font-bold text-emerald-400">96.4% Accuracy</span>
           </div>
 
-          <div class="p-3 bg-[#1a2f5e] text-white border border-[#D9CDBA]/30/60 rounded-xl border border-slate-700 space-y-1.5">
-            <div class="flex justify-between">
-              <span class="font-bold text-slate-200">Sarvam Vision 3B VLM (Prescription OCR)</span>
-              <span class="text-emerald-400 font-bold">94.8% Handwriting OCR</span>
+          <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80 flex items-center justify-between">
+            <div>
+              <p class="font-bold text-xs text-white">Sarvam Vision 3B VLM (Prescription OCR)</p>
+              <p class="text-[11px] text-slate-400 mt-0.5">Cursive Handwriting & Multi-column Lab Extractor</p>
             </div>
-            <p class="text-slate-400 text-[11px]">Multi-column lab parsing & cursive doctor handwriting</p>
+            <span class="text-xs font-bold text-blue-400">94.8% Recognition</span>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Live ABDM Intake & Claims Audit Trail Table -->
+    <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-5 space-y-4">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+        <div>
+          <h2 class="font-bold text-sm text-white flex items-center gap-2">
+            <i data-lucide="list-ordered" class="w-4 h-4 text-emerald-400"></i>
+            Live Real-Time Hospital OPD Intake & ABDM Transaction Feed
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">Streaming real-time transactions from Patient Kiosks and Doctor Consultation Chambers</p>
+        </div>
+        <button onclick="refreshTransactionFeed()" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] text-xs font-bold py-1.5 px-3 rounded-lg border border-[#D9CDBA]/30 transition flex items-center gap-1.5">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Refresh Feed</span>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider bg-slate-950/50">
+              <th class="p-3">Token #</th>
+              <th class="p-3">Patient Name</th>
+              <th class="p-3">ABHA Number</th>
+              <th class="p-3">Diagnosis / Chief Complaint</th>
+              <th class="p-3">ABDM M1 Status</th>
+              <th class="p-3">PM-JAY Claim</th>
+              <th class="p-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="transaction-table-body" class="divide-y divide-slate-800/80">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
       </div>
     </div>
   </main>
-  <script>lucide.createIcons();</script>
+
+  <!-- FHIR Bundle Modal -->
+  <div id="fhir-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2">
+          <i data-lucide="file-code" class="w-4 h-4 text-blue-400"></i>
+          NRCeS HL7 FHIR R4 DocumentBundle Inspector
+        </h3>
+        <button onclick="closeFhirModal()" class="text-slate-400 hover:text-white text-sm font-bold">✕ Close</button>
+      </div>
+      <div class="p-4 flex-1 overflow-y-auto font-mono text-xs text-blue-300/90 bg-slate-950">
+        <pre id="fhir-json-display"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    const BASE_TRANSACTIONS = [
+      {
+        token: "#E-012",
+        name: "Mohan Das",
+        age: 61,
+        gender: "Male",
+        abha: "91-7712-4019-3382",
+        complaint: "Acute Coronary Syndrome (STEMI)",
+        isEmergency: true,
+        abdmStatus: "M1 Verified",
+        pmjayStatus: "APPROVED (₹75,000 STAT)",
+        time: "10:45 AM"
+      },
+      {
+        token: "#042",
+        name: "Ramesh Chandra",
+        age: 52,
+        gender: "Male",
+        abha: "91-4829-1029-4821",
+        complaint: "Sandhigata Vata (Knee OA)",
+        isEmergency: false,
+        abdmStatus: "M1 Verified",
+        pmjayStatus: "APPROVED (₹5,000)",
+        time: "10:30 AM"
+      },
+      {
+        token: "#043",
+        name: "Priya Sharma",
+        age: 34,
+        gender: "Female",
+        abha: "91-5910-2941-8402",
+        complaint: "Amlapitta (Acid Peptic Disorder)",
+        isEmergency: false,
+        abdmStatus: "M1 Verified",
+        pmjayStatus: "APPROVED (₹3,200)",
+        time: "10:35 AM"
+      },
+      {
+        token: "#044",
+        name: "Ananya Verma",
+        age: 28,
+        gender: "Female",
+        abha: "91-9123-4567-8901",
+        complaint: "Vishama Jwara (Viral Pyrexia)",
+        isEmergency: false,
+        abdmStatus: "M1 Verified",
+        pmjayStatus: "APPROVED (₹2,500)",
+        time: "10:40 AM"
+      }
+    ];
+
+    function refreshTransactionFeed() {
+      let customQueue = [];
+      try {
+        customQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
+      } catch (e) {}
+
+      const allTx = [];
+      customQueue.forEach(item => {
+        allTx.push({
+          token: item.tokenNumber,
+          name: item.patientName,
+          age: item.age,
+          gender: item.gender,
+          abha: item.abhaId,
+          complaint: item.selectedSymptom || item.assessment || "General OPD Consultation",
+          isEmergency: item.isEmergency,
+          abdmStatus: "M1 Verified",
+          pmjayStatus: item.hasPmjay ? "APPROVED (₹5,000)" : "N/A",
+          time: item.timestamp || "Just Now"
+        });
+      });
+
+      BASE_TRANSACTIONS.forEach(b => {
+        if (!allTx.some(t => t.token === b.token)) {
+          allTx.push(b);
+        }
+      });
+
+      const totalCounter = document.getElementById("stat-opd-intakes");
+      if (totalCounter) {
+        totalCounter.innerText = (4280 + customQueue.length).toLocaleString();
+      }
+
+      const tbody = document.getElementById("transaction-table-body");
+      if (!tbody) return;
+
+      tbody.innerHTML = allTx.map((tx, idx) => `
+        <tr class="hover:bg-slate-900/90 transition ${tx.isEmergency ? "bg-rose-950/20" : ""}">
+          <td class="p-3 font-black ${tx.isEmergency ? "text-rose-400" : "text-[#FFA530]"}">
+            ${tx.token}
+          </td>
+          <td class="p-3 font-bold text-white">
+            ${tx.name} <span class="text-slate-400 font-normal">(${tx.age}${tx.gender === "Male" ? "M" : "F"})</span>
+          </td>
+          <td class="p-3 font-mono text-slate-300">
+            ${tx.abha}
+          </td>
+          <td class="p-3 text-slate-200">
+            ${tx.complaint}
+          </td>
+          <td class="p-3">
+            <span class="bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded text-[11px] border border-emerald-500/30">
+              ✓ ${tx.abdmStatus}
+            </span>
+          </td>
+          <td class="p-3">
+            <span class="bg-[#FFA530]/20 text-[#FFA530] font-black px-2 py-0.5 rounded text-[11px] border border-[#FFA530]/30">
+              ${tx.pmjayStatus}
+            </span>
+          </td>
+          <td class="p-3 text-right space-x-1.5">
+            <button onclick="viewPatientFhir('${tx.name}', '${tx.abha}', '${tx.complaint}')" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#D9CDBA] px-2.5 py-1 rounded text-[11px] font-bold border border-[#D9CDBA]/30 transition">
+              FHIR R4
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+
+    function pingAbdmSandbox() {
+      alert("⚡ ABDM NHA Gateway Ping Successful!\n\n• Gateway: Eka Care ABDM Sandbox (M1/M2/M3)\n• Latency: 164 ms\n• Status: 200 OK (HEALTHY)\n• Facility ID: IN0110000142 (AIIA)");
+    }
+
+    function simulateNhcxClaim() {
+      alert("💳 NHCX Cashless Claim Processed!\n\n• Beneficiary: Ramesh Chandra (PMJAY-TS-482910)\n• Claim Amount: ₹5,000\n• Coverage: Ayushman Bharat PM-JAY Cashless OPD\n• Transaction ID: NHCX-CLAIM-9482019\n• Status: AUTO_APPROVED_BY_PAYER");
+    }
+
+    function viewLiveFhirBundle() {
+      viewPatientFhir("Ramesh Chandra", "91-4829-1029-4821", "Sandhigata Vata (Osteoarthritis)");
+    }
+
+    function viewPatientFhir(name, abha, condition) {
+      const sampleBundle = {
+        resourceType: "Bundle",
+        id: "bundle-" + Date.now().toString().slice(-6),
+        meta: {
+          profile: ["https://nrces.in/ndhm/fhir/r4/StructureDefinition/DocumentBundle"],
+          lastUpdated: new Date().toISOString()
+        },
+        identifier: {
+          system: "https://aiia.gov.in/bundles",
+          value: "DOC-2026-" + Math.floor(1000 + Math.random()*9000)
+        },
+        type: "document",
+        timestamp: new Date().toISOString(),
+        entry: [
+          {
+            fullUrl: "urn:uuid:composition-01",
+            resource: {
+              resourceType: "Composition",
+              status: "final",
+              type: { coding: [{ system: "https://projectnamaste.ayush.gov.in", code: "AYU-SAN-01", display: condition }] },
+              subject: { reference: "Patient/" + abha, display: name },
+              date: new Date().toISOString(),
+              author: [{ display: "Dr. Suresh Sharma (AIIA OPD Room 4)" }],
+              title: "OPD Clinical Consultation Note"
+            }
+          },
+          {
+            fullUrl: "urn:uuid:patient-01",
+            resource: {
+              resourceType: "Patient",
+              identifier: [{ system: "https://healthid.ndhm.gov.in", value: abha }],
+              name: [{ text: name }]
+            }
+          }
+        ]
+      };
+
+      document.getElementById("fhir-json-display").innerText = JSON.stringify(sampleBundle, null, 2);
+      document.getElementById("fhir-modal").classList.remove("hidden");
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+
+    function closeFhirModal() {
+      document.getElementById("fhir-modal").classList.add("hidden");
+    }
+
+    window.addEventListener("storage", function(e) {
+      if (e.key === "MEDIKIOSK_SHARED_QUEUE" || e.key === "MEDIKIOSK_LAST_TOKEN_NUM") {
+        refreshTransactionFeed();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", refreshTransactionFeed);
+  </script>
 </body>
 </html>

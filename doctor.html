@@ -476,6 +476,83 @@
 
     let currentSelectedEncId = "enc-0042";
 
+        // Live Shared Queue Synchronizer between Patient Kiosk and Doctor Portal
+    function initDoctorQueue() {
+      let customQueue = [];
+      try {
+        customQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
+      } catch (e) {}
+
+      // Merge custom encounters into CLINICAL_PROFILES
+      customQueue.forEach(item => {
+        if (item && item.id) {
+          CLINICAL_PROFILES[item.id] = item;
+        }
+      });
+
+      // Render Queue List sorted by Priority (Emergency STAT first)
+      const allEncIds = Object.keys(CLINICAL_PROFILES);
+      allEncIds.sort((a, b) => {
+        const pA = CLINICAL_PROFILES[a];
+        const pB = CLINICAL_PROFILES[b];
+        if (pA.isEmergency && !pB.isEmergency) return -1;
+        if (!pA.isEmergency && pB.isEmergency) return 1;
+        return 0;
+      });
+
+      const queueListEl = document.getElementById("queue-list");
+      const countEl = document.getElementById("queue-count");
+      if (countEl) countEl.innerText = allEncIds.length.toString();
+
+      if (queueListEl) {
+        queueListEl.innerHTML = allEncIds.map(encId => {
+          const p = CLINICAL_PROFILES[encId];
+          const isSelected = (encId === currentSelectedEncId);
+          const borderClass = p.isEmergency 
+            ? (isSelected ? "border-2 border-rose-500 bg-rose-950/70" : "border border-rose-500/60 bg-rose-950/40")
+            : (isSelected ? "border-2 border-[#FFA530] bg-[#1a2f5e]" : "border border-[#D9CDBA]/30 bg-slate-900/80");
+
+          return `
+            <div id="queue-item-${encId}" onclick="selectEncounter('${encId}')" class="p-3.5 rounded-xl ${borderClass} hover:bg-[#1a2f5e]/80 cursor-pointer transition shadow-sm group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xl font-black ${p.isEmergency ? "text-rose-400" : "text-[#FFA530]"} flex items-center gap-1.5">
+                  ${p.isEmergency ? '<span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>' : ''}
+                  ${p.tokenNumber}
+                </span>
+                <div class="flex gap-1.5">
+                  ${p.isEmergency ? '<span class="text-[10px] bg-rose-500/20 text-rose-300 font-black px-2 py-0.5 rounded border border-rose-500/40">🚨 STAT EMERGENCY</span>' : '<span class="text-[10px] bg-[#FFA530]/20 text-[#FFA530] font-bold px-2 py-0.5 rounded border border-[#FFA530]/30">PM-JAY</span>'}
+                </div>
+              </div>
+              <h3 class="font-bold text-white text-sm">${p.patientName} (${p.age}${p.gender === "Male" ? "M" : "F"})</h3>
+              <p class="text-xs text-slate-300 mt-0.5 line-clamp-1">${p.nativeSpeech || p.subjective}</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Intake: ${p.timestamp || "10:30 AM"}</span>
+                <span class="${p.isEmergency ? "text-rose-400 font-black" : "text-[#FFA530] font-bold"} flex items-center gap-1">
+                  ${p.isEmergency ? "STAT Bay 1 ➔" : "Review Ready ➔"}
+                </span>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // Auto select first encounter if available
+      if (allEncIds.length > 0) {
+        selectEncounter(allEncIds[0]);
+      }
+    }
+
+    // Auto-listen to cross-tab updates when patient kiosk completes intake
+    window.addEventListener("storage", function(e) {
+      if (e.key === "MEDIKIOSK_SHARED_QUEUE" || e.key === "MEDIKIOSK_LAST_TOKEN_NUM") {
+        initDoctorQueue();
+      }
+    });
+
+    // Run on load
+    document.addEventListener("DOMContentLoaded", initDoctorQueue);
+
+
     function selectEncounter(encId) {
       currentSelectedEncId = encId;
       const data = CLINICAL_PROFILES[encId];
