@@ -5,6 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MediKiosk — Multilingual Voice Kiosk</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: "#223D79",
+              grey: "#77797C",
+              white: "#FFFFFF",
+              beige: "#D9CDBA",
+              orange: "#FFA530"
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --brand-navy: #223D79;
+      --brand-grey: #77797C;
+      --brand-white: #FFFFFF;
+      --brand-beige: #D9CDBA;
+      --brand-orange: #FFA530;
+    }
+    .bg-brand-navy { background-color: #223D79 !important; }
+    .text-brand-navy { color: #223D79 !important; }
+    .border-brand-navy { border-color: #223D79 !important; }
+    .bg-brand-orange { background-color: #FFA530 !important; }
+    .text-brand-orange { color: #FFA530 !important; }
+    .border-brand-orange { border-color: #FFA530 !important; }
+    .bg-brand-beige { background-color: #D9CDBA !important; }
+    .text-brand-beige { color: #D9CDBA !important; }
+    .border-brand-beige { border-color: #D9CDBA !important; }
+    .bg-brand-grey { background-color: #77797C !important; }
+    .text-brand-grey { color: #77797C !important; }
+    .border-brand-grey { border-color: #77797C !important; }
+  </style>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&display=swap");
     body { font-family: "Inter", "Noto Sans Telugu", "Noto Sans Devanagari", "Noto Sans Tamil", sans-serif; }
@@ -19,15 +57,15 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-blue-100">
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-[#D9CDBA]/40">
     <!-- Unified 5-Dashboard Suite Navigation -->
-  <nav class="bg-slate-900 text-slate-300 text-xs px-6 py-2.5 flex flex-wrap items-center justify-between border-b border-slate-800 sticky top-0 z-50">
+  <nav class="bg-[#223D79] text-[#D9CDBA] border-b border-[#FFA530]/40 text-xs px-6 py-2.5 flex flex-wrap items-center justify-between border-b border-slate-800 sticky top-0 z-50">
     <div class="flex items-center space-x-3">
       <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
       <span class="font-extrabold text-white tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
-      <a href="/" class="bg-blue-600 text-white font-bold px-3 py-1 rounded-md shadow-sm">📱 Patient Kiosk</a> <a href="/doctor" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">🩺 Doctor Portal</a> <a href="/triage" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">🚨 Emergency Triage</a> <a href="/ayush" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">🌿 AYUSH Dashavidha</a> <a href="/admin" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">📊 Admin & ABDM Hub</a> 
+      <a href="/" class="bg-[#FFA530] text-[#223D79] font-black shadow-md px-3 py-1 rounded-md shadow-sm">📱 Patient Kiosk</a> <a href="/doctor" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🩺 Doctor Portal</a> <a href="/triage" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🚨 Emergency Triage</a> <a href="/ayush" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">🌿 AYUSH Dashavidha</a> <a href="/admin" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 transition">📊 Admin & ABDM Hub</a> 
     </div>
   </nav>
 
@@ -44,7 +82,7 @@
       </button>
 
       <div class="hidden xl:flex items-center space-x-1.5 text-[11px] font-bold text-slate-600">
-        <button onclick="navigateToStep(0)" id="step-badge-1" class="px-2.5 py-1 rounded bg-blue-700 text-white transition">1. Lang</button>
+        <button onclick="navigateToStep(0)" id="step-badge-1" class="px-2.5 py-1 rounded bg-[#FFA530] text-[#223D79] font-black transition">1. Lang</button>
         <span class="text-slate-300">➔</span>
         <button onclick="navigateToStep(1)" id="step-badge-2" class="px-2.5 py-1 rounded bg-slate-200 text-slate-400 opacity-60 cursor-not-allowed transition">2. ID</button>
         <span class="text-slate-300">➔</span>
@@ -106,44 +144,44 @@
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-4">
         <!-- Telugu -->
-        <button onclick="setLang('te-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('te-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">తెలుగు</div>
-          <div class="text-xs font-bold text-blue-700">Telugu</div>
+          <div class="text-xs font-bold text-[#223D79]">Telugu</div>
         </button>
         <!-- Hindi -->
-        <button onclick="setLang('hi-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('hi-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">हिन्दी</div>
-          <div class="text-xs font-bold text-blue-700">Hindi</div>
+          <div class="text-xs font-bold text-[#223D79]">Hindi</div>
         </button>
         <!-- English -->
-        <button onclick="setLang('en-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('en-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">English</div>
-          <div class="text-xs font-bold text-blue-700">English</div>
+          <div class="text-xs font-bold text-[#223D79]">English</div>
         </button>
         <!-- Tamil -->
-        <button onclick="setLang('ta-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('ta-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">தமிழ்</div>
-          <div class="text-xs font-bold text-blue-700">Tamil</div>
+          <div class="text-xs font-bold text-[#223D79]">Tamil</div>
         </button>
         <!-- Kannada -->
-        <button onclick="setLang('kn-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('kn-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">ಕನ್ನಡ</div>
-          <div class="text-xs font-bold text-blue-700">Kannada</div>
+          <div class="text-xs font-bold text-[#223D79]">Kannada</div>
         </button>
         <!-- Marathi -->
-        <button onclick="setLang('mr-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('mr-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">मराठी</div>
-          <div class="text-xs font-bold text-blue-700">Marathi</div>
+          <div class="text-xs font-bold text-[#223D79]">Marathi</div>
         </button>
         <!-- Bengali -->
-        <button onclick="setLang('bn-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('bn-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">বাংলা</div>
-          <div class="text-xs font-bold text-blue-700">Bengali</div>
+          <div class="text-xs font-bold text-[#223D79]">Bengali</div>
         </button>
         <!-- Gujarati -->
-        <button onclick="setLang('gu-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+        <button onclick="setLang('gu-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
           <div class="text-3xl font-bold text-slate-900 mb-1">ગુજરાતી</div>
-          <div class="text-xs font-bold text-blue-700">Gujarati</div>
+          <div class="text-xs font-bold text-[#223D79]">Gujarati</div>
         </button>
       </div>
     </section>
@@ -161,9 +199,9 @@
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         
         <!-- Option 1: QR Code Card -->
-        <button onclick="selectAuthMethod('qr')" id="card-auth-qr" class="p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition">
+        <button onclick="selectAuthMethod('qr')" id="card-auth-qr" class="p-5 rounded-2xl border-2 border-[#FFA530] bg-[#D9CDBA]/20/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition">
           <div class="w-20 h-20 rounded-2xl bg-white border border-blue-200 flex items-center justify-center p-3 shadow-sm">
-            <svg class="w-14 h-14 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+            <svg class="w-14 h-14 text-[#223D79]" fill="currentColor" viewBox="0 0 24 24">
               <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
             </svg>
           </div>
@@ -176,7 +214,7 @@
 
         <!-- Option 2: Mobile Number Card -->
         <button onclick="selectAuthMethod('mobile')" id="card-auth-mobile" class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100">
-          <div class="w-20 h-20 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center p-3 shadow-sm">
+          <div class="w-20 h-20 rounded-2xl bg-[#D9CDBA]/30 border border-emerald-200 flex items-center justify-center p-3 shadow-sm">
             <svg class="w-12 h-12 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
             </svg>
@@ -190,8 +228,8 @@
 
         <!-- Option 3: ABHA Card -->
         <button onclick="selectAuthMethod('abha')" id="card-auth-abha" class="p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100">
-          <div class="w-20 h-20 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center p-3 shadow-sm">
-            <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-20 h-20 rounded-2xl bg-[#D9CDBA]/20 border border-blue-200 flex items-center justify-center p-3 shadow-sm">
+            <svg class="w-12 h-12 text-[#223D79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
             </svg>
           </div>
@@ -217,8 +255,8 @@
         </button>
         <!-- Option 5: New Patient Register Card -->
         <button onclick="selectAuthMethod('register')" id="card-auth-register" class="p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-500 transition text-center space-y-2.5 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-80 hover:opacity-100">
-          <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center p-2.5 shadow-sm">
-            <svg class="w-10 h-10 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 rounded-2xl bg-[#D9CDBA]/30 border border-amber-200 flex items-center justify-center p-2.5 shadow-sm">
+            <svg class="w-10 h-10 text-[#FFA530]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
           </div>
@@ -238,14 +276,14 @@
           
           <!-- PANEL 1: Live QR Scanner -->
           <div id="auth-panel-qr" class="space-y-4 text-center">
-            <div id="qr-placeholder" class="w-36 h-36 mx-auto bg-slate-50 border-2 border-dashed border-blue-600 rounded-2xl flex items-center justify-center p-3">
+            <div id="qr-placeholder" class="w-36 h-36 mx-auto bg-slate-50 border-2 border-dashed border-[#FFA530] rounded-2xl flex items-center justify-center p-3">
               <svg class="w-24 h-24 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
               </svg>
             </div>
 
             <!-- Live Camera Viewfinder with jsQR real decoding canvas -->
-            <div id="camera-viewfinder-abha" class="hidden relative w-full h-56 bg-black rounded-2xl overflow-hidden border-2 border-blue-600 shadow-inner">
+            <div id="camera-viewfinder-abha" class="hidden relative w-full h-56 bg-black rounded-2xl overflow-hidden border-2 border-[#FFA530] shadow-inner">
               <video id="video-abha" autoplay playsinline muted class="w-full h-full object-cover"></video>
               <canvas id="qr-canvas" class="hidden"></canvas>
               <div class="absolute inset-x-0 top-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399] animate-[bounce_2s_infinite]"></div>
@@ -272,7 +310,7 @@
               <label class="text-xs font-bold text-slate-700">Enter Registered 10-Digit Mobile Number:</label>
               <div class="flex">
                 <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-slate-300 bg-slate-100 text-slate-600 font-bold text-sm">+91</span>
-                <input id="input-mobile" type="tel" maxlength="10" placeholder="98765 43210" class="flex-1 border border-slate-300 rounded-r-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
+                <input id="input-mobile" type="tel" maxlength="10" placeholder="98765 43210" class="flex-1 border border-slate-300 rounded-r-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#FFA530]">
               </div>
             </div>
             <button onclick="verifyByMobile()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
@@ -287,7 +325,7 @@
           <div id="auth-panel-abha" class="hidden space-y-4">
             <div class="space-y-1.5">
               <label class="text-xs font-bold text-slate-700">Enter 14-Digit ABHA Number or ABHA Address:</label>
-              <input id="input-abha-id" type="text" placeholder="91-4829-1029-4821 or name@abdm" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
+              <input id="input-abha-id" type="text" placeholder="91-4829-1029-4821 or name@abdm" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#FFA530]">
             </div>
             <button onclick="verifyByAbhaId()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <span id="btn-txt-fetchabha">Fetch ABHA Profile</span>
@@ -298,7 +336,7 @@
           <div id="auth-panel-aadhaar" class="hidden space-y-4">
             <div class="space-y-1.5">
               <label class="text-xs font-bold text-slate-700">Enter 12-Digit Aadhaar Number (UIDAI):</label>
-              <input id="input-aadhaar" type="text" maxlength="14" placeholder="8920-1920-4821" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
+              <input id="input-aadhaar" type="text" maxlength="14" placeholder="8920-1920-4821" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-[#FFA530]">
             </div>
             <button onclick="verifyByAadhaar()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <span id="btn-txt-verifyaadh">Verify Aadhaar e-KYC</span>
@@ -317,16 +355,16 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div class="space-y-1">
                 <label class="font-bold text-slate-700">Full Name (పూర్తి పేరు):</label>
-                <input id="reg-name" type="text" placeholder="e.g. Ananya Verma" value="Ananya Verma" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+                <input id="reg-name" type="text" placeholder="e.g. Ananya Verma" value="Ananya Verma" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-[#FFA530]">
               </div>
               <div class="grid grid-cols-2 gap-2">
                 <div class="space-y-1">
                   <label class="font-bold text-slate-700">Age:</label>
-                  <input id="reg-age" type="number" placeholder="28" value="28" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+                  <input id="reg-age" type="number" placeholder="28" value="28" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-[#FFA530]">
                 </div>
                 <div class="space-y-1">
                   <label class="font-bold text-slate-700">Gender:</label>
-                  <select id="reg-gender" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+                  <select id="reg-gender" class="w-full border border-slate-300 rounded-xl px-2 py-2 text-slate-900 font-semibold focus:outline-none focus:border-[#FFA530]">
                     <option value="Female">Female</option>
                     <option value="Male">Male</option>
                     <option value="Other">Other</option>
@@ -338,11 +376,11 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div class="space-y-1">
                 <label class="font-bold text-slate-700">Mobile Number (10 Digits):</label>
-                <input id="reg-phone" type="tel" placeholder="91234 56789" value="9123456789" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+                <input id="reg-phone" type="tel" placeholder="91234 56789" value="9123456789" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-[#FFA530]">
               </div>
               <div class="space-y-1">
                 <label class="font-bold text-slate-700">Aadhaar (Optional):</label>
-                <input id="reg-aadhaar" type="text" placeholder="8920-1920-8901" value="8920-1920-8901" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-blue-600">
+                <input id="reg-aadhaar" type="text" placeholder="8920-1920-8901" value="8920-1920-8901" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-semibold focus:outline-none focus:border-[#FFA530]">
               </div>
             </div>
 
@@ -360,7 +398,7 @@
           </div>
 
           <div class="flex items-center space-x-3 pb-2">
-            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold text-lg" id="pat-avatar">
+            <div class="w-12 h-12 rounded-full bg-[#D9CDBA]/40 flex items-center justify-center text-[#223D79] font-bold text-lg" id="pat-avatar">
               RC
             </div>
             <div>
@@ -372,7 +410,7 @@
           <div class="space-y-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200">
             <div class="flex justify-between py-1 border-b border-slate-200">
               <span class="text-slate-500 font-medium">Auth Method:</span>
-              <span id="pat-auth-method" class="font-bold text-blue-700">ABHA Scan & Share</span>
+              <span id="pat-auth-method" class="font-bold text-[#223D79]">ABHA Scan & Share</span>
             </div>
             <div class="flex justify-between py-1 border-b border-slate-200">
               <span class="text-slate-500 font-medium">ABHA ID:</span>
@@ -385,7 +423,7 @@
           </div>
 
           <!-- PM-JAY Verification Badge -->
-          <div id="pmjay-card-box" class="p-3.5 rounded-xl bg-amber-50 border border-amber-300 flex items-center space-x-3">
+          <div id="pmjay-card-box" class="p-3.5 rounded-xl bg-[#D9CDBA]/30 border border-amber-300 flex items-center space-x-3">
             <svg class="w-7 h-7 text-amber-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
             </svg>
@@ -400,7 +438,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
               <span>Back</span>
             </button>
-            <button id="btn-proceed-voice" onclick="proceedToVoiceIntake()" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow">
+            <button id="btn-proceed-voice" onclick="proceedToVoiceIntake()" class="flex-1 bg-slate-900 hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow">
               Continue to Voice Symptom Intake ➔
             </button>
           </div>
@@ -418,7 +456,7 @@
         </div>
         <div class="flex items-center space-x-1.5 font-mono text-[10px] text-emerald-400">
           <span>Mic SNR: +18dB</span>
-          <span class="w-12 bg-slate-800 h-1.5 rounded-full overflow-hidden inline-block">
+          <span class="w-12 bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 h-1.5 rounded-full overflow-hidden inline-block">
             <span class="bg-emerald-400 h-full w-3/4 block"></span>
           </span>
         </div>
@@ -427,7 +465,7 @@
       <div class="bg-white border-2 border-slate-300 p-6 rounded-2xl shadow-sm text-center space-y-3">
         <div class="flex items-center justify-center space-x-2">
           <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
-          <span id="lbl-ai-status" class="text-xs font-bold text-blue-700 tracking-wide uppercase">AI Scribe Speaking</span>
+          <span id="lbl-ai-status" class="text-xs font-bold text-[#223D79] tracking-wide uppercase">AI Scribe Speaking</span>
         </div>
         <h3 id="ai-question" class="text-xl md:text-2xl font-bold text-slate-900">
           "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి."
@@ -438,8 +476,8 @@
       <!-- Pictorial SVG Body & Symptom Map -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <!-- Knee / Joint Pain -->
-        <button onclick="handleSymptomSelect('knee')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
-          <svg class="w-10 h-10 text-blue-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button onclick="handleSymptomSelect('knee')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+          <svg class="w-10 h-10 text-[#223D79] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <span id="sym-knee-title" class="font-bold text-slate-900 text-sm">మోకాళ్ళ / కీళ్ళ నొప్పులు</span>
@@ -456,8 +494,8 @@
         </button>
 
         <!-- Fever / Thermometer -->
-        <button onclick="handleSymptomSelect('fever')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
-          <svg class="w-10 h-10 text-amber-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button onclick="handleSymptomSelect('fever')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+          <svg class="w-10 h-10 text-[#FFA530] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
           <span id="sym-fever-title" class="font-bold text-slate-900 text-sm">తీవ్ర జ్వరం / చలి</span>
@@ -465,7 +503,7 @@
         </button>
 
         <!-- Stomach / Digestion -->
-        <button onclick="handleSymptomSelect('stomach')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+        <button onclick="handleSymptomSelect('stomach')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
           <svg class="w-10 h-10 text-emerald-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
@@ -482,14 +520,14 @@
           </svg>
         </button>
         <p id="mic-label" class="font-bold text-slate-900 text-sm">మాట్లాడటానికి మైక్ నొక్కండి • Tap to Speak</p>
-        <p id="transcription-text" class="text-xs text-blue-700 font-semibold italic min-h-[18px]">"నాకు 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది"</p>
+        <p id="transcription-text" class="text-xs text-[#223D79] font-semibold italic min-h-[18px]">"నాకు 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది"</p>
 
         <div class="w-full pt-2 flex justify-between gap-3">
           <button onclick="goToScreen('screen-identify')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3 px-5 rounded-xl text-xs flex items-center gap-1.5 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             <span>వెనుకకు • Back</span>
           </button>
-          <button onclick="goToScreen('screen-scan')" id="btn-next-scan" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl text-sm transition">
+          <button onclick="goToScreen('screen-scan')" id="btn-next-scan" class="bg-slate-900 hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 text-white font-bold py-3 px-6 rounded-xl text-sm transition">
             ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx
           </button>
         </div>
@@ -514,7 +552,7 @@
           </div>
 
           <!-- Live Rx Camera Viewfinder -->
-          <div id="camera-viewfinder-rx" class="hidden relative w-full h-52 bg-black rounded-2xl overflow-hidden border-2 border-blue-600 shadow-inner">
+          <div id="camera-viewfinder-rx" class="hidden relative w-full h-52 bg-black rounded-2xl overflow-hidden border-2 border-[#FFA530] shadow-inner">
             <video id="video-rx" autoplay playsinline muted class="w-full h-full object-cover"></video>
             <div class="absolute inset-x-0 top-0 h-1 bg-blue-400 shadow-[0_0_15px_#60a5fa] animate-[bounce_2.5s_infinite]"></div>
             <div class="absolute bottom-2 left-2 bg-black/70 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded">
@@ -527,7 +565,7 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
               <span>కెమెరా తెరవండి • Open Camera & Digitize</span>
             </button>
-            <button onclick="captureAndOcrRx()" id="btn-capture-rx" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
+            <button onclick="captureAndOcrRx()" id="btn-capture-rx" class="hidden w-full bg-[#223D79] hover:bg-[#223D79] text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
               <span>ఫోటో తీసి ఎక్స్‌ట్రాక్ట్ చేయండి • Snap & Extract Rx</span>
             </button>
@@ -537,7 +575,7 @@
         <!-- Extracted Data Cards -->
         <div id="ocr-results" class="bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-4 shadow-sm">
           <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-5 h-5 text-[#223D79]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             <span id="lbl-ocr-head">గుర్తించబడిన మందుల వివరాలు (96% ఖచ్చితత్వం)</span>
@@ -547,7 +585,7 @@
             <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
               <span class="font-bold text-slate-900">Current Medication:</span> Telmisartan 40mg OD • Yograj Guggulu 2 tab BD
             </div>
-            <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+            <div class="p-2.5 bg-[#D9CDBA]/30 rounded-lg border border-amber-200">
               <span class="font-bold text-amber-900">Lab Results:</span> Serum Uric Acid: 7.8 mg/dL (High) • HbA1c: 6.1%
             </div>
           </div>
@@ -557,7 +595,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
               <span>Back</span>
             </button>
-            <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+            <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="flex-1 bg-[#223D79] hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
               ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token
             </button>
           </div>
@@ -570,7 +608,7 @@
     <!-- =================================================================== -->
     <section id="screen-token" class="hidden text-center space-y-6">
       <div class="bg-white border-2 border-slate-300 p-8 rounded-3xl max-w-md mx-auto shadow-sm space-y-4">
-        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+        <div class="w-16 h-16 rounded-full bg-[#FFA530]/20 text-emerald-700 flex items-center justify-center mx-auto">
           <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
           </svg>
@@ -583,7 +621,7 @@
 
         <div class="py-4 border-y border-slate-200">
           <p id="lbl-token-sub" class="text-xs font-bold text-slate-500 uppercase tracking-widest">మీ టోకెన్ నంబర్ • YOUR TOKEN NUMBER</p>
-          <p class="text-6xl font-black text-blue-800 my-1">#042</p>
+          <p class="text-6xl font-black text-[#223D79] my-1">#042</p>
           <span class="inline-block bg-amber-100 text-amber-900 font-bold text-xs px-3 py-1 rounded-full border border-amber-300">
             PM-JAY Beneficiary • Cashless
           </span>
@@ -591,7 +629,7 @@
 
         <p id="lbl-token-msg" class="text-xs text-slate-600">మీ వివరాలు నేరుగా డాక్టర్ గారి కంప్యూటర్‌కు పంపబడ్డాయి.</p>
 
-        <button onclick="goToScreen('screen-language')" id="btn-next-pat" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+        <button onclick="goToScreen('screen-language')" id="btn-next-pat" class="w-full bg-slate-900 hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
           తదుపరి రోగి నమోదు • Start Next Patient
         </button>
       </div>
@@ -1074,7 +1112,7 @@
           badge.className = "px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold cursor-pointer transition";
           badge.title = "Click to go back to this step";
         } else if (i === currentScreenIndex) {
-          badge.className = "px-2.5 py-1 rounded bg-blue-700 text-white font-bold shadow-sm";
+          badge.className = "px-2.5 py-1 rounded bg-[#FFA530] text-[#223D79] font-black font-bold shadow-sm";
           badge.title = "Current step";
         } else {
           badge.className = "px-2.5 py-1 rounded bg-slate-100 text-slate-400 opacity-50 cursor-not-allowed";
@@ -1112,7 +1150,7 @@
     function applyVerifiedPatientUI() {
       const statusBadge = document.getElementById("badge-auth-status");
       if (statusBadge) {
-        statusBadge.className = "text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300";
+        statusBadge.className = "text-[11px] bg-[#FFA530]/20 text-[#223D79] font-bold px-2.5 py-0.5 rounded-full border border-[#FFA530]";
         statusBadge.innerText = "✓ ABDM Verified";
       }
 
@@ -1264,7 +1302,7 @@
         if (!card || !panel) return;
 
         if (k === methodKey) {
-          card.className = "p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition";
+          card.className = "p-5 rounded-2xl border-2 border-[#FFA530] bg-[#D9CDBA]/20/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition";
           if (badge) {
             badge.className = "text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full shadow-sm";
             badge.innerText = currentLanguage === "en-IN" ? "✓ Selected" : (currentLanguage === "hi-IN" ? "✓ चुना गया" : "✓ ఎంచుకోబడింది");
@@ -1643,7 +1681,7 @@
       if (placeholder) placeholder.classList.remove("hidden");
       if (btnStart) {
         btnStart.classList.remove("hidden");
-        btnStart.className = "w-full bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
+        btnStart.className = "w-full bg-[#223D79] text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
         btnStart.innerHTML = `<span>✓ ${currentLanguage === "en-IN" ? "ABHA Verified" : "ఆభా వెరిఫై చేయబడింది"}</span>`;
       }
       currentPatient.isVerified = true;
@@ -1697,7 +1735,7 @@
       if (btnCapture) btnCapture.classList.add("hidden");
       if (btnStart) {
         btnStart.classList.remove("hidden");
-        btnStart.className = "w-full bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
+        btnStart.className = "w-full bg-[#223D79] text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
         btnStart.innerHTML = `<span>✓ ${currentLanguage === "en-IN" ? "Prescription Digitized" : "ప్రిస్క్రిప్షన్ ఎక్స్‌ట్రాక్ట్ చేయబడింది"}</span>`;
       }
 
@@ -1729,9 +1767,9 @@
       } else {
         stopAllAudio();
         if (btn) {
-          btn.className = "bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm";
+          btn.className = "bg-[#D9CDBA]/20 hover:bg-[#D9CDBA]/40 text-[#223D79] border border-blue-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-sm";
           btn.innerHTML = `
-            <svg class="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg class="w-4 h-4 text-[#223D79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span id="lbl-voice-toggle">Start Voice</span>
           `;
           btn.title = "Voice is stopped. Click to Start Voice.";
