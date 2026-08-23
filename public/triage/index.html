@@ -71,10 +71,10 @@
         </div>
 
         <div class="flex gap-2 pt-2">
-          <button class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
+          <button onclick="dispatchCrashCart()" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
             <i data-lucide="bell-ring" class="w-4 h-4"></i> Dispatch Crash Cart & Nurse
           </button>
-          <button class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
+          <button onclick="routeToBed()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 px-3 rounded-lg text-xs flex items-center justify-center gap-1.5 transition">
             <i data-lucide="arrow-right-circle" class="w-4 h-4"></i> Route to Emergency Bed 1
           </button>
         </div>
@@ -135,6 +135,34 @@
       </div>
     </section>
   </main>
-  <script>lucide.createIcons();</script>
+  <!-- Notification Modal -->
+  <div id="triage-notif" class="hidden fixed bottom-6 right-6 bg-slate-900 border-2 border-emerald-500 text-white p-4 rounded-xl shadow-2xl z-50 flex items-center space-x-3">
+    <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>
+    <div>
+      <p id="triage-msg-title" class="font-bold text-sm">Action Confirmed</p>
+      <p id="triage-msg-desc" class="text-xs text-slate-300">Staff alerted and emergency protocol activated.</p>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    function dispatchCrashCart() {
+      showNotif("🚨 Crash Cart Dispatched!", "Emergency Response Team & Nurse En-Route to Kiosk #2.");
+    }
+
+    function routeToBed() {
+      showNotif("🏥 Route Assigned", "Patient Mohan Das routed to Emergency Resuscitation Bed 1.");
+    }
+
+    function showNotif(title, desc) {
+      document.getElementById("triage-msg-title").innerText = title;
+      document.getElementById("triage-msg-desc").innerText = desc;
+      const n = document.getElementById("triage-notif");
+      n.classList.remove("hidden");
+      setTimeout(() => n.classList.add("hidden"), 4000);
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>
