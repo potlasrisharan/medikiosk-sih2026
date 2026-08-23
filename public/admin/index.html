@@ -308,44 +308,70 @@
       }
     ];
 
-    function refreshTransactionFeed() {
-      let customQueue = [];
-      try {
-        customQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
-      } catch (e) {}
-
-      const allTx = [];
-      customQueue.forEach(item => {
-        allTx.push({
-          token: item.tokenNumber,
-          name: item.patientName,
-          age: item.age,
-          gender: item.gender,
-          abha: item.abhaId,
-          complaint: item.selectedSymptom || item.assessment || "General OPD Consultation",
-          isEmergency: item.isEmergency,
-          abdmStatus: "M1 Verified",
-          pmjayStatus: item.hasPmjay ? "APPROVED (₹5,000)" : "N/A",
-          time: item.timestamp || "Just Now"
-        });
-      });
-
-      BASE_TRANSACTIONS.forEach(b => {
-        if (!allTx.some(t => t.token === b.token)) {
-          allTx.push(b);
-        }
-      });
-
+    async function refreshTransactionFeed() {
       const totalCounter = document.getElementById("stat-opd-intakes");
-      if (totalCounter) {
-        totalCounter.innerText = (4280 + customQueue.length).toLocaleString();
-      }
-
       const tbody = document.getElementById("transaction-table-body");
       if (!tbody) return;
 
+      let allTx = [];
+
+      try {
+        // Fetch real data from FastAPI backend
+        const res = await fetch("http://localhost:8000/api/v1/doctor/queue");
+        if (res.ok) {
+          const queue = await res.json();
+          allTx = queue.map(q => ({
+            token: q.token_number,
+            name: q.patient_name,
+            age: q.age,
+            gender: q.gender,
+            abha: "91-XXXX-XXXX-XXXX", // Default if not in queue item
+            complaint: q.chief_complaint,
+            isEmergency: q.triage_priority === "Emergency_Red",
+            abdmStatus: "M1 Verified (Backend)",
+            pmjayStatus: q.pmjay_eligible ? "APPROVED (₹5,000)" : "N/A",
+            time: q.created_at
+          }));
+        }
+      } catch (err) {
+        console.warn("Backend not reachable, falling back to local simulation", err);
+      }
+
+      // If backend failed or returned empty, use localStorage + base
+      if (allTx.length === 0) {
+        let customQueue = [];
+        try {
+          customQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
+        } catch (e) {}
+
+        customQueue.forEach(item => {
+          allTx.push({
+            token: item.tokenNumber,
+            name: item.patientName,
+            age: item.age,
+            gender: item.gender,
+            abha: item.abhaId || "91-XXXX-XXXX-XXXX",
+            complaint: item.selectedSymptom || item.assessment || "General OPD Consultation",
+            isEmergency: item.isEmergency,
+            abdmStatus: "M1 Verified",
+            pmjayStatus: item.hasPmjay ? "APPROVED (₹5,000)" : "N/A",
+            time: item.timestamp || "Just Now"
+          });
+        });
+
+        BASE_TRANSACTIONS.forEach(b => {
+          if (!allTx.some(t => t.token === b.token)) {
+            allTx.push(b);
+          }
+        });
+      }
+
+      if (totalCounter) {
+        totalCounter.innerText = (4280 + allTx.length).toLocaleString();
+      }
+
       tbody.innerHTML = allTx.map((tx, idx) => `
-        <tr class="hover:bg-white border border-[#D9CDBA]/80 shadow-sm transition ${tx.isEmergency ? "bg-rose-50" : ""}">
+        <tr class="hover:bg-[#f0ede8] transition ${tx.isEmergency ? "bg-rose-50" : ""}">
           <td class="p-3 font-black ${tx.isEmergency ? "text-rose-400" : "text-[#FFA530]"}">
             ${tx.token}
           </td>
@@ -359,7 +385,7 @@
             ${tx.complaint}
           </td>
           <td class="p-3">
-            <span class="bg-emerald-500/20 text-[#223D79] font-bold px-2 py-0.5 rounded text-[11px] border border-emerald-500/30">
+            <span class="bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded text-[11px] border border-emerald-500/30">
               ✓ ${tx.abdmStatus}
             </span>
           </td>
@@ -369,7 +395,7 @@
             </span>
           </td>
           <td class="p-3 text-right space-x-1.5">
-            <button onclick="viewPatientFhir('${tx.name}', '${tx.abha}', '${tx.complaint}')" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-white text-[#D9CDBA] px-2.5 py-1 rounded text-[11px] font-bold border border-[#D9CDBA]/30 transition">
+            <button onclick="viewPatientFhir('${tx.name}', '${tx.abha}', '${tx.complaint.replace(/'/g, "")}')" class="bg-[#223D79] hover:bg-[#1a2f5e] text-white px-2.5 py-1 rounded text-[11px] font-bold shadow transition">
               FHIR R4
             </button>
           </td>
