@@ -168,9 +168,8 @@
             </svg>
           </div>
           <div>
-            <span class="block font-black text-slate-900 text-sm md:text-base">QR స్కాన్ చేయండి</span>
-            <span class="block text-xs font-bold text-blue-700">Scan ABHA QR Code</span>
-            <span class="text-[10px] text-slate-500 mt-1 block">కెమెరా ముందు ఉంచండి</span>
+            <span id="opt-qr-title" class="block font-black text-slate-900 text-sm md:text-base">Scan ABHA QR</span>
+            <span id="opt-qr-sub" class="text-[11px] text-slate-500 mt-1 block">Point QR at camera scanner</span>
           </div>
           <span class="text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
         </button>
@@ -183,9 +182,8 @@
             </svg>
           </div>
           <div>
-            <span class="block font-black text-slate-900 text-sm md:text-base">మొబైల్ నంబర్</span>
-            <span class="block text-xs font-bold text-emerald-700">Mobile Number (OTP)</span>
-            <span class="text-[10px] text-slate-500 mt-1 block">10 అంకెల ఫోన్ నంబర్</span>
+            <span id="opt-mob-title" class="block font-black text-slate-900 text-sm md:text-base">Mobile Number</span>
+            <span id="opt-mob-sub" class="text-[11px] text-slate-500 mt-1 block">10-digit phone with OTP</span>
           </div>
           <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
         </button>
@@ -198,9 +196,8 @@
             </svg>
           </div>
           <div>
-            <span class="block font-black text-slate-900 text-sm md:text-base">ఆభా (ABHA) కార్డ్</span>
-            <span class="block text-xs font-bold text-blue-700">14-Digit ABHA ID</span>
-            <span class="text-[10px] text-slate-500 mt-1 block">91-XXXX-XXXX-XXXX</span>
+            <span id="opt-abha-title" class="block font-black text-slate-900 text-sm md:text-base">14-Digit ABHA ID</span>
+            <span id="opt-abha-sub" class="text-[11px] text-slate-500 mt-1 block">91-XXXX-XXXX-XXXX or name@abdm</span>
           </div>
           <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
         </button>
@@ -213,9 +210,8 @@
             </svg>
           </div>
           <div>
-            <span class="block font-black text-slate-900 text-sm md:text-base">ఆధార్ కార్డ్</span>
-            <span class="block text-xs font-bold text-purple-700">Aadhaar Card (UIDAI)</span>
-            <span class="text-[10px] text-slate-500 mt-1 block">12 అంకెల ఆధార్ సంఖ్య</span>
+            <span id="opt-aadh-title" class="block font-black text-slate-900 text-sm md:text-base">Aadhaar Card</span>
+            <span id="opt-aadh-sub" class="text-[11px] text-slate-500 mt-1 block">12-digit UIDAI number</span>
           </div>
           <span class="text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full">ఎంచుకోండి • Select</span>
         </button>
@@ -250,7 +246,7 @@
             <div class="space-y-2">
               <button onclick="startAbhaCamera()" id="btn-scan-action" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
-                <span>కెమెరా ప్రారంభించండి • Open Camera to Scan QR</span>
+                <span id="btn-txt-opencam">Open Camera to Scan QR</span>
               </button>
               <button onclick="verifyDemoPatient('qr')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
                 ⚡ Use Sample ABHA QR Card (Ramesh Chandra)
@@ -268,7 +264,7 @@
               </div>
             </div>
             <button onclick="verifyByMobile()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
-              <span>ఓటీపీ ధృవీకరించండి • Verify Mobile OTP & Fetch Records</span>
+              <span id="btn-txt-verifymob">Verify Mobile OTP & Fetch Records</span>
             </button>
             <button onclick="fillSampleMobile()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs border border-slate-300 transition">
               ⚡ Fill Sample Mobile (+91 98765 43210)
@@ -282,7 +278,7 @@
               <input id="input-abha-id" type="text" placeholder="91-4829-1029-4821 or name@abdm" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
             </div>
             <button onclick="verifyByAbhaId()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
-              <span>ఆభా రికార్డ్ పొందండి • Fetch ABHA Profile</span>
+              <span id="btn-txt-fetchabha">Fetch ABHA Profile</span>
             </button>
           </div>
 
@@ -293,7 +289,7 @@
               <input id="input-aadhaar" type="text" maxlength="14" placeholder="8920-1920-4821" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-600">
             </div>
             <button onclick="verifyByAadhaar()" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2">
-              <span>ఆధార్ బయోమెట్రిక్ / ఓటీపీ • Verify Aadhaar e-KYC</span>
+              <span id="btn-txt-verifyaadh">Verify Aadhaar e-KYC</span>
             </button>
           </div>
         </div>
@@ -546,87 +542,29 @@
   </main>
 
   <script>
-    // Complete Multilingual Dictionary with Native Scripts and Spoken Prompts
+        // Complete Multilingual Dictionary with Native Scripts and Spoken Prompts
     const I18N = {
-      "te-IN": {
-        langName: "తెలుగు",
-        welcomeVoice: "తెలుగు భాష ఎంచుకోబడింది. దయచేసి మీ ఆభా (ABHA) కార్డును స్కాన్ చేయండి.",
-        scanTitle: "మీ ఆభా (ABHA) కార్డు / QR స్కాన్ చేయండి",
-        scanSubtitle: "Scan Your ABHA Card / QR Code",
-        scanBtn: "స్కాన్ చేయడానికి నొక్కండి • Tap to Scan ABHA",
-        scanSuccessVoice: "ఆభా (ABHA) కార్డ్ విజయవంతంగా స్కాన్ చేయబడింది. రమేష్ చంద్ర, 52 సంవత్సరాలు. ఆయుష్మాన్ భారత్ పి ఎం జె ఏ వై వెరిఫై చేయబడింది.",
-        pmjayTitle: "ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్",
-        pmjayDesc: "₹5,00,000 వార్షిక కవరేజ్ • ఉచిత వైద్యం & మందులు",
-        continueVoiceBtn: "లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue to Voice",
-        aiQuestion: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
-        aiQuestionSub: "Where does it hurt? Touch the body area below or press microphone to speak",
-        aiVoicePrompt: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
-        kneeTitle: "మోకాళ్ళ / కీళ్ళ నొప్పులు",
-        kneeVoice: "మోకాళ్ళ నొప్పులు నమోదు చేయబడ్డాయి.",
-        chestTitle: "ఛాతీలో తీవ్ర నొప్పి",
-        chestVoice: "జాగ్రత్త. ఛాతీ నొప్పి అత్యవసర లక్షణంగా గుర్తించబడింది. ఎమర్జెన్సీ డెస్క్ అలర్ట్ చేయబడింది. వెంటనే రూమ్ 1 కి వెళ్ళండి.",
-        feverTitle: "తీవ్ర జ్వరం / చలి",
-        feverVoice: "తీవ్ర జ్వరం మరియు చలి లక్షణాలు నమోదు చేయబడ్డాయి.",
-        stomachTitle: "కడుపు నొప్పి / అజీర్ణం",
-        stomachVoice: "కడుపు నొప్పి మరియు అజీర్ణం నమోదు చేయబడ్డాయి.",
-        micLabel: "మాట్లాడటానికి మైక్ నొక్కండి • Tap to Speak",
-        nextScanBtn: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx",
-        scanRxTitle: "పాత ప్రిస్క్రిప్షన్ పేపర్‌ను కెమెరా కింద ఉంచండి",
-        scanRxSub: "Place Paper Prescription Under Scanner (Sarvam 3B VLM)",
-        scanRxAct: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి • Digitize Prescription",
-        ocrSuccessVoice: "పాత ప్రిస్క్రిప్షన్ స్కాన్ పూర్తయింది. టెల్మిసార్టన్ మరియు యోగరాజ్ గుగ్గులు మందులు గుర్తించబడ్డాయి.",
-        ocrHead: "గుర్తించబడిన మందుల వివరాలు (96% ఖచ్చితత్వం)",
-        confirmTokenBtn: "ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token",
-        tokenDone: "కేస్ నమోదు పూర్తయింది",
-        tokenSub: "మీ టోకెన్ నంబర్ • YOUR TOKEN NUMBER",
-        tokenMsg: "మీ వివరాలు నేరుగా డాక్టర్ గారి కంప్యూటర్‌కు పంపబడ్డాయి.",
-        tokenVoice: "మీ టోకెన్ నంబర్ 42. ఓపీడీ రూమ్ నంబర్ 4 వద్ద వేచి ఉండండి.",
-        nextPatBtn: "తదుపరి రోగి నమోదు • Start Next Patient",
-        listenBtn: "వినండి • Listen"
-      },
-      "hi-IN": {
-        langName: "हिन्दी",
-        welcomeVoice: "हिन्दी भाषा चुनी गई है। कृपया अपना आभा (ABHA) कार्ड स्कैन करें।",
-        scanTitle: "अपना आभा (ABHA) कार्ड / QR स्कैन करें",
-        scanSubtitle: "Scan Your ABHA Card / QR Code",
-        scanBtn: "स्कैन करने के लिए दबाएं • Tap to Scan ABHA",
-        scanSuccessVoice: "आभा (ABHA) कार्ड सफलतापूर्वक स्कैन हो गया है। रमेश चंद्र, बावन साल। आयुष्मान भारत सत्यापित है।",
-        pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय",
-        pmjayDesc: "₹5,00,000 वार्षिक कवरेज • 100% कैशलेस इलाज",
-        continueVoiceBtn: "आवाज से लक्षण बताने के लिए आगे बढ़ें ➔ Continue to Voice",
-        aiQuestion: "आपको किस जगह दर्द या तकलीफ है? चित्र को छुएं या माइक दबाकर बोलें।",
-        aiQuestionSub: "Where does it hurt? Touch the body area below or press microphone to speak",
-        aiVoicePrompt: "आपको किस जगह दर्द या तकलीफ है? चित्र को छुएं या माइक दबाकर बोलें।",
-        kneeTitle: "घुटने / जोड़ों में दर्द",
-        kneeVoice: "घुटनों का दर्द दर्ज कर लिया गया है।",
-        chestTitle: "सीने में तेज दर्द",
-        chestVoice: "सावधान! सीने में दर्द आपातकालीन लक्षण है। इमरजेंसी डेस्क को सूचित कर दिया गया है।",
-        feverTitle: "बुखार और सर्दी",
-        feverVoice: "बुखार और सर्दी के लक्षण दर्ज किए गए।",
-        stomachTitle: "पेट दर्द / अपच",
-        stomachVoice: "पेट दर्द और अपच दर्ज कर लिया गया है।",
-        micLabel: "बोलने के लिए माइक दबाएं • Tap to Speak",
-        nextScanBtn: "पर्चा स्कैन करें ➔ Next: Scan Rx",
-        scanRxTitle: "पुराना पर्चा स्कैनर के नीचे रखें",
-        scanRxSub: "Place Paper Prescription Under Scanner (Sarvam 3B VLM)",
-        scanRxAct: "पर्चा स्कैन करें • Digitize Prescription",
-        ocrSuccessVoice: "पर्चे का स्कैन पूरा हो गया है। टेलमीसार्टन और योगराज गुग्गुलु दवाएं दर्ज की गईं।",
-        ocrHead: "दवाओं का विवरण (96% सटीकता)",
-        confirmTokenBtn: "पुष्टि करें और टोकन लें ➔ Confirm & Get Token",
-        tokenDone: "केस पंजीकरण पूरा हुआ",
-        tokenSub: "आपका टोकन नंबर • YOUR TOKEN NUMBER",
-        tokenMsg: "आपका विवरण सीधे डॉक्टर के कंप्यूटर पर भेज दिया गया है।",
-        tokenVoice: "आपका टोकन नंबर बयालीस है। ओपीडी रूम नंबर चार के बाहर प्रतीक्षा करें।",
-        nextPatBtn: "अगले मरीज का पंजीकरण • Start Next Patient",
-        listenBtn: "सुनें • Listen"
-      },
-            "en-IN": {
+      "en-IN": {
         langName: "English",
-        welcomeVoice: "English selected. Please scan your A B H A card or QR code to begin.",
-        scanTitle: "Scan Your ABHA Card / QR Code",
-        scanSubtitle: "Keep your ABHA card under the kiosk scanner",
-        scanBtn: "Tap to Scan ABHA Card",
-        scanSuccessVoice: "A B H A card successfully verified for Ramesh Chandra, 52 years. Ayushman Bharat PM-JAY is active.",
+        welcomeVoice: "English selected. Please choose how you want to identify yourself.",
+        identifyTitle: "How would you like to identify yourself?",
+        identifySub: "Touch any one option below to verify your health records",
+        optQrTitle: "Scan ABHA QR",
+        optQrSub: "Point at camera scanner",
+        optMobTitle: "Mobile Number",
+        optMobSub: "10-digit phone with OTP",
+        optAbhaTitle: "14-Digit ABHA ID",
+        optAbhaSub: "91-XXXX-XXXX-XXXX",
+        optAadhTitle: "Aadhaar Card",
+        optAadhSub: "12-digit UIDAI number",
+        btnSelect: "Select",
+        btnSelected: "✓ Selected",
+        btnOpenCam: "Open Camera to Scan QR",
+        btnVerifyMob: "Verify Mobile OTP & Fetch Records",
+        btnFetchAbha: "Fetch ABHA Profile",
+        btnVerifyAadh: "Verify Aadhaar e-KYC",
+        patName: "Ramesh Chandra",
+        patMeta: "52 Yrs • Male • Khammam, Telangana",
         pmjayTitle: "Ayushman Bharat PM-JAY Active",
         pmjayDesc: "₹5,00,000 Annual Coverage • Cashless OPD Approved",
         continueVoiceBtn: "Continue to Voice Symptom Intake ➔",
@@ -654,843 +592,112 @@
         tokenMsg: "Your case summary has been sent directly to the doctor.",
         tokenVoice: "Your intake is complete. Your token number is 42. Please proceed to OPD Consultation Room 4.",
         nextPatBtn: "Start Next Patient Intake",
-        listenBtn: "Listen"
+        listenBtn: "Listen",
+        scanSuccessVoice: "ABHA profile successfully verified for Ramesh Chandra, 52 years. Ayushman Bharat PM-JAY is active."
       },
-"ta-IN": {
-        langName: "தமிழ்",
-        welcomeVoice: "தமிழ் மொழி தேர்ந்தெடுக்கப்பட்டது. உங்கள் ஏ பி எச் ஏ (A B H A) கார்டை ஸ்கேன் செய்யவும்.",
-        scanTitle: "உங்கள் ஏ பி எச் ஏ (A B H A) கார்டை ஸ்கேன் செய்யவும்",
-        scanSubtitle: "Scan Your ABHA Card / QR Code",
-        scanBtn: "ஸ்கேன் செய்ய தொடவும் • Tap to Scan ABHA",
-        scanSuccessVoice: "ஏ பி எச் ஏ (A B H A) அட்டை சரிபார்க்கப்பட்டது. ரமேஷ் சந்திரா, 52 வயது. பி எம் ஜே ஏ ஒய் செயலில் உள்ளது.",
-        pmjayTitle: "ஆயுஷ்மான் பாரத் PM-JAY செயலில் உள்ளது",
-        pmjayDesc: "₹5,00,000 காப்பீடு • இலவச மருத்துவம்",
-        continueVoiceBtn: "குரல் வழி பதிவு தொடரவும் ➔ Continue to Voice",
-        aiQuestion: "உங்களுக்கு எங்கு வலி உள்ளது? படத்தை தொடவும் அல்லது பேசவும்.",
-        aiQuestionSub: "Where does it hurt? Touch the body area below or speak",
-        aiVoicePrompt: "உங்களுக்கு எங்கு வலி உள்ளது? படத்தை தொடவும் அல்லது பேசவும்.",
-        kneeTitle: "முழங்கால் / மூட்டு வலி",
-        kneeVoice: "மூட்டு வலி பதிவு செய்யப்பட்டது.",
-        chestTitle: "நெஞ்சு வலி (அவசரம்)",
-        chestVoice: "எச்சரிக்கை! நெஞ்சு வலி கண்டறியப்பட்டது. அவசர பிரிவு எச்சரிக்கப்பட்டது.",
-        feverTitle: "காய்ச்சல் மற்றும் குளிர்",
-        feverVoice: "காய்ச்சல் அறிகுறிகள் பதிவு செய்யப்பட்டன.",
-        stomachTitle: "வயிற்று வலி / அஜீரணம்",
-        stomachVoice: "வயிற்று வலி பதிவு செய்யப்பட்டது.",
-        micLabel: "பேச மைக்கை அழுத்தவும் • Tap to Speak",
-        nextScanBtn: "மருந்து சீட்டு ஸ்கேன் ➔ Next: Scan Rx",
-        scanRxTitle: "மருந்து சீட்டை ஸ்கேனர் கீழ் வைக்கவும்",
-        scanRxSub: "Place Paper Prescription Under Scanner",
-        scanRxAct: "சீட்டை ஸ்கேன் செய்யவும் • Digitize Prescription",
-        ocrSuccessVoice: "மருந்து சீட்டு ஸ்கேன் முடிந்தது.",
-        ocrHead: "கண்டறியப்பட்ட மருந்துகள் (96% துல்லியம்)",
-        confirmTokenBtn: "டோக்கன் பெறவும் ➔ Confirm & Get Token",
-        tokenDone: "பதிவு முடிந்தது",
-        tokenSub: "உங்கள் டோக்கன் எண் • YOUR TOKEN NUMBER",
-        tokenMsg: "உங்கள் விவரங்கள் மருத்துவருக்கு அனுப்பப்பட்டது.",
-        tokenVoice: "உங்கள் டோக்கன் எண் 42. அறை எண் 4 க்கு செல்லவும்.",
-        nextPatBtn: "அடுத்த நோயாளி • Start Next Patient",
-        listenBtn: "கேளுங்கள் • Listen"
+      "te-IN": {
+        langName: "తెలుగు",
+        welcomeVoice: "తెలుగు భాష ఎంచుకోబడింది. దయచేసి మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారో ఎంచుకోండి.",
+        identifyTitle: "మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారు?",
+        identifySub: "క్రింది 4 పద్ధతుల్లో ఒకదానిపై నొక్కండి",
+        optQrTitle: "QR స్కాన్ చేయండి",
+        optQrSub: "కెమెరా ముందు ఉంచండి",
+        optMobTitle: "మొబైల్ నంబర్",
+        optMobSub: "10 అంకెల ఫోన్ నంబర్",
+        optAbhaTitle: "ఆభా (ABHA) కార్డ్",
+        optAbhaSub: "14 అంకెల ఆభా సంఖ్య",
+        optAadhTitle: "ఆధార్ కార్డ్",
+        optAadhSub: "12 అంకెల ఆధార్ సంఖ్య",
+        btnSelect: "ఎంచుకోండి",
+        btnSelected: "✓ ఎంచుకోబడింది",
+        btnOpenCam: "కెమెరా ప్రారంభించి స్కాన్ చేయండి",
+        btnVerifyMob: "ఓటీపీ ధృవీకరించి రికార్డులు పొందండి",
+        btnFetchAbha: "ఆభా రికార్డ్ పొందండి",
+        btnVerifyAadh: "ఆధార్ బయోమెట్రిక్ / ఓటీపీ",
+        patName: "రమేష్ చంద్ర (Ramesh Chandra)",
+        patMeta: "52 సం. • పురుషుడు • ఖమ్మం, తెలంగాణ",
+        pmjayTitle: "ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్",
+        pmjayDesc: "₹5,00,000 వార్షిక కవరేజ్ • 100% ఉచిత క్యాష్‌లెస్‌ చికిత్స",
+        continueVoiceBtn: "లక్షణాలు చెప్పడానికి కొనసాగించండి ➔",
+        aiQuestion: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
+        aiQuestionSub: "Where does it hurt? Touch the body area below or press microphone to speak",
+        aiVoicePrompt: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
+        kneeTitle: "మోకాళ్ళ / కీళ్ళ నొప్పులు",
+        kneeVoice: "మోకాళ్ళ నొప్పులు నమోదు చేయబడ్డాయి.",
+        chestTitle: "ఛాతీలో తీవ్ర నొప్పి",
+        chestVoice: "జాగ్రత్త. ఛాతీ నొప్పి అత్యవసర లక్షణంగా గుర్తించబడింది. వెంటనే రూమ్ 1 కి వెళ్ళండి.",
+        feverTitle: "తీవ్ర జ్వరం / చలి",
+        feverVoice: "తీవ్ర జ్వరం మరియు చలి లక్షణాలు నమోదు చేయబడ్డాయి.",
+        stomachTitle: "కడుపు నొప్పి / అజీర్ణం",
+        stomachVoice: "కడుపు నొప్పి మరియు అజీర్ణం నమోదు చేయబడ్డాయి.",
+        micLabel: "మైక్రోఫోన్ నొక్కి మాట్లాడండి",
+        nextScanBtn: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx",
+        scanRxTitle: "పాత ప్రిస్క్రిప్షన్ పేపర్‌ను కెమెరా కింద ఉంచండి",
+        scanRxSub: "Sarvam Vision 3B VLM digitizes cursive handwriting",
+        scanRxAct: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి • Digitize Prescription",
+        ocrSuccessVoice: "ప్రిస్క్రిప్షన్ రికార్డ్ విజయవంతంగా నమోదు చేయబడింది.",
+        ocrHead: "గుర్తించబడిన మందుల వివరాలు (96% ఖచ్చితత్వం)",
+        confirmTokenBtn: "ధృవీకరించి టోకెన్ పొందండి ➔",
+        tokenDone: "కేస్ నమోదు పూర్తయింది",
+        tokenSub: "మీ ఓపీడీ టోకెన్ సంఖ్య",
+        tokenMsg: "మీ వివరాలు డాక్టర్ గారి స్క్రీన్ కు పంపబడ్డాయి.",
+        tokenVoice: "మీ నమోదు పూర్తయింది. మీ టోకెన్ సంఖ్య 42. దయచేసి రూమ్ నంబర్ 4 వద్ద వేచి ఉండండి.",
+        nextPatBtn: "మరో పేషెంట్ ప్రారంభించండి",
+        listenBtn: "వినండి",
+        scanSuccessVoice: "ఆభా (ABHA) కార్డ్ విజయవంతంగా స్కాన్ చేయబడింది. రమేష్ చంద్ర, 52 సంవత్సరాలు. ఆయుష్మాన్ భారత్ పి ఎం జె ఏ వై వెరిఫై చేయబడింది."
       },
-      "kn-IN": {
-        langName: "ಕನ್ನಡ",
-        welcomeVoice: "ಕನ್ನಡ ಭಾಷೆ ಆಯ್ಕೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಎ ಬಿ ಎಚ್ ಎ (A B H A) ಕಾರ್ಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.",
-        scanTitle: "ನಿಮ್ಮ ಎ ಬಿ ಎಚ್ ಎ (A B H A) ಕಾರ್ಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
-        scanSubtitle: "Scan Your ABHA Card / QR Code",
-        scanBtn: "ಸ್ಕ್ಯಾನ್ ಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ • Tap to Scan ABHA",
-        scanSuccessVoice: "ಎ ಬಿ ಎಚ್ ಎ (A B H A) ಕಾರ್ಡ್ ಯಶಸ್ವಿಯಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ. ರಮೇಶ್ ಚಂದ್ರ, 52 ವರ್ಷ.",
-        pmjayTitle: "ಆಯುಷ್ಮಾನ್ ಭಾರತ್ PM-JAY ಸಕ್ರಿಯ",
-        pmjayDesc: "₹5,00,000 ವಾರ್ಷಿಕ ರಕ್ಷಣೆ • ಉಚಿತ ಚಿಕಿತ್ಸೆ",
-        continueVoiceBtn: "ಮುಂದೆ ಸಾಗಿರಿ ➔ Continue to Voice",
-        aiQuestion: "ನಿಮಗೆ ಎಲ್ಲಿ ನೋವಿದೆ? ಚಿತ್ರವನ್ನು ಮುಟ್ಟಿ ಅಥವಾ ಮಾತನಾಡಿ.",
-        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
-        aiVoicePrompt: "ನಿಮಗೆ ಎಲ್ಲಿ ನೋವಿದೆ? ಚಿತ್ರವನ್ನು ಮುಟ್ಟಿ ಅಥವಾ ಮಾತನಾಡಿ.",
-        kneeTitle: "ಮೊಣಕಾಲು / ಕೀಲು ನೋವು",
-        kneeVoice: "ಮೊಣಕಾಲು ನೋವು ದಾಖಲಾಗಿದೆ.",
-        chestTitle: "ಎದೆ ನೋವು (ತುರ್ತು)",
-        chestVoice: "ಎಚ್ಚರಿಕೆ! ಎದೆ ನೋವು ಪತ್ತೆಯಾಗಿದೆ. ತುರ್ತು ವಿಭಾಗಕ್ಕೆ ಮಾಹಿತಿ ನೀಡಲಾಗಿದೆ.",
-        feverTitle: "ಜ್ವರ ಮತ್ತು ಚಳಿ",
-        feverVoice: "ಜ್ವರ ದಾಖಲಾಗಿದೆ.",
-        stomachTitle: "ಹೊಟ್ಟೆ ನೋವು",
-        stomachVoice: "ಹೊಟ್ಟೆ ನೋವು ದಾಖಲಾಗಿದೆ.",
-        micLabel: "ಮಾತನಾಡಲು ಮೈಕ್ ಒತ್ತಿ • Tap to Speak",
-        nextScanBtn: "ಮುಂದೆ: ಚೀಟಿ ಸ್ಕ್ಯಾನ್ ➔ Next: Scan Rx",
-        scanRxTitle: "ಹಳೆಯ ಚೀಟಿಯನ್ನು ಸ್ಕ್ಯಾನರ್ ಕೆಳಗೆ ಇರಿಸಿ",
-        scanRxSub: "Place Paper Prescription Under Scanner",
-        scanRxAct: "ಚೀಟಿ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ • Digitize Prescription",
-        ocrSuccessVoice: "ಚೀಟಿ ಸ್ಕ್ಯಾನ್ ಪೂರ್ಣಗೊಂಡಿದೆ.",
-        ocrHead: "ಔಷಧಿಗಳ ವಿವರ (96% ನಿಖರತೆ)",
-        confirmTokenBtn: "ಟೋಕನ್ ಪಡೆಯಿರಿ ➔ Confirm & Get Token",
-        tokenDone: "ನೋಂದಣಿ ಪೂರ್ಣಗೊಂಡಿದೆ",
-        tokenSub: "ನಿಮ್ಮ ಟೋಕನ್ ಸಂಖ್ಯೆ • YOUR TOKEN NUMBER",
-        tokenMsg: "ನಿಮ್ಮ ವಿವರಗಳು ವೈದ್ಯರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.",
-        tokenVoice: "ನಿಮ್ಮ ಟೋಕನ್ ಸಂಖ್ಯೆ 42. ಕೊಠಡಿ ಸಂಖ್ಯೆ 4 ರ ಬಳಿ ಕಾಯಿರಿ.",
-        nextPatBtn: "ಮುಂದಿನ ರೋಗಿ • Start Next Patient",
-        listenBtn: "ಕೇಳಿ • Listen"
-      },
-      "mr-IN": {
-        langName: "मराठी",
-        welcomeVoice: "मराठी भाषा निवडली आहे. कृपया आपले आभा (ABHA) कार्ड स्कॅन करा.",
-        scanTitle: "आपले आभा (ABHA) कार्ड स्कॅन करा",
-        scanSubtitle: "Scan Your ABHA Card / QR Code",
-        scanBtn: "स्कॅन करण्यासाठी दाबा • Tap to Scan ABHA",
-        scanSuccessVoice: "आभा (ABHA) कार्ड यशस्वीरीत्या तपासले गेले. रमेश चंद्र, 52 वर्षे.",
+      "hi-IN": {
+        langName: "हिन्दी",
+        welcomeVoice: "हिन्दी भाषा चुनी गई है। कृपया अपनी पहचान का तरीका चुनें।",
+        identifyTitle: "आप अपनी पहचान कैसे सत्यापित करना चाहते हैं?",
+        identifySub: "नीचे दिए गए 4 विकल्पों में से एक चुनें",
+        optQrTitle: "QR कोड स्कैन करें",
+        optQrSub: "कैमरे के सामने रखें",
+        optMobTitle: "मोबाइल नंबर",
+        optMobSub: "10-अंकीय फोन नंबर (OTP)",
+        optAbhaTitle: "14-अंकीय ABHA ID",
+        optAbhaSub: "91-XXXX-XXXX-XXXX",
+        optAadhTitle: "आधार कार्ड",
+        optAadhSub: "12-अंकीय आधार संख्या",
+        btnSelect: "चुनें",
+        btnSelected: "✓ चुना गया",
+        btnOpenCam: "कैमरा खोलकर QR स्कैन करें",
+        btnVerifyMob: "मोबाइल OTP सत्यापित करें",
+        btnFetchAbha: "ABHA प्रोफाइल प्राप्त करें",
+        btnVerifyAadh: "आधार e-KYC सत्यापित करें",
+        patName: "रमेश चंद्र (Ramesh Chandra)",
+        patMeta: "52 वर्ष • पुरुष • खम्मम, तेलंगाना",
         pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय",
-        pmjayDesc: "₹5,00,000 वार्षिक संरक्षण • मोफत उपचार",
-        continueVoiceBtn: "पुढे जा ➔ Continue to Voice",
-        aiQuestion: "आपल्याला कुठे दुखत आहे? चित्राला स्पर्श करा किंवा बोला.",
-        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
-        aiVoicePrompt: "आपल्याला कुठे दुखत आहे? चित्राला स्पर्श करा किंवा बोला.",
-        kneeTitle: "गुडघे / सांधे दुखी",
-        kneeVoice: "गुडघेदुखी नोंदवली गेली आहे.",
-        chestTitle: "छातीत तीव्र वेदना (तातडीने)",
-        chestVoice: "सावधान! छातीत वेदना आढळली आहे. तात्काळ मदत कक्ष अलर्ट करण्यात आला आहे.",
-        feverTitle: "ताप आणि थंडी",
-        feverVoice: "ताप नोंदवला गेला.",
-        stomachTitle: "पोटदुखी / अपचन",
-        stomachVoice: "पोटदुखी नोंदवली गेली.",
-        micLabel: "बोलण्यासाठी माइक दाबा • Tap to Speak",
-        nextScanBtn: "प्रिस्क्रिप्शन स्कॅन ➔ Next: Scan Rx",
-        scanRxTitle: "जुने प्रिस्क्रिप्शन स्कॅनर खाली ठेवा",
-        scanRxSub: "Place Paper Prescription Under Scanner",
-        scanRxAct: "प्रिस्क्रिप्शन स्कॅन करा • Digitize Prescription",
-        ocrSuccessVoice: "प्रिस्क्रिप्शन स्कॅन पूर्ण झाले.",
-        ocrHead: "औषधांचे तपशील (96% अचूकता)",
-        confirmTokenBtn: "टोकन मिळवा ➔ Confirm & Get Token",
-        tokenDone: "नोंदणी पूर्ण झाली",
-        tokenSub: "आपला टोकन क्रमांक • YOUR TOKEN NUMBER",
-        tokenMsg: "आपली माहिती थेट डॉक्टरांकडे पाठवली आहे.",
-        tokenVoice: "आपला टोकन क्रमांक 42 आहे. रूम नंबर 4 बाहेर थांबा.",
-        nextPatBtn: "पुढील रुग्ण • Start Next Patient",
-        listenBtn: "ऐका • Listen"
-      },
-      "bn-IN": {
-        langName: "বাংলা",
-        welcomeVoice: "বাংলা ভাষা নির্বাচিত হয়েছে। আপনার এ বি এইচ এ (A B H A) কার্ড স্ক্যান করুন।",
-        scanTitle: "আপনার এ বি এইচ এ (A B H A) কার্ড স্ক্যান করুন",
-        scanSubtitle: "Scan Your ABHA Card / QR Code",
-        scanBtn: "স্ক্যান করতে স্পর্শ করুন • Tap to Scan ABHA",
-        scanSuccessVoice: "এ বি এইচ এ (A B H A) কার্ড যাচাই সফল হয়েছে। রমেশ চন্দ্র, ৫২ বছর।",
-        pmjayTitle: "আয়ুষ্মান ভারত PM-JAY সক্রিয়",
-        pmjayDesc: "₹৫,০০,০০০ বার্ষিক কভারেজ",
-        continueVoiceBtn: "এগিয়ে যান ➔ Continue to Voice",
-        aiQuestion: "আপনার কোথায় ব্যথা? ছবিতে স্পর্শ করুন অথবা বলুন।",
-        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
-        aiVoicePrompt: "আপনার কোথায় ব্যথা? ছবিতে স্পর্শ করুন অথবা বলুন।",
-        kneeTitle: "হাঁটু ও জয়েন্টে ব্যথা",
-        kneeVoice: "হাঁটুর ব্যথা নথিভুক্ত করা হয়েছে।",
-        chestTitle: "বুকে তীব্র ব্যথা (জরুরি)",
-        chestVoice: "সতর্কতা! বুকে তীব্র ব্যথা সনাক্ত করা হয়েছে। জরুরি বিভাগে খবর পাঠানো হয়েছে।",
-        feverTitle: "জ্বর ও সর্দি",
-        feverVoice: "জ্বর নথিভুক্ত হয়েছে।",
-        stomachTitle: "পেট ব্যথা / বদহজম",
-        stomachVoice: "পেট ব্যথা নথিভুক্ত হয়েছে।",
-        micLabel: "কথা বলতে মাইক চাপুন • Tap to Speak",
-        nextScanBtn: "প্রেসক্রিপশন স্ক্যান ➔ Next: Scan Rx",
-        scanRxTitle: "পুরনো প্রেসক্রিপশন স্ক্যানারের নিচে রাখুন",
-        scanRxSub: "Place Paper Prescription Under Scanner",
-        scanRxAct: "প্রেসক্রিপশন স্ক্যান করুন • Digitize Prescription",
-        ocrSuccessVoice: "প্রেসক্রিপশন স্ক্যান সম্পন্ন হয়েছে।",
-        ocrHead: "ওষুধের বিবরণ (৯৬% নির্ভুলতা)",
-        confirmTokenBtn: "টোকেন নিন ➔ Confirm & Get Token",
-        tokenDone: "নিবন্ধন সম্পন্ন হয়েছে",
-        tokenSub: "আপনার টোকেন নম্বর • YOUR TOKEN NUMBER",
-        tokenMsg: "আপনার তথ্য ডাক্তারের কাছে পাঠানো হয়েছে।",
-        tokenVoice: "আপনার টোকেন নম্বর ৪২। রুম নম্বর ৪ এ যান।",
-        nextPatBtn: "পরবর্তী রোগী • Start Next Patient",
-        listenBtn: "শুনুন • Listen"
-      },
-      "gu-IN": {
-        langName: "ગુજરાતી",
-        welcomeVoice: "ગુજરાતી ભાષા પસંદ કરવામાં આવી છે. કૃપા કરીને તમારું એ બી એચ એ (A B H A) કાર્ડ સ્કેન કરો.",
-        scanTitle: "તમારું એ બી એચ એ (A B H A) કાર્ડ સ્કેન કરો",
-        scanSubtitle: "Scan Your ABHA Card / QR Code",
-        scanBtn: "સ્કેન કરવા માટે દબાવો • Tap to Scan ABHA",
-        scanSuccessVoice: "એ બી એચ એ (A B H A) કાર્ડ સફળતાપૂર્વક ચકાસાયું. રમેશ ચંદ્ર, 52 વર્ષ.",
-        pmjayTitle: "આયુષ્માન ભારત PM-JAY સક્રિય",
-        pmjayDesc: "₹5,00,000 વાર્ષિક કવરેજ",
-        continueVoiceBtn: "આગળ વધો ➔ Continue to Voice",
-        aiQuestion: "તમને ક્યાં દુખાવો છે? ચિત્રને સ્પર્શ કરો અથવા બોલો.",
-        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
-        aiVoicePrompt: "તમને ક્યાં દુખાવો છે? ચિત્રને સ્પર્શ કરો અથવા બોલો.",
-        kneeTitle: "ઘૂંટણ / સાંધાનો દુખાવો",
-        kneeVoice: "ઘૂંટણનો દુખાવો નોંધાયો છે.",
-        chestTitle: "છાતીમાં તીવ્ર દુખાવો (ઇમરજન્સી)",
-        chestVoice: "સાવધાન! છાતીમાં દુખાવો જણાયો છે. ઇમરજન્સી ડેસ્કને જાણ કરવામાં આવી છે.",
-        feverTitle: "તાવ અને શરદી",
-        feverVoice: "તાવ નોંધાયો છે.",
-        stomachTitle: "પેટનો દુખાવો / અપચો",
-        stomachVoice: "પેટનો દુખાવો નોંધાયો છે.",
-        micLabel: "બોલવા માટે માઇક દબાવો • Tap to Speak",
-        nextScanBtn: "પ્રિસ્ક્રિપ્શન સ્કેન ➔ Next: Scan Rx",
-        scanRxTitle: "જૂનું પ્રિસ્ક્રિપ્શન સ્કેનર નીચે મૂકો",
-        scanRxSub: "Place Paper Prescription Under Scanner",
-        scanRxAct: "પ્રિસ્ક્રિપ્શન સ્કેન કરો • Digitize Prescription",
-        ocrSuccessVoice: "પ્રિસ્ક્રિપ્શન સ્કેન પૂર્ણ થયું છે.",
-        ocrHead: "દવાઓની વિગતો (96% ચોકસાઈ)",
-        confirmTokenBtn: "ટોકન મેળવો ➔ Confirm & Get Token",
-        tokenDone: "નોંધણી પૂર્ણ થઈ",
-        tokenSub: "તમારો ટોકન નંબર • YOUR TOKEN NUMBER",
-        tokenMsg: "તમારી વિગતો સીધા ડૉક્ટર પાસે મોકલાઈ છે.",
-        tokenVoice: "તમારો ટોકન નંબર 42 છે. રૂમ નંબર 4 બહાર રાહ જુઓ.",
-        nextPatBtn: "આગળના દર્દી • Start Next Patient",
-        listenBtn: "સાંભળો • Listen"
+        pmjayDesc: "₹5,00,000 वार्षिक कवरेज • 100% कैशलेस इलाज",
+        continueVoiceBtn: "आवाज से लक्षण बताने के लिए आगे बढ़ें ➔",
+        aiQuestion: "आपको कहाँ दर्द या तकलीफ है? नीचे दिए गए हिस्से को छुएं या माइक दबाकर बोलें।",
+        aiQuestionSub: "Select symptom or tap microphone to speak",
+        aiVoicePrompt: "आपको कहाँ दर्द या तकलीफ है? नीचे दिए गए हिस्से को छुएं या माइक दबाकर बोलें।",
+        kneeTitle: "घुटनों व जोड़ों का दर्द",
+        kneeVoice: "घुटनों का दर्द दर्ज कर लिया गया है।",
+        chestTitle: "सीने में तेज दर्द",
+        chestVoice: "चेतावनी! सीने में तेज दर्द आपातकालीन लक्षण है। तुरंत कमरा नंबर 1 में जाएं।",
+        feverTitle: "तेज बुखार व ठंड लगना",
+        feverVoice: "तेज बुखार दर्ज कर लिया गया है।",
+        stomachTitle: "पेट दर्द व गैस/एसिडिटी",
+        stomachVoice: "पेट दर्द दर्ज कर लिया गया है।",
+        micLabel: "माइक दबाकर बोलें",
+        nextScanBtn: "पर्चा स्कैन करें ➔ Next: Scan Rx",
+        scanRxTitle: "पुराना पर्चा स्कैनर के नीचे रखें",
+        scanRxSub: "सर्वम विज़न 3B हाथ की लिखावट को डिजिटाइज़ करता है",
+        scanRxAct: "पर्चा स्कैन करें • Digitize Prescription",
+        ocrSuccessVoice: "दवाइयों का पर्चा सफलतापूर्वक स्कैन हो गया है।",
+        ocrHead: "निकाली गई दवाइयों की सूची (96% सटीकता)",
+        confirmTokenBtn: "पुष्टि करें और टोकन लें ➔",
+        tokenDone: "पंजीकरण पूर्ण हुआ",
+        tokenSub: "आपका ओपीडी टोकन नंबर",
+        tokenMsg: "आपका विवरण डॉक्टर की स्क्रीन पर भेज दिया गया है।",
+        tokenVoice: "आपका पंजीकरण पूरा हो गया है। आपका टोकन नंबर 42 है। कृपया कक्ष 4 में जाएं।",
+        nextPatBtn: "अगला मरीज शुरू करें",
+        listenBtn: "सुनें",
+        scanSuccessVoice: "ABHA कार्ड सफलतापूर्वक सत्यापित हुआ। रमेश चंद्र, बावन वर्ष। आयुष्मान भारत सक्रिय है।"
       }
     };
-
-    let currentLanguage = "en-IN";
-    let isRecording = false;
-    let recognition = null;
-    let availableVoices = [];
-
-    // Preload available SpeechSynthesis voices
-    function initVoices() {
-      if ("speechSynthesis" in window) {
-        availableVoices = window.speechSynthesis.getVoices();
-        window.speechSynthesis.onvoiceschanged = () => {
-          availableVoices = window.speechSynthesis.getVoices();
-        };
-      }
-    }
-    initVoices();
-
-    // Initialize Web Speech Recognition
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.onresult = async function(event) {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById("transcription-text").innerText = `"${transcript}"`;
-        
-        // Send transcribed text to FastAPI Clinical Gateway
-        try {
-          const res = await fetch("http://localhost:8000/api/v1/intake/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              encounter_id: "enc-0042",
-              patient_id: "pat-048291",
-              current_input: transcript,
-              language: currentLanguage,
-              messages: []
-            })
-          });
-          if (res.ok) {
-            const data = await res.json();
-            if (data.red_flag && data.red_flag.is_triggered) {
-              document.getElementById("red-flag-banner").classList.remove("hidden");
-              speakAudio(I18N[currentLanguage]?.chestVoice || data.reply_text);
-              return;
-            }
-            if (data.reply_text) {
-              speakAudio(data.reply_text);
-              return;
-            }
-          }
-        } catch (e) {
-          console.log("Using local speech engine fallback");
-        }
-
-        speakAudio(transcript);
-        checkRedFlag(transcript);
-      };
-
-      recognition.onend = function() {
-        isRecording = false;
-        document.getElementById("mic-btn").classList.remove("pulse-mic", "bg-red-600");
-        document.getElementById("mic-btn").classList.add("bg-blue-700");
-      };
-    }
-
-    function toggleMicRecording() {
-      if (!recognition) {
-        handleSymptomSelect("knee");
-        return;
-      }
-      if (isRecording) {
-        recognition.stop();
-      } else {
-        recognition.lang = currentLanguage;
-        recognition.start();
-        isRecording = true;
-        document.getElementById("mic-btn").classList.add("pulse-mic", "bg-red-600");
-        document.getElementById("mic-btn").classList.remove("bg-blue-700");
-        document.getElementById("mic-label").innerText = "వింటున్నాము... (Listening...)";
-      }
-    }
-
-    function setLang(langCode) {
-      currentLanguage = langCode;
-      const dict = I18N[langCode] || I18N["te-IN"];
-      
-      function setTxt(id, val) {
-        const el = document.getElementById(id);
-        if (el && val) el.innerText = val;
-      }
-
-      // Update UI texts safely
-      setTxt("lbl-scan-title", dict.scanTitle);
-      setTxt("lbl-scan-subtitle", dict.scanSubtitle);
-      setTxt("btn-scan-action", dict.scanBtn);
-      setTxt("lbl-pmjay-title", dict.pmjayTitle);
-      setTxt("lbl-pmjay-desc", dict.pmjayDesc);
-      setTxt("btn-continue-voice", dict.continueVoiceBtn);
-      
-      setTxt("ai-question", dict.aiQuestion);
-      setTxt("ai-question-sub", dict.aiQuestionSub);
-      setTxt("sym-knee-title", dict.kneeTitle);
-      setTxt("sym-chest-title", dict.chestTitle);
-      setTxt("sym-fever-title", dict.feverTitle);
-      setTxt("sym-stomach-title", dict.stomachTitle);
-      setTxt("mic-label", dict.micLabel);
-      setTxt("btn-next-scan", dict.nextScanBtn);
-
-      setTxt("lbl-scan-rx-title", dict.scanRxTitle);
-      setTxt("lbl-scan-rx-sub", dict.scanRxSub);
-      setTxt("btn-scan-rx-act", dict.scanRxAct);
-      setTxt("lbl-ocr-head", dict.ocrHead);
-      setTxt("btn-confirm-token", dict.confirmTokenBtn);
-
-      setTxt("lbl-token-done", dict.tokenDone);
-      setTxt("lbl-token-sub", dict.tokenSub);
-      setTxt("lbl-token-msg", dict.tokenMsg);
-      setTxt("btn-next-pat", dict.nextPatBtn);
-
-      // Speak confirmation and navigate
-      speakAudio(dict.welcomeVoice);
-      goToScreen("screen-identify");
-    }
-
-
-    // Strict Linear Navigation Controller
-    const screenOrder = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
-    let currentScreenIndex = 0;
-
-    // Only allow navigating backward to previously visited steps
-    function navigateToStep(targetIndex) {
-      if (targetIndex < currentScreenIndex) {
-        goToScreen(screenOrder[targetIndex]);
-      }
-      // Strictly prevent jumping forward into uncompleted sections
-    }
-
-    function goBackScreen() {
-      if (currentScreenIndex > 0) {
-        goToScreen(screenOrder[currentScreenIndex - 1]);
-      }
-    }
-
-    function goToScreen(screenId) {
-      stopCameraStream();
-      currentScreenIndex = screenOrder.indexOf(screenId);
-      const screens = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
-      screens.forEach(s => {
-        const el = document.getElementById(s);
-        if (el) el.classList.add("hidden");
-      });
-      const target = document.getElementById(screenId);
-      if (target) target.classList.remove("hidden");
-
-      updateStepBadges();
-
-      const backBtn = document.getElementById("btn-header-back");
-      if (backBtn) {
-        if (screenId === "screen-language") {
-          backBtn.classList.add("hidden");
-        } else {
-          backBtn.classList.remove("hidden");
-        }
-      }
-      window.scrollTo(0, 0);
-    }
-
-    function updateStepBadges() {
-      for (let i = 0; i < 5; i++) {
-        const badge = document.getElementById(`step-badge-${i + 1}`);
-        if (!badge) continue;
-
-        if (i < currentScreenIndex) {
-          // Completed past step: Clickable to go back
-          badge.className = "px-2.5 py-1 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold cursor-pointer transition";
-          badge.title = "Click to go back to this step";
-        } else if (i === currentScreenIndex) {
-          // Active current step: Highlighted Blue
-          badge.className = "px-2.5 py-1 rounded bg-blue-700 text-white font-bold shadow-sm";
-          badge.title = "Current step";
-        } else {
-          // Future uncompleted step: Disabled / Not clickable
-          badge.className = "px-2.5 py-1 rounded bg-slate-100 text-slate-400 opacity-50 cursor-not-allowed";
-          badge.title = "Complete current step to unlock";
-        }
-      }
-    }
-
-
-
-    // Dynamic Patient & ABDM Verification Engine
-    let currentPatient = {
-      isVerified: false,
-      name: "Ramesh Chandra",
-      age: 52,
-      gender: "Male",
-      phone: "+91 98765 43210",
-      authMethod: "ABHA Scan & Share",
-      abhaId: "91-4829-1029-4821",
-      abhaAddress: "ramesh.chandra@abdm",
-      hasPmjay: true,
-      selectedSymptom: "Bilateral knee joint pain with crepitus",
-      tokenNumber: "#042"
-    };
-
-    let qrScanInterval = null;
-
-
-    function selectAuthMethod(methodKey) {
-      ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
-        const card = document.getElementById(`card-auth-${k}`);
-        const panel = document.getElementById(`auth-panel-${k}`);
-        if (!card || !panel) return;
-
-        if (k === methodKey) {
-          card.className = "p-5 rounded-2xl border-2 border-blue-600 bg-blue-50/70 shadow-md text-center space-y-3 flex flex-col items-center justify-between cursor-pointer transform scale-[1.02] transition";
-          const badge = card.querySelector("span:last-child");
-          if (badge) {
-            badge.className = "text-[11px] font-bold text-white bg-blue-700 px-3 py-1 rounded-full w-full shadow-sm";
-            badge.innerText = "✓ ఎంచుకోబడింది • Selected";
-          }
-          panel.classList.remove("hidden");
-        } else {
-          card.className = "p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-slate-300 transition text-center space-y-3 flex flex-col items-center justify-between shadow-sm cursor-pointer opacity-70 hover:opacity-100";
-          const badge = card.querySelector("span:last-child");
-          if (badge) {
-            badge.className = "text-[11px] font-bold text-slate-700 bg-slate-100 px-3 py-1 rounded-full w-full";
-            badge.innerText = "ఎంచుకోండి • Select";
-          }
-          panel.classList.add("hidden");
-        }
-      });
-
-      if (methodKey !== "qr") {
-        stopCameraStream();
-      }
-    }
-
-    function switchAuthTab(tabKey) {
-      ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
-        const btn = document.getElementById(`tab-btn-${k}`);
-        const panel = document.getElementById(`auth-panel-${k}`);
-        if (k === tabKey) {
-          btn.className = "py-2 rounded-lg bg-blue-700 text-white shadow-sm transition font-bold";
-          panel.classList.remove("hidden");
-        } else {
-          btn.className = "py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition font-bold";
-          panel.classList.add("hidden");
-        }
-      });
-      if (tabKey !== "qr") {
-        stopCameraStream();
-      }
-    }
-
-    function fillSampleMobile() {
-      document.getElementById("input-mobile").value = "9876543210";
-    }
-
-    function verifyByMobile() {
-      const mob = document.getElementById("input-mobile").value.trim() || "9876543210";
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "Mobile OTP (+91 " + mob + ")";
-      currentPatient.name = "Ramesh Chandra";
-      currentPatient.age = 52;
-      currentPatient.gender = "Male";
-      applyVerifiedPatientUI();
-    }
-
-    function verifyByAbhaId() {
-      const abha = document.getElementById("input-abha-id").value.trim() || "91-4829-1029-4821";
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "14-Digit ABHA ID";
-      currentPatient.abhaId = abha;
-      currentPatient.name = "Ramesh Chandra";
-      applyVerifiedPatientUI();
-    }
-
-    function verifyByAadhaar() {
-      const aadh = document.getElementById("input-aadhaar").value.trim() || "8920-1920-4821";
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "UIDAI Aadhaar e-KYC";
-      currentPatient.name = "Ramesh Chandra";
-      applyVerifiedPatientUI();
-    }
-
-    function verifyDemoPatient(method) {
-      currentPatient.isVerified = true;
-      currentPatient.authMethod = "ABHA Scan & Share";
-      currentPatient.name = "Ramesh Chandra";
-      currentPatient.age = 52;
-      applyVerifiedPatientUI();
-    }
-
-
-    // DPDPA 2023 Consent & Cryptographic Hashing (PRD FR-D3)
-    function showDpdpaConsentModal() {
-      const modal = document.getElementById("modal-dpdpa-consent");
-      if (!modal) return;
-
-      const consentText = {
-        "te-IN": "మీ ఆరోగ్య సమాచారాన్ని (ABHA, లక్షణాలు, పాత ప్రిస్క్రిప్షన్లు) డాక్టర్ సంప్రదింపుల కోసం మాత్రమే ఉపయోగించడానికి మీరు సమ్మతిస్తున్నారా?",
-        "hi-IN": "क्या आप अपनी स्वास्थ्य जानकारी (ABHA, लक्षण, पुराने पर्चे) डॉक्टर परामर्श के लिए उपयोग करने की सहमति देते हैं?",
-        "en-IN": "Do you consent to share your health records (ABHA, symptoms, past prescriptions) with the consulting doctor under DPDPA 2023?",
-        "ta-IN": "உங்கள் சுகாதாரத் தகவல்களை மருத்துவர் ஆலோசனைக்கு பயன்படுத்த ஒப்புக்கொள்கிறீர்களா?"
-      };
-
-      const promptMsg = consentText[currentLanguage] || consentText["en-IN"];
-      const el = document.getElementById("consent-voice-text");
-      if (el) el.innerText = `"${promptMsg}"`;
-
-      // Generate SHA-256 consent hash
-      const rawString = `${currentPatient.abhaId}-${Date.now()}-DPDPA2023-CONSENT`;
-      let hash = 0;
-      for (let i = 0; i < rawString.length; i++) {
-        hash = (hash << 5) - hash + rawString.charCodeAt(i);
-        hash |= 0;
-      }
-      const shaHex = Math.abs(hash).toString(16).padStart(16, "0") + "482910294821ae41e4649b934ca495991b7852b855".substring(0, 48);
-      const hashEl = document.getElementById("consent-sha256");
-      if (hashEl) hashEl.innerText = shaHex;
-
-      modal.classList.remove("hidden");
-      speakAudio(promptMsg);
-    }
-
-    function acceptConsentAndProceed() {
-      const modal = document.getElementById("modal-dpdpa-consent");
-      if (modal) modal.classList.add("hidden");
-      currentPatient.consentGranted = true;
-      goToScreen("screen-voice");
-    }
-
-    function rejectConsent() {
-      const modal = document.getElementById("modal-dpdpa-consent");
-      if (modal) modal.classList.add("hidden");
-      alert("Consent is required under DPDPA 2023 to proceed with digital OPD intake.");
-    }
-
-    // Override proceedToVoiceIntake to require DPDPA consent
-    function proceedToVoiceIntake() {
-      if (!currentPatient.isVerified) {
-        verifyDemoPatient("qr");
-      }
-      showDpdpaConsentModal();
-    }
-
-    // Official Printable OPD Ticket Slip (PRD Step 5)
-    function printOpdSlip() {
-      window.print();
-    }
-
-    // Ephemeral Session Wiping (PRD FR-D5 Zero-Trace Purge)
-    function purgeAndRestartIntake() {
-      stopAllAudio();
-      stopCameraStream();
-
-      // Reset patient memory state
-      currentPatient = {
-        isVerified: false,
-        name: "Ramesh Chandra",
-        age: 52,
-        gender: "Male",
-        phone: "+91 98765 43210",
-        authMethod: "ABHA Scan & Share",
-        abhaId: "91-4829-1029-4821",
-        abhaAddress: "ramesh.chandra@abdm",
-        hasPmjay: true,
-        selectedSymptom: "Bilateral knee joint pain with crepitus",
-        tokenNumber: "#042",
-        consentGranted: false
-      };
-
-      // Reset DOM status
-      const statusBadge = document.getElementById("badge-auth-status");
-      if (statusBadge) {
-        statusBadge.className = "text-[11px] bg-slate-100 text-slate-600 font-bold px-2.5 py-0.5 rounded-full border border-slate-200";
-        statusBadge.innerText = "Pending Verification";
-      }
-
-      const rfBanner = document.getElementById("red-flag-banner");
-      if (rfBanner) rfBanner.classList.add("hidden");
-
-      goToScreen("screen-language");
-    }
-
-    function applyVerifiedPatientUI() {
-      const statusBadge = document.getElementById("badge-auth-status");
-      if (statusBadge) {
-        statusBadge.className = "text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300";
-        statusBadge.innerText = "✓ ABDM Verified";
-      }
-      document.getElementById("pat-name").innerText = `${currentPatient.name} (రమేష్ చంద్ర)`;
-      document.getElementById("pat-meta").innerText = `${currentPatient.age} Yrs • ${currentPatient.gender} • Khammam, Telangana`;
-      document.getElementById("pat-auth-method").innerText = currentPatient.authMethod;
-      document.getElementById("pat-abha-id").innerText = currentPatient.abhaId;
-      document.getElementById("pat-abha-addr").innerText = currentPatient.abhaAddress;
-
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
-      speakAudio(dict.scanSuccessVoice);
-    }
-
-    function proceedToVoiceIntake() {
-      if (!currentPatient.isVerified) {
-        verifyDemoPatient("qr");
-      }
-      goToScreen("screen-voice");
-    }
-
-    // jsQR Frame Scanner Loop
-    function startQrCodeFrameDetection() {
-      const video = document.getElementById("video-abha");
-      const canvas = document.getElementById("qr-canvas");
-      if (!canvas || !video) return;
-      const ctx = canvas.getContext("2d");
-
-      function checkFrame() {
-        if (video.readyState === video.HAVE_ENOUGH_DATA && typeof jsQR !== "undefined") {
-          canvas.height = video.videoHeight;
-          canvas.width = video.videoWidth;
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const code = jsQR(imageData.data, imageData.width, imageData.height, {
-            inversionAttempts: "dontInvert",
-          });
-          if (code && code.data) {
-            console.log("Found real QR code payload:", code.data);
-            currentPatient.isVerified = true;
-            currentPatient.authMethod = "Live QR Scanned";
-            stopCameraStream();
-            applyVerifiedPatientUI();
-            return;
-          }
-        }
-        if (activeMediaStream) {
-          requestAnimationFrame(checkFrame);
-        }
-      }
-      requestAnimationFrame(checkFrame);
-    }
-
-    // Live Webcam / MediaStream Controller with Robust Video Preview
-    let activeMediaStream = null;
-
-    async function startAbhaCamera() {
-      const placeholder = document.getElementById("qr-placeholder");
-      const viewfinder = document.getElementById("camera-viewfinder-abha");
-      const video = document.getElementById("video-abha");
-      const btnStart = document.getElementById("btn-scan-action");
-      const btnCapture = document.getElementById("btn-capture-abha");
-
-      try {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          // Universal constraints compatible with MacBooks, Laptops & Mobile phones
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
-            audio: false
-          });
-          activeMediaStream = stream;
-
-          placeholder.classList.add("hidden");
-          viewfinder.classList.remove("hidden");
-          btnStart.classList.add("hidden");
-          btnCapture.classList.remove("hidden");
-
-          video.srcObject = stream;
-          video.setAttribute("playsinline", "true");
-          video.setAttribute("autoplay", "true");
-          video.muted = true;
-          
-          video.onloadedmetadata = function() {
-            startQrCodeFrameDetection();
-            video.play().catch(e => console.log("Autoplay caught:", e));
-          };
-          
-          await video.play().catch(e => console.log("Direct play caught:", e));
-        } else {
-          alert("Camera API not supported in this browser environment.");
-          captureAndVerifyAbha();
-        }
-      } catch (err) {
-        console.error("Camera access error:", err);
-        alert("Camera permission required. Please allow camera access in browser permissions bar.");
-        captureAndVerifyAbha();
-      }
-    }
-
-    function captureAndVerifyAbha() {
-      stopCameraStream();
-      const placeholder = document.getElementById("qr-placeholder");
-      const viewfinder = document.getElementById("camera-viewfinder-abha");
-      const btnStart = document.getElementById("btn-scan-action");
-      const btnCapture = document.getElementById("btn-capture-abha");
-
-      if (viewfinder) viewfinder.classList.add("hidden");
-      if (placeholder) placeholder.classList.remove("hidden");
-      if (btnCapture) btnCapture.classList.add("hidden");
-      if (btnStart) {
-        btnStart.classList.remove("hidden");
-        btnStart.className = "w-full bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
-        btnStart.innerHTML = `<span>✓ ఆభా వెరిఫై చేయబడింది • ABHA Verified</span>`;
-      }
-
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
-      speakAudio(dict.scanSuccessVoice);
-    }
-
-    async function startRxCamera() {
-      const placeholder = document.getElementById("rx-placeholder");
-      const viewfinder = document.getElementById("camera-viewfinder-rx");
-      const video = document.getElementById("video-rx");
-      const btnStart = document.getElementById("btn-scan-rx-act");
-      const btnCapture = document.getElementById("btn-capture-rx");
-
-      try {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          const stream = await navigator.mediaDevices.getUserMedia({
-            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
-            audio: false
-          });
-          activeMediaStream = stream;
-
-          placeholder.classList.add("hidden");
-          viewfinder.classList.remove("hidden");
-          btnStart.classList.add("hidden");
-          btnCapture.classList.remove("hidden");
-
-          video.srcObject = stream;
-          video.setAttribute("playsinline", "true");
-          video.setAttribute("autoplay", "true");
-          video.muted = true;
-          
-          video.onloadedmetadata = function() {
-            startQrCodeFrameDetection();
-            video.play().catch(e => console.log("Autoplay caught:", e));
-          };
-          
-          await video.play().catch(e => console.log("Direct play caught:", e));
-        } else {
-          captureAndOcrRx();
-        }
-      } catch (err) {
-        console.error("Camera access error:", err);
-        captureAndOcrRx();
-      }
-    }
-
-    function captureAndOcrRx() {
-      stopCameraStream();
-      const placeholder = document.getElementById("rx-placeholder");
-      const viewfinder = document.getElementById("camera-viewfinder-rx");
-      const btnStart = document.getElementById("btn-scan-rx-act");
-      const btnCapture = document.getElementById("btn-capture-rx");
-
-      if (viewfinder) viewfinder.classList.add("hidden");
-      if (placeholder) placeholder.classList.remove("hidden");
-      if (btnCapture) btnCapture.classList.add("hidden");
-      if (btnStart) {
-        btnStart.classList.remove("hidden");
-        btnStart.className = "w-full bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow flex items-center justify-center gap-2";
-        btnStart.innerHTML = `<span>✓ ప్రిస్క్రిప్షన్ ఎక్స్‌ట్రాక్ట్ చేయబడింది • Rx Digitized</span>`;
-      }
-
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
-      speakAudio(dict.ocrSuccessVoice);
-    }
-
-    function stopCameraStream() {
-      if (activeMediaStream) {
-        activeMediaStream.getTracks().forEach(track => track.stop());
-        activeMediaStream = null;
-      }
-    }
-
-    function scanAbhaSim() {
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
-      speakAudio(dict.scanSuccessVoice);
-    }
-
-    function handleSymptomSelect(symptomKey) {
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
-      if (symptomKey === "knee") {
-        document.getElementById("transcription-text").innerText = `"${dict.kneeTitle}"`;
-        speakAudio(dict.kneeVoice);
-      } else if (symptomKey === "chest") {
-        document.getElementById("transcription-text").innerText = `"${dict.chestTitle}"`;
-        document.getElementById("red-flag-banner").classList.remove("hidden");
-        speakAudio(dict.chestVoice);
-      } else if (symptomKey === "fever") {
-        document.getElementById("transcription-text").innerText = `"${dict.feverTitle}"`;
-        speakAudio(dict.feverVoice);
-      } else if (symptomKey === "stomach") {
-        document.getElementById("transcription-text").innerText = `"${dict.stomachTitle}"`;
-        speakAudio(dict.stomachVoice);
-      }
-    }
-
-    function checkRedFlag(text) {
-      const lower = text.toLowerCase();
-      const isRed = lower.includes("chest") || lower.includes("ఛాతీ") || lower.includes("सीना") || lower.includes("நெஞ்சு") || lower.includes("ಎದೆ");
-      if (isRed) {
-        const dict = I18N[currentLanguage] || I18N["te-IN"];
-        document.getElementById("red-flag-banner").classList.remove("hidden");
-        speakAudio(dict.chestVoice);
-      }
-    }
-
-    async function generateDynamicTokenAndRegister() {
-      // 1. Call local backend to register encounter and get next sequential token
-      try {
-        const res = await fetch("http://localhost:8000/api/v1/doctor/encounter/create", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            patient_name: currentPatient.name,
-            age: currentPatient.age,
-            gender: currentPatient.gender,
-            identifier_type: currentPatient.authMethod,
-            identifier_value: currentPatient.abhaId,
-            symptoms: currentPatient.selectedSymptom,
-            language: currentLanguage
-          })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.token_number) {
-            currentPatient.tokenNumber = data.token_number;
-          }
-        }
-      } catch (err) {
-        // Local counter increment fallback if backend offline
-        const num = Math.floor(42 + (Date.now() % 50));
-        currentPatient.tokenNumber = `#${num.toString().padStart(3, "0")}`;
-      }
-
-      // Update Screen 5 Token UI
-      const tokenDisplay = document.querySelector("#screen-token .text-6xl") || document.getElementById("display-token-number");
-      if (tokenDisplay) {
-        tokenDisplay.innerText = currentPatient.tokenNumber;
-      }
-      
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
-      const spokenMsg = dict.tokenVoice.replace("42", currentPatient.tokenNumber.replace("#", ""));
-      speakAudio(spokenMsg);
-      goToScreen("screen-token");
-    }
-
-    function runOcrScan() {
-      const dict = I18N[currentLanguage] || I18N["te-IN"];
-      speakAudio(dict.ocrSuccessVoice);
-    }
 
     let isVoiceActive = true; // Started by default!
     let currentAudioPlayer = null;
