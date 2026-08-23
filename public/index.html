@@ -895,7 +895,7 @@
     }
 
 
-    // Live Webcam / MediaStream Controller
+    // Live Webcam / MediaStream Controller with Robust Video Preview
     let activeMediaStream = null;
 
     async function startAbhaCamera() {
@@ -907,31 +907,35 @@
 
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          activeMediaStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: "environment" } },
+          // Universal constraints compatible with MacBooks, Laptops & Mobile phones
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
             audio: false
           });
-          video.srcObject = activeMediaStream;
-          video.play();
+          activeMediaStream = stream;
 
           placeholder.classList.add("hidden");
           viewfinder.classList.remove("hidden");
           btnStart.classList.add("hidden");
           btnCapture.classList.remove("hidden");
 
-          // Auto-verify after 3.5s of camera scanning if user does not click capture
-          setTimeout(() => {
-            if (activeMediaStream) {
-              captureAndVerifyAbha();
-            }
-          }, 4000);
+          video.srcObject = stream;
+          video.setAttribute("playsinline", "true");
+          video.setAttribute("autoplay", "true");
+          video.muted = true;
+          
+          video.onloadedmetadata = function() {
+            video.play().catch(e => console.log("Autoplay caught:", e));
+          };
+          
+          await video.play().catch(e => console.log("Direct play caught:", e));
         } else {
-          // Fallback if mediaDevices not supported
+          alert("Camera API not supported in this browser environment.");
           captureAndVerifyAbha();
         }
       } catch (err) {
-        console.warn("Camera permission denied or unavailable:", err);
-        // Fallback gracefully so patient is never blocked
+        console.error("Camera access error:", err);
+        alert("Camera permission required. Please allow camera access in browser permissions bar.");
         captureAndVerifyAbha();
       }
     }
@@ -965,22 +969,32 @@
 
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-          activeMediaStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: "environment" } },
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 1280 }, height: { ideal: 720 } },
             audio: false
           });
-          video.srcObject = activeMediaStream;
-          video.play();
+          activeMediaStream = stream;
 
           placeholder.classList.add("hidden");
           viewfinder.classList.remove("hidden");
           btnStart.classList.add("hidden");
           btnCapture.classList.remove("hidden");
+
+          video.srcObject = stream;
+          video.setAttribute("playsinline", "true");
+          video.setAttribute("autoplay", "true");
+          video.muted = true;
+          
+          video.onloadedmetadata = function() {
+            video.play().catch(e => console.log("Autoplay caught:", e));
+          };
+          
+          await video.play().catch(e => console.log("Direct play caught:", e));
         } else {
           captureAndOcrRx();
         }
       } catch (err) {
-        console.warn("Camera unavailable for Rx scan:", err);
+        console.error("Camera access error:", err);
         captureAndOcrRx();
       }
     }
