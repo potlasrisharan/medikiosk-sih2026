@@ -3,7 +3,10 @@
   "outputDirectory": "public",
   "rewrites": [
     { "source": "/doctor", "destination": "/doctor/index.html" },
-    { "source": "/kiosk", "destination": "/kiosk/index.html" },
-    { "source": "/((?!api|doctor|kiosk).*)$", "destination": "/index.html" }
+    { "source": "/triage", "destination": "/triage/index.html" },
+    { "source": "/ayush", "destination": "/ayush/index.html" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/kiosk", "destination": "/index.html" },
+    { "source": "/((?!api|doctor|triage|ayush|admin|kiosk).*)$", "destination": "/index.html" }
   ]
 }
