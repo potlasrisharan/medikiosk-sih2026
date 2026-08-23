@@ -235,6 +235,40 @@
       try {
         const res = await fetch("http://localhost:8000/api/v1/doctor/queue");
         if (res.ok) {
+          const queue = await res.json();
+          renderDynamicQueue(queue);
+          return;
+        }
+      } catch (err) {
+        console.warn("Backend offline, using local state queue");
+      }
+    }
+
+    function renderDynamicQueue(queue) {
+      const container = document.getElementById("queue-container");
+      if (!container || !queue || queue.length === 0) return;
+
+      container.innerHTML = queue.map((p, idx) => `
+        <div onclick="selectEncounter('${p.encounter_id}')" class="p-4 rounded-xl border ${idx === 0 ? 'border-blue-500/50 bg-blue-950/20' : 'border-slate-800 bg-slate-900/60'} hover:border-slate-700 transition cursor-pointer space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-400">${p.token_number}</span>
+            <span class="text-xs ${p.pmjay_eligible ? 'text-emerald-400' : 'text-slate-400'} font-bold">${p.pmjay_eligible ? 'PM-JAY Active' : 'General'}</span>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-white">${p.patient_name} (${p.age}${p.gender === 'MALE' ? 'M' : 'F'})</h4>
+            <p class="text-xs text-slate-400 line-clamp-1 mt-0.5">${p.chief_complaint}</p>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1 border-t border-slate-800/60">
+            <span>${p.system_type || 'AYURVEDIC'}</span>
+            <span>${p.created_at || 'Just now'}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+    async function fetchQueue_old() {
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/doctor/queue");
+        if (res.ok) {
           const data = await res.json();
           document.getElementById("queue-count").innerText = data.length;
         }
