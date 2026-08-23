@@ -1,9 +1,13 @@
 from fastapi import APIRouter
 from typing import List
+from pydantic import BaseModel
 from ..models.schemas import EncounterQueueItem, SoapNote, Gender, TriagePriority, SystemType
 from ..services.fhir_service import fhir_service
+import datetime
 
 router = APIRouter(prefix="/doctor", tags=["Doctor Portal"])
+
+TOKEN_COUNTER = 42
 
 ENCOUNTERS_STORE = [
     EncounterQueueItem(
@@ -14,48 +18,131 @@ ENCOUNTERS_STORE = [
         gender=Gender.MALE,
         chief_complaint="Bilateral knee pain with crepitus for 6 months, worsening with cold.",
         triage_priority=TriagePriority.ROUTINE,
-        pmjay_eligible=True,
-        system_type=SystemType.HYBRID,
-        created_at="10:30 AM",
-        status="WAITING"
+        system_type=SystemType.AYURVEDA,
+        ayush_provisional_diagnosis="Sandhigata Vata (Osteoarthritis)",
+        has_pmjay=True,
+        has_abnormal_labs=True,
+        wait_time_minutes=4
     ),
     EncounterQueueItem(
         encounter_id="enc-0043",
         token_number="#043",
-        patient_name="Lakshmi Devi",
-        age=48,
+        patient_name="Priya Sharma",
+        age=34,
         gender=Gender.FEMALE,
-        chief_complaint="Chronic acid peptic disorder (Amlapitta), burning sensation in epigastrium.",
+        chief_complaint="Epigastric burning, acid reflux, and nausea for 3 weeks.",
         triage_priority=TriagePriority.ROUTINE,
-        pmjay_eligible=True,
-        system_type=SystemType.AYURVEDIC,
-        created_at="10:35 AM",
-        status="WAITING"
+        system_type=SystemType.AYURVEDA,
+        ayush_provisional_diagnosis="Amlapitta (Acid Peptic Disorder)",
+        has_pmjay=True,
+        has_abnormal_labs=False,
+        wait_time_minutes=11
     )
 ]
 
+SOAP_STORE = {
+    "enc-0042": SoapNote(
+        encounter_id="enc-0042",
+        subjective="Patient reports severe knee stiffness and crepitus, aggravated during early mornings and cold exposure. Walking capacity reduced to 200 meters. Denies trauma.",
+        objective="Vitals: BP 134/86 mmHg, HR 74 bpm, SpO2 98%, BMI 26.2. Crepitus audible on passive bilateral knee flexion. Bilateral medial joint line tenderness (+). No erythema.",
+        assessment="1. Sandhigata Vata (ICD-10 M17.0 / NAMASTE AYU-SAN-01)\n2. Hyperuricemia (Serum Uric Acid 7.8 mg/dL [HIGH])\n3. Mild Agnimandya (Manda Agni)",
+        plan="Rx Formulations:\n1. Tab. Yograj Guggulu 2 tabs BD with warm water pc (15 days)\n2. Kwath. Maharasnadi 20ml with equal water BD ac (15 days)\n3. Ext. Janu Basti with Ksheerabala Taila 7 sittings\n\nInvestigations Ordered:\n- Bilateral Knee AP/Lateral Weight-bearing X-ray\n- Repeat Serum Uric Acid after 4 weeks",
+        critical_alerts=["Serum Uric Acid: 7.8 mg/dL [HIGH] (Ref: 3.5 - 7.2 mg/dL)"],
+        dashavidha_matrix={
+            "Prakriti": "Vata-Kapha",
+            "Vikriti": "Vata Vriddhi (Sandhigata)",
+            "Sara": "Asthi Madhyama",
+            "Samhanana": "Madhyama",
+            "Pramana": "Height 172cm, Wt 78kg (BMI 26.2)",
+            "Satmya": "Madhura-Lavana",
+            "Sattva": "Madhyama",
+            "Ahara_Shakti": "Manda Agni",
+            "Vyayama_Shakti": "Avara (Low)",
+            "Vaya": "Pravriddha (52Y)"
+        }
+    )
+}
+
+class NewIntakePayload(BaseModel):
+    patient_name: str
+    age: int
+    gender: str
+    identifier_type: str
+    identifier_value: str
+    symptoms: str
+    language: str
+
 @router.get("/queue", response_model=List[EncounterQueueItem])
-async def get_queue():
+async def get_doctor_queue():
     return ENCOUNTERS_STORE
 
-@router.get("/encounter/{encounter_id}/soap", response_model=SoapNote)
-async def get_encounter_soap(encounter_id: str):
-    return SoapNote(
-        subjective="52-year-old male presents with bilateral knee pain for 6 months, aggravated by walking and cold weather. Morning stiffness lasting ~20 mins. History of Hypertension for 3 years on Telmisartan 40mg. No known drug allergies.",
-        objective="Vitals: BP 130/84 mmHg, Pulse 76 bpm. Musculoskeletal: Bilateral knee joint crepitus present, no active effusion. Lab Findings: Serum Uric Acid: 7.8 mg/dL [HIGH], HbA1c: 6.1%.",
-        assessment="1. Osteoarthritis Bilateral Knees (Sandhigata Vata) with mild hyperuricemia. 2. Essential Hypertension (Controlled).",
-        plan="1. Continue Telmisartan 40mg OD. 2. Yograj Guggulu 2 tabs BD after food. 3. Janu Basti / Local fomentation advised. 4. Low purine diet counselled. Review in 3 weeks.",
-        dashavidha_summary={
-            "Prakriti": "Vata-Kapha",
-            "Vikriti": "Vata (Dhatu Kshaya / Sandhigata)",
-            "Agni": "Manda Agni",
-            "Koshtha": "Madhyama Koshtha"
-        },
-        pmjay_status="Active (₹5,00,000 Annual Coverage - Cashless Approved)",
-        triage_priority=TriagePriority.ROUTINE
+@router.get("/token/next")
+async def get_next_token():
+    global TOKEN_COUNTER
+    token_str = f"#{TOKEN_COUNTER:03d}"
+    return {"token_number": token_str, "next_token_int": TOKEN_COUNTER}
+
+@router.post("/encounter/create")
+async def create_new_encounter(payload: NewIntakePayload):
+    global TOKEN_COUNTER
+    TOKEN_COUNTER += 1
+    token_str = f"#{TOKEN_COUNTER:03d}"
+    enc_id = f"enc-{TOKEN_COUNTER:04d}"
+    
+    # Create encounter item
+    new_item = EncounterQueueItem(
+        encounter_id=enc_id,
+        token_number=token_str,
+        patient_name=payload.patient_name,
+        age=payload.age,
+        gender=Gender.MALE if payload.gender.lower() == "male" else Gender.FEMALE,
+        chief_complaint=payload.symptoms,
+        triage_priority=TriagePriority.ROUTINE,
+        system_type=SystemType.AYURVEDA,
+        ayush_provisional_diagnosis="Clinical Evaluation in Progress",
+        has_pmjay=True,
+        has_abnormal_labs=False,
+        wait_time_minutes=1
     )
+    
+    # Prepend to store
+    ENCOUNTERS_STORE.insert(0, new_item)
+    
+    # Create SOAP
+    SOAP_STORE[enc_id] = SoapNote(
+        encounter_id=enc_id,
+        subjective=f"Patient {payload.patient_name} ({payload.age}Y) registered via MediKiosk ({payload.identifier_type.upper()}: {payload.identifier_value}). Chief Complaint: {payload.symptoms}.",
+        objective="Vitals recorded at kiosk: BP 128/82 mmHg, HR 76 bpm, SpO2 98%, Temp 98.4 F.",
+        assessment="1. Initial OPD Assessment\n2. PM-JAY Cashless OPD Benefit Active",
+        plan="Clinical consultation pending.\nRecommended preliminary Ayurvedic Rasayana therapy.",
+        critical_alerts=[],
+        dashavidha_matrix={
+            "Prakriti": "Vata-Pitta",
+            "Vikriti": "Vata Dominance",
+            "Ahara_Shakti": "Madhyama Agni"
+        }
+    )
+    
+    return {
+        "status": "success",
+        "encounter_id": enc_id,
+        "token_number": token_str,
+        "patient_name": payload.patient_name
+    }
+
+@router.get("/encounter/{encounter_id}/soap", response_model=SoapNote)
+async def get_soap_note(encounter_id: str):
+    if encounter_id in SOAP_STORE:
+        return SOAP_STORE[encounter_id]
+    # Fallback to default template
+    return SOAP_STORE["enc-0042"]
 
 @router.get("/encounter/{encounter_id}/fhir")
-async def get_fhir_bundle(encounter_id: str):
-    soap = await get_encounter_soap(encounter_id)
-    return fhir_service.generate_document_bundle(encounter_id, "pat-048291", soap.dict())
+async def get_encounter_fhir(encounter_id: str):
+    return fhir_service.generate_opd_document_bundle(
+        encounter_id=encounter_id,
+        patient_id="pat-048291",
+        patient_name="Ramesh Chandra",
+        practitioner_id="doc-84920",
+        practitioner_name="Dr. Vaidya Ananya Sharma, MD (Ayu)"
+    )

@@ -17,6 +17,7 @@
       100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-blue-100">
     <!-- Unified 5-Dashboard Suite Navigation -->
@@ -369,7 +370,7 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
               <span>Back</span>
             </button>
-            <button onclick="goToScreen('screen-token')" id="btn-confirm-token" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+            <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
               ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token
             </button>
           </div>
@@ -895,6 +896,135 @@
     }
 
 
+
+    // Dynamic Patient & ABDM Verification Engine
+    let currentPatient = {
+      isVerified: false,
+      name: "Ramesh Chandra",
+      age: 52,
+      gender: "Male",
+      phone: "+91 98765 43210",
+      authMethod: "ABHA Scan & Share",
+      abhaId: "91-4829-1029-4821",
+      abhaAddress: "ramesh.chandra@abdm",
+      hasPmjay: true,
+      selectedSymptom: "Bilateral knee joint pain with crepitus",
+      tokenNumber: "#042"
+    };
+
+    let qrScanInterval = null;
+
+    function switchAuthTab(tabKey) {
+      ["qr", "mobile", "abha", "aadhaar"].forEach(k => {
+        const btn = document.getElementById(`tab-btn-${k}`);
+        const panel = document.getElementById(`auth-panel-${k}`);
+        if (k === tabKey) {
+          btn.className = "py-2 rounded-lg bg-blue-700 text-white shadow-sm transition font-bold";
+          panel.classList.remove("hidden");
+        } else {
+          btn.className = "py-2 rounded-lg text-slate-600 hover:bg-slate-200 transition font-bold";
+          panel.classList.add("hidden");
+        }
+      });
+      if (tabKey !== "qr") {
+        stopCameraStream();
+      }
+    }
+
+    function fillSampleMobile() {
+      document.getElementById("input-mobile").value = "9876543210";
+    }
+
+    function verifyByMobile() {
+      const mob = document.getElementById("input-mobile").value.trim() || "9876543210";
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "Mobile OTP (+91 " + mob + ")";
+      currentPatient.name = "Ramesh Chandra";
+      currentPatient.age = 52;
+      currentPatient.gender = "Male";
+      applyVerifiedPatientUI();
+    }
+
+    function verifyByAbhaId() {
+      const abha = document.getElementById("input-abha-id").value.trim() || "91-4829-1029-4821";
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "14-Digit ABHA ID";
+      currentPatient.abhaId = abha;
+      currentPatient.name = "Ramesh Chandra";
+      applyVerifiedPatientUI();
+    }
+
+    function verifyByAadhaar() {
+      const aadh = document.getElementById("input-aadhaar").value.trim() || "8920-1920-4821";
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "UIDAI Aadhaar e-KYC";
+      currentPatient.name = "Ramesh Chandra";
+      applyVerifiedPatientUI();
+    }
+
+    function verifyDemoPatient(method) {
+      currentPatient.isVerified = true;
+      currentPatient.authMethod = "ABHA Scan & Share";
+      currentPatient.name = "Ramesh Chandra";
+      currentPatient.age = 52;
+      applyVerifiedPatientUI();
+    }
+
+    function applyVerifiedPatientUI() {
+      const statusBadge = document.getElementById("badge-auth-status");
+      if (statusBadge) {
+        statusBadge.className = "text-[11px] bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full border border-emerald-300";
+        statusBadge.innerText = "✓ ABDM Verified";
+      }
+      document.getElementById("pat-name").innerText = `${currentPatient.name} (రమేష్ చంద్ర)`;
+      document.getElementById("pat-meta").innerText = `${currentPatient.age} Yrs • ${currentPatient.gender} • Khammam, Telangana`;
+      document.getElementById("pat-auth-method").innerText = currentPatient.authMethod;
+      document.getElementById("pat-abha-id").innerText = currentPatient.abhaId;
+      document.getElementById("pat-abha-addr").innerText = currentPatient.abhaAddress;
+
+      const dict = I18N[currentLanguage] || I18N["te-IN"];
+      speakAudio(dict.scanSuccessVoice);
+    }
+
+    function proceedToVoiceIntake() {
+      if (!currentPatient.isVerified) {
+        verifyDemoPatient("qr");
+      }
+      goToScreen("screen-voice");
+    }
+
+    // jsQR Frame Scanner Loop
+    function startQrCodeFrameDetection() {
+      const video = document.getElementById("video-abha");
+      const canvas = document.getElementById("qr-canvas");
+      if (!canvas || !video) return;
+      const ctx = canvas.getContext("2d");
+
+      function checkFrame() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA && typeof jsQR !== "undefined") {
+          canvas.height = video.videoHeight;
+          canvas.width = video.videoWidth;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height, {
+            inversionAttempts: "dontInvert",
+          });
+          if (code && code.data) {
+            console.log("Found real QR code payload:", code.data);
+            currentPatient.isVerified = true;
+            currentPatient.authMethod = "Live QR Scanned";
+            stopCameraStream();
+            applyVerifiedPatientUI();
+            return;
+          }
+        }
+        if (activeMediaStream) {
+          requestAnimationFrame(checkFrame);
+        }
+      }
+      requestAnimationFrame(checkFrame);
+    }
+
     // Live Webcam / MediaStream Controller with Robust Video Preview
     let activeMediaStream = null;
 
@@ -925,6 +1055,7 @@
           video.muted = true;
           
           video.onloadedmetadata = function() {
+            startQrCodeFrameDetection();
             video.play().catch(e => console.log("Autoplay caught:", e));
           };
           
@@ -986,6 +1117,7 @@
           video.muted = true;
           
           video.onloadedmetadata = function() {
+            startQrCodeFrameDetection();
             video.play().catch(e => console.log("Autoplay caught:", e));
           };
           
@@ -1057,6 +1189,46 @@
         document.getElementById("red-flag-banner").classList.remove("hidden");
         speakAudio(dict.chestVoice);
       }
+    }
+
+    async function generateDynamicTokenAndRegister() {
+      // 1. Call local backend to register encounter and get next sequential token
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/doctor/encounter/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            patient_name: currentPatient.name,
+            age: currentPatient.age,
+            gender: currentPatient.gender,
+            identifier_type: currentPatient.authMethod,
+            identifier_value: currentPatient.abhaId,
+            symptoms: currentPatient.selectedSymptom,
+            language: currentLanguage
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.token_number) {
+            currentPatient.tokenNumber = data.token_number;
+          }
+        }
+      } catch (err) {
+        // Local counter increment fallback if backend offline
+        const num = Math.floor(42 + (Date.now() % 50));
+        currentPatient.tokenNumber = `#${num.toString().padStart(3, "0")}`;
+      }
+
+      // Update Screen 5 Token UI
+      const tokenDisplay = document.querySelector("#screen-token .text-6xl") || document.getElementById("display-token-number");
+      if (tokenDisplay) {
+        tokenDisplay.innerText = currentPatient.tokenNumber;
+      }
+      
+      const dict = I18N[currentLanguage] || I18N["te-IN"];
+      const spokenMsg = dict.tokenVoice.replace("42", currentPatient.tokenNumber.replace("#", ""));
+      speakAudio(spokenMsg);
+      goToScreen("screen-token");
     }
 
     function runOcrScan() {
