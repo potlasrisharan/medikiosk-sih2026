@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediKiosk — Multilingual Voice Kiosk</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&display=swap");
+    body { font-family: "Inter", "Noto Sans Telugu", "Noto Sans Devanagari", "Noto Sans Tamil", sans-serif; }
+    .touch-card { transition: all 0.15s ease-in-out; }
+    .touch-card:active { transform: scale(0.98); }
+    .pulse-mic { animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.5); }
+      70% { box-shadow: 0 0 0 22px rgba(29, 78, 216, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-blue-100">
+    <!-- Unified 5-Dashboard Suite Navigation -->
+  <nav class="bg-slate-900 text-slate-300 text-xs px-6 py-2.5 flex flex-wrap items-center justify-between border-b border-slate-800 sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span class="font-extrabold text-white tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
+      <a href="/" class="bg-blue-600 text-white font-bold px-3 py-1 rounded-md shadow-sm">📱 Patient Kiosk</a> <a href="/doctor" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">🩺 Doctor Portal</a> <a href="/triage" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">🚨 Emergency Triage</a> <a href="/ayush" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">🌿 AYUSH Dashavidha</a> <a href="/admin" class="hover:text-white text-slate-400 font-semibold px-3 py-1 rounded-md hover:bg-slate-800 transition">📊 Admin & ABDM Hub</a> 
+    </div>
+  </nav>
+
+
+  <!-- Accessible Hospital Top Header -->
+  <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+    <div class="flex items-center space-x-3">
+      <!-- Stethoscope SVG Logo -->
+      <div class="w-11 h-11 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-sm">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">MediKiosk</h1>
+        <p id="header-hospital-name" class="text-xs text-slate-600 font-medium">All India Institute of Ayurveda (AIIA) • OPD Case-Taking</p>
+      </div>
+    </div>
+
+    <!-- Active Step Progress Badges -->
+    <div class="hidden md:flex items-center space-x-2 text-xs font-bold text-slate-600">
+      <span id="step-badge-1" class="px-3 py-1.5 rounded-md bg-blue-700 text-white">1. Language</span>
+      <span class="text-slate-300">➔</span>
+      <span id="step-badge-2" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">2. Identity</span>
+      <span class="text-slate-300">➔</span>
+      <span id="step-badge-3" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">3. Voice Intake</span>
+      <span class="text-slate-300">➔</span>
+      <span id="step-badge-4" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">4. Scan Paper Rx</span>
+      <span class="text-slate-300">➔</span>
+      <span id="step-badge-5" class="px-3 py-1.5 rounded-md bg-slate-200 text-slate-700">5. Token</span>
+    </div>
+
+    <!-- Speak Page Audio Button -->
+    <button onclick="speakCurrentScreen()" class="bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition shadow-sm" title="Listen to instructions">
+      <!-- Speaker SVG -->
+      <svg class="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+      </svg>
+      <span id="btn-listen-text">Listen / వినండి / सुनें</span>
+    </button>
+  </header>
+
+  <!-- Emergency Red-Flag Banner (Hidden by default) -->
+  <div id="red-flag-banner" class="hidden bg-red-600 text-white px-6 py-3.5 shadow-md flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <svg class="w-6 h-6 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+      </svg>
+      <div>
+        <p id="redflag-title" class="font-extrabold text-sm tracking-wide">EMERGENCY SYMPTOM DETECTED (Sub-150ms Triage)</p>
+        <p id="redflag-desc" class="text-xs text-red-100">Critical chest/cardiac symptom detected. Staff alerted. Please proceed directly to Room 1.</p>
+      </div>
+    </div>
+    <button onclick="document.getElementById('red-flag-banner').classList.add('hidden')" class="text-white text-xs font-bold underline">Dismiss</button>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-5xl w-full mx-auto p-6 flex flex-col justify-center">
+
+    <!-- =================================================================== -->
+    <!-- SCREEN 1: LANGUAGE SELECTION -->
+    <!-- =================================================================== -->
+    <section id="screen-language" class="space-y-6">
+      <div class="text-center space-y-2">
+        <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900">మీ భాషను ఎంచుకోండి • अपनी भाषा चुनें • Select Language</h2>
+        <p class="text-slate-600 text-sm">Touch your language on screen or speak • భాషను ఎంచుకోవడానికి తాకండి</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-4">
+        <!-- Telugu -->
+        <button onclick="setLang('te-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">తెలుగు</div>
+          <div class="text-xs font-bold text-blue-700">Telugu</div>
+        </button>
+        <!-- Hindi -->
+        <button onclick="setLang('hi-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">हिन्दी</div>
+          <div class="text-xs font-bold text-blue-700">Hindi</div>
+        </button>
+        <!-- English -->
+        <button onclick="setLang('en-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">English</div>
+          <div class="text-xs font-bold text-blue-700">English</div>
+        </button>
+        <!-- Tamil -->
+        <button onclick="setLang('ta-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">தமிழ்</div>
+          <div class="text-xs font-bold text-blue-700">Tamil</div>
+        </button>
+        <!-- Kannada -->
+        <button onclick="setLang('kn-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">ಕನ್ನಡ</div>
+          <div class="text-xs font-bold text-blue-700">Kannada</div>
+        </button>
+        <!-- Marathi -->
+        <button onclick="setLang('mr-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">मराठी</div>
+          <div class="text-xs font-bold text-blue-700">Marathi</div>
+        </button>
+        <!-- Bengali -->
+        <button onclick="setLang('bn-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">বাংলা</div>
+          <div class="text-xs font-bold text-blue-700">Bengali</div>
+        </button>
+        <!-- Gujarati -->
+        <button onclick="setLang('gu-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-6 rounded-2xl text-center shadow-sm">
+          <div class="text-3xl font-bold text-slate-900 mb-1">ગુજરાતી</div>
+          <div class="text-xs font-bold text-blue-700">Gujarati</div>
+        </button>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SCREEN 2: IDENTIFY (ABHA QR & NHCX PM-JAY) -->
+    <!-- =================================================================== -->
+    <section id="screen-identify" class="hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <!-- QR Scan Box -->
+        <div class="bg-white border-2 border-slate-300 p-8 rounded-2xl text-center space-y-4 shadow-sm">
+          <div class="w-36 h-36 mx-auto bg-slate-50 border-2 border-dashed border-blue-600 rounded-xl flex items-center justify-center p-3">
+            <svg class="w-24 h-24 text-slate-800" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm14 2h2v4h-2v-4zm-4-4h2v2h-2v-2zm2 2h2v2h-2v-2zm2-2h2v2h-2v-2zm-6 4h2v4h-2v-4zm4 0h2v2h-2v-2z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 id="lbl-scan-title" class="font-bold text-lg text-slate-900">మీ ఆభా కార్డు / QR స్కాన్ చేయండి</h3>
+            <p id="lbl-scan-subtitle" class="text-xs text-slate-600 mt-1">Scan Your ABHA Card / QR Code</p>
+          </div>
+          <button onclick="scanAbhaSim()" id="btn-scan-action" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow">
+            స్కాన్ చేయడానికి నొక్కండి • Tap to Scan ABHA
+          </button>
+        </div>
+
+        <!-- Patient Profile & PM-JAY Card -->
+        <div id="patient-card" class="bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-4 shadow-sm">
+          <div class="flex items-center space-x-3 pb-4 border-b border-slate-200">
+            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-slate-900 text-base">Ramesh Chandra (రమేష్ చంద్ర)</h4>
+              <p id="lbl-pat-meta" class="text-xs text-slate-600">52 Yrs • Male • Khammam, Telangana (తెలంగాణ)</p>
+            </div>
+          </div>
+
+          <div class="space-y-1.5 text-xs text-slate-700">
+            <p><span class="font-bold text-slate-900">ABHA ID:</span> 91-4829-1029-4821</p>
+            <p><span class="font-bold text-slate-900">ABHA Address:</span> ramesh.chandra@abdm</p>
+          </div>
+
+          <!-- PM-JAY Verified Card -->
+          <div class="bg-amber-50 border border-amber-300 p-3.5 rounded-xl flex items-center space-x-3">
+            <svg class="w-6 h-6 text-amber-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+            <div>
+              <p id="lbl-pmjay-title" class="text-xs font-bold text-amber-900">ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్</p>
+              <p id="lbl-pmjay-desc" class="text-[11px] text-amber-800">₹5,00,000 Annual Coverage • Cashless OPD Approved</p>
+            </div>
+          </div>
+
+          <button onclick="goToScreen('screen-voice')" id="btn-continue-voice" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+            లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue to Voice
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SCREEN 3: VOICE & PICTORIAL SYMPTOM INTAKE -->
+    <!-- =================================================================== -->
+    <section id="screen-voice" class="hidden space-y-6">
+      <!-- Voice Assistant Question Box -->
+      <div class="bg-white border-2 border-slate-300 p-6 rounded-2xl shadow-sm text-center space-y-3">
+        <div class="flex items-center justify-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
+          <span id="lbl-ai-status" class="text-xs font-bold text-blue-700 tracking-wide uppercase">AI Scribe Speaking</span>
+        </div>
+        <h3 id="ai-question" class="text-xl md:text-2xl font-bold text-slate-900">
+          "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి."
+        </h3>
+        <p id="ai-question-sub" class="text-xs text-slate-600">Where does it hurt? Touch the body area below or press microphone to speak</p>
+      </div>
+
+      <!-- Pictorial SVG Body & Symptom Map -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <!-- Knee / Joint Pain -->
+        <button onclick="handleSymptomSelect('knee')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+          <svg class="w-10 h-10 text-blue-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span id="sym-knee-title" class="font-bold text-slate-900 text-sm">మోకాళ్ళ / కీళ్ళ నొప్పులు</span>
+          <span class="text-[11px] text-slate-600">Knee & Joint Pain</span>
+        </button>
+
+        <!-- Chest Pain (Triggers Red Flag) -->
+        <button onclick="handleSymptomSelect('chest')" class="touch-card bg-white border-2 border-red-300 hover:border-red-600 hover:bg-red-50 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+          <svg class="w-10 h-10 text-red-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          <span id="sym-chest-title" class="font-bold text-slate-900 text-sm">ఛాతీలో తీవ్ర నొప్పి</span>
+          <span class="text-[11px] text-red-600 font-semibold">Chest Pain (Emergency)</span>
+        </button>
+
+        <!-- Fever / Thermometer -->
+        <button onclick="handleSymptomSelect('fever')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+          <svg class="w-10 h-10 text-amber-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+          <span id="sym-fever-title" class="font-bold text-slate-900 text-sm">తీవ్ర జ్వరం / చలి</span>
+          <span class="text-[11px] text-slate-600">High Fever & Chills</span>
+        </button>
+
+        <!-- Stomach / Digestion -->
+        <button onclick="handleSymptomSelect('stomach')" class="touch-card bg-white border-2 border-slate-300 hover:border-blue-700 hover:bg-blue-50 p-4 rounded-xl text-center flex flex-col items-center justify-center shadow-sm">
+          <svg class="w-10 h-10 text-emerald-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <span id="sym-stomach-title" class="font-bold text-slate-900 text-sm">కడుపు నొప్పి / అజీర్ణం</span>
+          <span class="text-[11px] text-slate-600">Stomach & Digestion</span>
+        </button>
+      </div>
+
+      <!-- Giant Microphone Touch Target for Voice -->
+      <div class="bg-white border-2 border-slate-300 p-6 rounded-2xl flex flex-col items-center space-y-3 shadow-sm">
+        <button id="mic-btn" onclick="toggleMicRecording()" class="w-20 h-20 rounded-full bg-blue-700 hover:bg-blue-800 text-white flex items-center justify-center shadow-lg transition">
+          <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
+          </svg>
+        </button>
+        <p id="mic-label" class="font-bold text-slate-900 text-sm">మాట్లాడటానికి మైక్ నొక్కండి • Tap to Speak</p>
+        <p id="transcription-text" class="text-xs text-blue-700 font-semibold italic min-h-[18px]">"నాకు 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది"</p>
+
+        <div class="w-full pt-2 flex justify-end">
+          <button onclick="goToScreen('screen-scan')" id="btn-next-scan" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl text-sm transition">
+            ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SCREEN 4: PRESCRIPTION SCANNER -->
+    <!-- =================================================================== -->
+    <section id="screen-scan" class="hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <!-- Document Camera Simulation -->
+        <div class="bg-white border-2 border-slate-300 p-8 rounded-2xl text-center space-y-4 shadow-sm">
+          <div class="w-full h-48 bg-slate-50 border-2 border-dashed border-slate-400 rounded-xl flex flex-col items-center justify-center p-4">
+            <svg class="w-16 h-16 text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span id="lbl-scan-rx-title" class="font-bold text-slate-800 text-sm">పాత ప్రిస్క్రిప్షన్ పేపర్‌ను కెమెరా కింద ఉంచండి</span>
+            <span id="lbl-scan-rx-sub" class="text-xs text-slate-500 mt-1">Place Paper Prescription Under Scanner (Sarvam 3B VLM)</span>
+          </div>
+
+          <button onclick="runOcrScan()" id="btn-scan-rx-act" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow">
+            ప్రిస్క్రిప్షన్ స్కాన్ చేయండి • Digitize Prescription
+          </button>
+        </div>
+
+        <!-- Extracted Data Cards -->
+        <div id="ocr-results" class="bg-white border-2 border-slate-300 p-6 rounded-2xl space-y-4 shadow-sm">
+          <h4 class="font-bold text-slate-900 text-base flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span id="lbl-ocr-head">గుర్తించబడిన మందుల వివరాలు (96% ఖచ్చితత్వం)</span>
+          </h4>
+
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+              <span class="font-bold text-slate-900">Current Medication:</span> Telmisartan 40mg OD • Yograj Guggulu 2 tab BD
+            </div>
+            <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-200">
+              <span class="font-bold text-amber-900">Lab Results:</span> Serum Uric Acid: 7.8 mg/dL (High) • HbA1c: 6.1%
+            </div>
+          </div>
+
+          <button onclick="goToScreen('screen-token')" id="btn-confirm-token" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+            ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- SCREEN 5: TOKEN ISSUED -->
+    <!-- =================================================================== -->
+    <section id="screen-token" class="hidden text-center space-y-6">
+      <div class="bg-white border-2 border-slate-300 p-8 rounded-3xl max-w-md mx-auto shadow-sm space-y-4">
+        <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
+          <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+
+        <div>
+          <h3 id="lbl-token-done" class="font-black text-2xl text-slate-900">కేస్ నమోదు పూర్తయింది</h3>
+          <p class="text-xs text-slate-600">All India Institute of Ayurveda • OPD Room 4</p>
+        </div>
+
+        <div class="py-4 border-y border-slate-200">
+          <p id="lbl-token-sub" class="text-xs font-bold text-slate-500 uppercase tracking-widest">మీ టోకెన్ నంబర్ • YOUR TOKEN NUMBER</p>
+          <p class="text-6xl font-black text-blue-800 my-1">#042</p>
+          <span class="inline-block bg-amber-100 text-amber-900 font-bold text-xs px-3 py-1 rounded-full border border-amber-300">
+            PM-JAY Beneficiary • Cashless
+          </span>
+        </div>
+
+        <p id="lbl-token-msg" class="text-xs text-slate-600">మీ వివరాలు నేరుగా డాక్టర్ గారి కంప్యూటర్‌కు పంపబడ్డాయి.</p>
+
+        <button onclick="goToScreen('screen-language')" id="btn-next-pat" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
+          తదుపరి రోగి నమోదు • Start Next Patient
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Complete Multilingual Dictionary with Native Scripts and Spoken Prompts
+    const I18N = {
+      "te-IN": {
+        langName: "తెలుగు",
+        welcomeVoice: "తెలుగు భాష ఎంచుకోబడింది. దయచేసి మీ ఆభా కార్డును స్కాన్ చేయండి.",
+        scanTitle: "మీ ఆభా కార్డు / QR స్కాన్ చేయండి",
+        scanSubtitle: "Scan Your ABHA Card / QR Code",
+        scanBtn: "స్కాన్ చేయడానికి నొక్కండి • Tap to Scan ABHA",
+        scanSuccessVoice: "ఆభా కార్డ్ విజయవంతంగా స్కాన్ చేయబడింది. రమేష్ చంద్ర, 52 సంవత్సరాలు. ఆయుష్మాన్ భారత్ పి ఎం జె ఏ వై వెరిఫై చేయబడింది.",
+        pmjayTitle: "ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్",
+        pmjayDesc: "₹5,00,000 వార్షిక కవరేజ్ • ఉచిత వైద్యం & మందులు",
+        continueVoiceBtn: "లక్షణాలు చెప్పడానికి కొనసాగించండి ➔ Continue to Voice",
+        aiQuestion: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
+        aiQuestionSub: "Where does it hurt? Touch the body area below or press microphone to speak",
+        aiVoicePrompt: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
+        kneeTitle: "మోకాళ్ళ / కీళ్ళ నొప్పులు",
+        kneeVoice: "మోకాళ్ళ నొప్పులు నమోదు చేయబడ్డాయి.",
+        chestTitle: "ఛాతీలో తీవ్ర నొప్పి",
+        chestVoice: "జాగ్రత్త. ఛాతీ నొప్పి అత్యవసర లక్షణంగా గుర్తించబడింది. ఎమర్జెన్సీ డెస్క్ అలర్ట్ చేయబడింది. వెంటనే రూమ్ 1 కి వెళ్ళండి.",
+        feverTitle: "తీవ్ర జ్వరం / చలి",
+        feverVoice: "తీవ్ర జ్వరం మరియు చలి లక్షణాలు నమోదు చేయబడ్డాయి.",
+        stomachTitle: "కడుపు నొప్పి / అజీర్ణం",
+        stomachVoice: "కడుపు నొప్పి మరియు అజీర్ణం నమోదు చేయబడ్డాయి.",
+        micLabel: "మాట్లాడటానికి మైక్ నొక్కండి • Tap to Speak",
+        nextScanBtn: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx",
+        scanRxTitle: "పాత ప్రిస్క్రిప్షన్ పేపర్‌ను కెమెరా కింద ఉంచండి",
+        scanRxSub: "Place Paper Prescription Under Scanner (Sarvam 3B VLM)",
+        scanRxAct: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి • Digitize Prescription",
+        ocrSuccessVoice: "పాత ప్రిస్క్రిప్షన్ స్కాన్ పూర్తయింది. టెల్మిసార్టన్ మరియు యోగరాజ్ గుగ్గులు మందులు గుర్తించబడ్డాయి.",
+        ocrHead: "గుర్తించబడిన మందుల వివరాలు (96% ఖచ్చితత్వం)",
+        confirmTokenBtn: "ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token",
+        tokenDone: "కేస్ నమోదు పూర్తయింది",
+        tokenSub: "మీ టోకెన్ నంబర్ • YOUR TOKEN NUMBER",
+        tokenMsg: "మీ వివరాలు నేరుగా డాక్టర్ గారి కంప్యూటర్‌కు పంపబడ్డాయి.",
+        tokenVoice: "మీ టోకెన్ నంబర్ 42. ఓపీడీ రూమ్ నంబర్ 4 వద్ద వేచి ఉండండి.",
+        nextPatBtn: "తదుపరి రోగి నమోదు • Start Next Patient",
+        listenBtn: "వినండి • Listen"
+      },
+      "hi-IN": {
+        langName: "हिन्दी",
+        welcomeVoice: "हिन्दी भाषा चुनी गई है। कृपया अपना आभा कार्ड स्कैन करें।",
+        scanTitle: "अपना आभा कार्ड / QR स्कैन करें",
+        scanSubtitle: "Scan Your ABHA Card / QR Code",
+        scanBtn: "स्कैन करने के लिए दबाएं • Tap to Scan ABHA",
+        scanSuccessVoice: "आभा कार्ड सफलतापूर्वक स्कैन हो गया है। रमेश चंद्र, बावन साल। आयुष्मान भारत सत्यापित है।",
+        pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय",
+        pmjayDesc: "₹5,00,000 वार्षिक कवरेज • 100% कैशलेस इलाज",
+        continueVoiceBtn: "आवाज से लक्षण बताने के लिए आगे बढ़ें ➔ Continue to Voice",
+        aiQuestion: "आपको किस जगह दर्द या तकलीफ है? चित्र को छुएं या माइक दबाकर बोलें।",
+        aiQuestionSub: "Where does it hurt? Touch the body area below or press microphone to speak",
+        aiVoicePrompt: "आपको किस जगह दर्द या तकलीफ है? चित्र को छुएं या माइक दबाकर बोलें।",
+        kneeTitle: "घुटने / जोड़ों में दर्द",
+        kneeVoice: "घुटनों का दर्द दर्ज कर लिया गया है।",
+        chestTitle: "सीने में तेज दर्द",
+        chestVoice: "सावधान! सीने में दर्द आपातकालीन लक्षण है। इमरजेंसी डेस्क को सूचित कर दिया गया है।",
+        feverTitle: "बुखार और सर्दी",
+        feverVoice: "बुखार और सर्दी के लक्षण दर्ज किए गए।",
+        stomachTitle: "पेट दर्द / अपच",
+        stomachVoice: "पेट दर्द और अपच दर्ज कर लिया गया है।",
+        micLabel: "बोलने के लिए माइक दबाएं • Tap to Speak",
+        nextScanBtn: "पर्चा स्कैन करें ➔ Next: Scan Rx",
+        scanRxTitle: "पुराना पर्चा स्कैनर के नीचे रखें",
+        scanRxSub: "Place Paper Prescription Under Scanner (Sarvam 3B VLM)",
+        scanRxAct: "पर्चा स्कैन करें • Digitize Prescription",
+        ocrSuccessVoice: "पर्चे का स्कैन पूरा हो गया है। टेलमीसार्टन और योगराज गुग्गुलु दवाएं दर्ज की गईं।",
+        ocrHead: "दवाओं का विवरण (96% सटीकता)",
+        confirmTokenBtn: "पुष्टि करें और टोकन लें ➔ Confirm & Get Token",
+        tokenDone: "केस पंजीकरण पूरा हुआ",
+        tokenSub: "आपका टोकन नंबर • YOUR TOKEN NUMBER",
+        tokenMsg: "आपका विवरण सीधे डॉक्टर के कंप्यूटर पर भेज दिया गया है।",
+        tokenVoice: "आपका टोकन नंबर बयालीस है। ओपीडी रूम नंबर चार के बाहर प्रतीक्षा करें।",
+        nextPatBtn: "अगले मरीज का पंजीकरण • Start Next Patient",
+        listenBtn: "सुनें • Listen"
+      },
+      "en-IN": {
+        langName: "English",
+        welcomeVoice: "English selected. Please scan your ABHA card or QR code.",
+        scanTitle: "Scan Your ABHA Card / QR Code",
+        scanSubtitle: "Keep your ABHA card under the kiosk scanner",
+        scanBtn: "Tap to Scan ABHA Card",
+        scanSuccessVoice: "ABHA card successfully verified. Ramesh Chandra, 52 years. PM-JAY active.",
+        pmjayTitle: "Ayushman Bharat PM-JAY Active",
+        pmjayDesc: "₹5,00,000 Annual Coverage • Cashless OPD Approved",
+        continueVoiceBtn: "Continue to Voice Symptom Intake ➔",
+        aiQuestion: "Where does it hurt? Touch the body area below or speak into the microphone.",
+        aiQuestionSub: "Select symptom or tap microphone to speak",
+        aiVoicePrompt: "Where does it hurt? Touch the body area below or speak into the microphone.",
+        kneeTitle: "Knee & Joint Pain",
+        kneeVoice: "Bilateral knee joint pain recorded.",
+        chestTitle: "Severe Chest Pain",
+        chestVoice: "Warning. Acute chest pain detected. Priority emergency triage alert triggered.",
+        feverTitle: "High Fever & Chills",
+        feverVoice: "High fever and chills recorded.",
+        stomachTitle: "Stomach Pain & Acidity",
+        stomachVoice: "Stomach pain and acid peptic disorder recorded.",
+        micLabel: "Tap Microphone to Speak",
+        nextScanBtn: "Next: Scan Paper Prescriptions ➔",
+        scanRxTitle: "Place Paper Prescription Under Scanner",
+        scanRxSub: "Sarvam Vision 3B VLM digitizes cursive handwriting",
+        scanRxAct: "Capture & Digitize Prescription",
+        ocrSuccessVoice: "Prescription OCR extraction complete. Telmisartan and Yograj Guggulu detected.",
+        ocrHead: "Extracted Clinical Entities (96% Accuracy)",
+        confirmTokenBtn: "Confirm & Generate Token ➔",
+        tokenDone: "Clinical Intake Complete",
+        tokenSub: "YOUR OPD TOKEN NUMBER",
+        tokenMsg: "Your case summary has been sent directly to the doctor.",
+        tokenVoice: "Your token number is 42. Please proceed to OPD Consultation Room 4.",
+        nextPatBtn: "Start Next Patient Intake",
+        listenBtn: "Listen"
+      },
+      "ta-IN": {
+        langName: "தமிழ்",
+        welcomeVoice: "தமிழ் மொழி தேர்ந்தெடுக்கப்பட்டது. உங்கள் ஆபா கார்டை ஸ்கேன் செய்யவும்.",
+        scanTitle: "உங்கள் ஆபா கார்டை ஸ்கேன் செய்யவும்",
+        scanSubtitle: "Scan Your ABHA Card / QR Code",
+        scanBtn: "ஸ்கேன் செய்ய தொடவும் • Tap to Scan ABHA",
+        scanSuccessVoice: "ஆபா அட்டை சரிபார்க்கப்பட்டது. ரமேஷ் சந்திரா, 52 வயது. பி எம் ஜே ஏ ஒய் செயலில் உள்ளது.",
+        pmjayTitle: "ஆயுஷ்மான் பாரத் PM-JAY செயலில் உள்ளது",
+        pmjayDesc: "₹5,00,000 காப்பீடு • இலவச மருத்துவம்",
+        continueVoiceBtn: "குரல் வழி பதிவு தொடரவும் ➔ Continue to Voice",
+        aiQuestion: "உங்களுக்கு எங்கு வலி உள்ளது? படத்தை தொடவும் அல்லது பேசவும்.",
+        aiQuestionSub: "Where does it hurt? Touch the body area below or speak",
+        aiVoicePrompt: "உங்களுக்கு எங்கு வலி உள்ளது? படத்தை தொடவும் அல்லது பேசவும்.",
+        kneeTitle: "முழங்கால் / மூட்டு வலி",
+        kneeVoice: "மூட்டு வலி பதிவு செய்யப்பட்டது.",
+        chestTitle: "நெஞ்சு வலி (அவசரம்)",
+        chestVoice: "எச்சரிக்கை! நெஞ்சு வலி கண்டறியப்பட்டது. அவசர பிரிவு எச்சரிக்கப்பட்டது.",
+        feverTitle: "காய்ச்சல் மற்றும் குளிர்",
+        feverVoice: "காய்ச்சல் அறிகுறிகள் பதிவு செய்யப்பட்டன.",
+        stomachTitle: "வயிற்று வலி / அஜீரணம்",
+        stomachVoice: "வயிற்று வலி பதிவு செய்யப்பட்டது.",
+        micLabel: "பேச மைக்கை அழுத்தவும் • Tap to Speak",
+        nextScanBtn: "மருந்து சீட்டு ஸ்கேன் ➔ Next: Scan Rx",
+        scanRxTitle: "மருந்து சீட்டை ஸ்கேனர் கீழ் வைக்கவும்",
+        scanRxSub: "Place Paper Prescription Under Scanner",
+        scanRxAct: "சீட்டை ஸ்கேன் செய்யவும் • Digitize Prescription",
+        ocrSuccessVoice: "மருந்து சீட்டு ஸ்கேன் முடிந்தது.",
+        ocrHead: "கண்டறியப்பட்ட மருந்துகள் (96% துல்லியம்)",
+        confirmTokenBtn: "டோக்கன் பெறவும் ➔ Confirm & Get Token",
+        tokenDone: "பதிவு முடிந்தது",
+        tokenSub: "உங்கள் டோக்கன் எண் • YOUR TOKEN NUMBER",
+        tokenMsg: "உங்கள் விவரங்கள் மருத்துவருக்கு அனுப்பப்பட்டது.",
+        tokenVoice: "உங்கள் டோக்கன் எண் 42. அறை எண் 4 க்கு செல்லவும்.",
+        nextPatBtn: "அடுத்த நோயாளி • Start Next Patient",
+        listenBtn: "கேளுங்கள் • Listen"
+      },
+      "kn-IN": {
+        langName: "ಕನ್ನಡ",
+        welcomeVoice: "ಕನ್ನಡ ಭಾಷೆ ಆಯ್ಕೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಆಭಾ ಕಾರ್ಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.",
+        scanTitle: "ನಿಮ್ಮ ಆಭಾ ಕಾರ್ಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+        scanSubtitle: "Scan Your ABHA Card / QR Code",
+        scanBtn: "ಸ್ಕ್ಯಾನ್ ಮಾಡಲು ಸ್ಪರ್ಶಿಸಿ • Tap to Scan ABHA",
+        scanSuccessVoice: "ಆಭಾ ಕಾರ್ಡ್ ಯಶಸ್ವಿಯಾಗಿ ಪರಿಶೀಲಿಸಲಾಗಿದೆ. ರಮೇಶ್ ಚಂದ್ರ, 52 ವರ್ಷ.",
+        pmjayTitle: "ಆಯುಷ್ಮಾನ್ ಭಾರತ್ PM-JAY ಸಕ್ರಿಯ",
+        pmjayDesc: "₹5,00,000 ವಾರ್ಷಿಕ ರಕ್ಷಣೆ • ಉಚಿತ ಚಿಕಿತ್ಸೆ",
+        continueVoiceBtn: "ಮುಂದೆ ಸಾಗಿರಿ ➔ Continue to Voice",
+        aiQuestion: "ನಿಮಗೆ ಎಲ್ಲಿ ನೋವಿದೆ? ಚಿತ್ರವನ್ನು ಮುಟ್ಟಿ ಅಥವಾ ಮಾತನಾಡಿ.",
+        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
+        aiVoicePrompt: "ನಿಮಗೆ ಎಲ್ಲಿ ನೋವಿದೆ? ಚಿತ್ರವನ್ನು ಮುಟ್ಟಿ ಅಥವಾ ಮಾತನಾಡಿ.",
+        kneeTitle: "ಮೊಣಕಾಲು / ಕೀಲು ನೋವು",
+        kneeVoice: "ಮೊಣಕಾಲು ನೋವು ದಾಖಲಾಗಿದೆ.",
+        chestTitle: "ಎದೆ ನೋವು (ತುರ್ತು)",
+        chestVoice: "ಎಚ್ಚರಿಕೆ! ಎದೆ ನೋವು ಪತ್ತೆಯಾಗಿದೆ. ತುರ್ತು ವಿಭಾಗಕ್ಕೆ ಮಾಹಿತಿ ನೀಡಲಾಗಿದೆ.",
+        feverTitle: "ಜ್ವರ ಮತ್ತು ಚಳಿ",
+        feverVoice: "ಜ್ವರ ದಾಖಲಾಗಿದೆ.",
+        stomachTitle: "ಹೊಟ್ಟೆ ನೋವು",
+        stomachVoice: "ಹೊಟ್ಟೆ ನೋವು ದಾಖಲಾಗಿದೆ.",
+        micLabel: "ಮಾತನಾಡಲು ಮೈಕ್ ಒತ್ತಿ • Tap to Speak",
+        nextScanBtn: "ಮುಂದೆ: ಚೀಟಿ ಸ್ಕ್ಯಾನ್ ➔ Next: Scan Rx",
+        scanRxTitle: "ಹಳೆಯ ಚೀಟಿಯನ್ನು ಸ್ಕ್ಯಾನರ್ ಕೆಳಗೆ ಇರಿಸಿ",
+        scanRxSub: "Place Paper Prescription Under Scanner",
+        scanRxAct: "ಚೀಟಿ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ • Digitize Prescription",
+        ocrSuccessVoice: "ಚೀಟಿ ಸ್ಕ್ಯಾನ್ ಪೂರ್ಣಗೊಂಡಿದೆ.",
+        ocrHead: "ಔಷಧಿಗಳ ವಿವರ (96% ನಿಖರತೆ)",
+        confirmTokenBtn: "ಟೋಕನ್ ಪಡೆಯಿರಿ ➔ Confirm & Get Token",
+        tokenDone: "ನೋಂದಣಿ ಪೂರ್ಣಗೊಂಡಿದೆ",
+        tokenSub: "ನಿಮ್ಮ ಟೋಕನ್ ಸಂಖ್ಯೆ • YOUR TOKEN NUMBER",
+        tokenMsg: "ನಿಮ್ಮ ವಿವರಗಳು ವೈದ್ಯರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.",
+        tokenVoice: "ನಿಮ್ಮ ಟೋಕನ್ ಸಂಖ್ಯೆ 42. ಕೊಠಡಿ ಸಂಖ್ಯೆ 4 ರ ಬಳಿ ಕಾಯಿರಿ.",
+        nextPatBtn: "ಮುಂದಿನ ರೋಗಿ • Start Next Patient",
+        listenBtn: "ಕೇಳಿ • Listen"
+      },
+      "mr-IN": {
+        langName: "मराठी",
+        welcomeVoice: "मराठी भाषा निवडली आहे. कृपया आपले आभा कार्ड स्कॅन करा.",
+        scanTitle: "आपले आभा कार्ड स्कॅन करा",
+        scanSubtitle: "Scan Your ABHA Card / QR Code",
+        scanBtn: "स्कॅन करण्यासाठी दाबा • Tap to Scan ABHA",
+        scanSuccessVoice: "आभा कार्ड यशस्वीरीत्या तपासले गेले. रमेश चंद्र, 52 वर्षे.",
+        pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय",
+        pmjayDesc: "₹5,00,000 वार्षिक संरक्षण • मोफत उपचार",
+        continueVoiceBtn: "पुढे जा ➔ Continue to Voice",
+        aiQuestion: "आपल्याला कुठे दुखत आहे? चित्राला स्पर्श करा किंवा बोला.",
+        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
+        aiVoicePrompt: "आपल्याला कुठे दुखत आहे? चित्राला स्पर्श करा किंवा बोला.",
+        kneeTitle: "गुडघे / सांधे दुखी",
+        kneeVoice: "गुडघेदुखी नोंदवली गेली आहे.",
+        chestTitle: "छातीत तीव्र वेदना (तातडीने)",
+        chestVoice: "सावधान! छातीत वेदना आढळली आहे. तात्काळ मदत कक्ष अलर्ट करण्यात आला आहे.",
+        feverTitle: "ताप आणि थंडी",
+        feverVoice: "ताप नोंदवला गेला.",
+        stomachTitle: "पोटदुखी / अपचन",
+        stomachVoice: "पोटदुखी नोंदवली गेली.",
+        micLabel: "बोलण्यासाठी माइक दाबा • Tap to Speak",
+        nextScanBtn: "प्रिस्क्रिप्शन स्कॅन ➔ Next: Scan Rx",
+        scanRxTitle: "जुने प्रिस्क्रिप्शन स्कॅनर खाली ठेवा",
+        scanRxSub: "Place Paper Prescription Under Scanner",
+        scanRxAct: "प्रिस्क्रिप्शन स्कॅन करा • Digitize Prescription",
+        ocrSuccessVoice: "प्रिस्क्रिप्शन स्कॅन पूर्ण झाले.",
+        ocrHead: "औषधांचे तपशील (96% अचूकता)",
+        confirmTokenBtn: "टोकन मिळवा ➔ Confirm & Get Token",
+        tokenDone: "नोंदणी पूर्ण झाली",
+        tokenSub: "आपला टोकन क्रमांक • YOUR TOKEN NUMBER",
+        tokenMsg: "आपली माहिती थेट डॉक्टरांकडे पाठवली आहे.",
+        tokenVoice: "आपला टोकन क्रमांक 42 आहे. रूम नंबर 4 बाहेर थांबा.",
+        nextPatBtn: "पुढील रुग्ण • Start Next Patient",
+        listenBtn: "ऐका • Listen"
+      },
+      "bn-IN": {
+        langName: "বাংলা",
+        welcomeVoice: "বাংলা ভাষা নির্বাচিত হয়েছে। আপনার আভা কার্ড স্ক্যান করুন।",
+        scanTitle: "আপনার আভা কার্ড স্ক্যান করুন",
+        scanSubtitle: "Scan Your ABHA Card / QR Code",
+        scanBtn: "স্ক্যান করতে স্পর্শ করুন • Tap to Scan ABHA",
+        scanSuccessVoice: "আভা কার্ড যাচাই সফল হয়েছে। রমেশ চন্দ্র, ৫২ বছর।",
+        pmjayTitle: "আয়ুষ্মান ভারত PM-JAY সক্রিয়",
+        pmjayDesc: "₹৫,০০,০০০ বার্ষিক কভারেজ",
+        continueVoiceBtn: "এগিয়ে যান ➔ Continue to Voice",
+        aiQuestion: "আপনার কোথায় ব্যথা? ছবিতে স্পর্শ করুন অথবা বলুন।",
+        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
+        aiVoicePrompt: "আপনার কোথায় ব্যথা? ছবিতে স্পর্শ করুন অথবা বলুন।",
+        kneeTitle: "হাঁটু ও জয়েন্টে ব্যথা",
+        kneeVoice: "হাঁটুর ব্যথা নথিভুক্ত করা হয়েছে।",
+        chestTitle: "বুকে তীব্র ব্যথা (জরুরি)",
+        chestVoice: "সতর্কতা! বুকে তীব্র ব্যথা সনাক্ত করা হয়েছে। জরুরি বিভাগে খবর পাঠানো হয়েছে।",
+        feverTitle: "জ্বর ও সর্দি",
+        feverVoice: "জ্বর নথিভুক্ত হয়েছে।",
+        stomachTitle: "পেট ব্যথা / বদহজম",
+        stomachVoice: "পেট ব্যথা নথিভুক্ত হয়েছে।",
+        micLabel: "কথা বলতে মাইক চাপুন • Tap to Speak",
+        nextScanBtn: "প্রেসক্রিপশন স্ক্যান ➔ Next: Scan Rx",
+        scanRxTitle: "পুরনো প্রেসক্রিপশন স্ক্যানারের নিচে রাখুন",
+        scanRxSub: "Place Paper Prescription Under Scanner",
+        scanRxAct: "প্রেসক্রিপশন স্ক্যান করুন • Digitize Prescription",
+        ocrSuccessVoice: "প্রেসক্রিপশন স্ক্যান সম্পন্ন হয়েছে।",
+        ocrHead: "ওষুধের বিবরণ (৯৬% নির্ভুলতা)",
+        confirmTokenBtn: "টোকেন নিন ➔ Confirm & Get Token",
+        tokenDone: "নিবন্ধন সম্পন্ন হয়েছে",
+        tokenSub: "আপনার টোকেন নম্বর • YOUR TOKEN NUMBER",
+        tokenMsg: "আপনার তথ্য ডাক্তারের কাছে পাঠানো হয়েছে।",
+        tokenVoice: "আপনার টোকেন নম্বর ৪২। রুম নম্বর ৪ এ যান।",
+        nextPatBtn: "পরবর্তী রোগী • Start Next Patient",
+        listenBtn: "শুনুন • Listen"
+      },
+      "gu-IN": {
+        langName: "ગુજરાતી",
+        welcomeVoice: "ગુજરાતી ભાષા પસંદ કરવામાં આવી છે. કૃપા કરીને તમારું આભા કાર્ડ સ્કેન કરો.",
+        scanTitle: "તમારું આભા કાર્ડ સ્કેન કરો",
+        scanSubtitle: "Scan Your ABHA Card / QR Code",
+        scanBtn: "સ્કેન કરવા માટે દબાવો • Tap to Scan ABHA",
+        scanSuccessVoice: "આભા કાર્ડ સફળતાપૂર્વક ચકાસાયું. રમેશ ચંદ્ર, 52 વર્ષ.",
+        pmjayTitle: "આયુષ્માન ભારત PM-JAY સક્રિય",
+        pmjayDesc: "₹5,00,000 વાર્ષિક કવરેજ",
+        continueVoiceBtn: "આગળ વધો ➔ Continue to Voice",
+        aiQuestion: "તમને ક્યાં દુખાવો છે? ચિત્રને સ્પર્શ કરો અથવા બોલો.",
+        aiQuestionSub: "Where does it hurt? Touch the body area or speak",
+        aiVoicePrompt: "તમને ક્યાં દુખાવો છે? ચિત્રને સ્પર્શ કરો અથવા બોલો.",
+        kneeTitle: "ઘૂંટણ / સાંધાનો દુખાવો",
+        kneeVoice: "ઘૂંટણનો દુખાવો નોંધાયો છે.",
+        chestTitle: "છાતીમાં તીવ્ર દુખાવો (ઇમરજન્સી)",
+        chestVoice: "સાવધાન! છાતીમાં દુખાવો જણાયો છે. ઇમરજન્સી ડેસ્કને જાણ કરવામાં આવી છે.",
+        feverTitle: "તાવ અને શરદી",
+        feverVoice: "તાવ નોંધાયો છે.",
+        stomachTitle: "પેટનો દુખાવો / અપચો",
+        stomachVoice: "પેટનો દુખાવો નોંધાયો છે.",
+        micLabel: "બોલવા માટે માઇક દબાવો • Tap to Speak",
+        nextScanBtn: "પ્રિસ્ક્રિપ્શન સ્કેન ➔ Next: Scan Rx",
+        scanRxTitle: "જૂનું પ્રિસ્ક્રિપ્શન સ્કેનર નીચે મૂકો",
+        scanRxSub: "Place Paper Prescription Under Scanner",
+        scanRxAct: "પ્રિસ્ક્રિપ્શન સ્કેન કરો • Digitize Prescription",
+        ocrSuccessVoice: "પ્રિસ્ક્રિપ્શન સ્કેન પૂર્ણ થયું છે.",
+        ocrHead: "દવાઓની વિગતો (96% ચોકસાઈ)",
+        confirmTokenBtn: "ટોકન મેળવો ➔ Confirm & Get Token",
+        tokenDone: "નોંધણી પૂર્ણ થઈ",
+        tokenSub: "તમારો ટોકન નંબર • YOUR TOKEN NUMBER",
+        tokenMsg: "તમારી વિગતો સીધા ડૉક્ટર પાસે મોકલાઈ છે.",
+        tokenVoice: "તમારો ટોકન નંબર 42 છે. રૂમ નંબર 4 બહાર રાહ જુઓ.",
+        nextPatBtn: "આગળના દર્દી • Start Next Patient",
+        listenBtn: "સાંભળો • Listen"
+      }
+    };
+
+    let currentLanguage = "te-IN";
+    let isRecording = false;
+    let recognition = null;
+    let availableVoices = [];
+
+    // Preload available SpeechSynthesis voices
+    function initVoices() {
+      if ("speechSynthesis" in window) {
+        availableVoices = window.speechSynthesis.getVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+          availableVoices = window.speechSynthesis.getVoices();
+        };
+      }
+    }
+    initVoices();
+
+    // Initialize Web Speech Recognition
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById("transcription-text").innerText = `"${transcript}"`;
+        speakAudio(transcript);
+        checkRedFlag(transcript);
+      };
+
+      recognition.onend = function() {
+        isRecording = false;
+        document.getElementById("mic-btn").classList.remove("pulse-mic", "bg-red-600");
+        document.getElementById("mic-btn").classList.add("bg-blue-700");
+      };
+    }
+
+    function toggleMicRecording() {
+      if (!recognition) {
+        handleSymptomSelect("knee");
+        return;
+      }
+      if (isRecording) {
+        recognition.stop();
+      } else {
+        recognition.lang = currentLanguage;
+        recognition.start();
+        isRecording = true;
+        document.getElementById("mic-btn").classList.add("pulse-mic", "bg-red-600");
+        document.getElementById("mic-btn").classList.remove("bg-blue-700");
+        document.getElementById("mic-label").innerText = "వింటున్నాము... (Listening...)";
+      }
+    }
+
+    function setLang(langCode) {
+      currentLanguage = langCode;
+      const dict = I18N[langCode] || I18N["te-IN"];
+      
+      // Update UI texts across screens
+      document.getElementById("lbl-scan-title").innerText = dict.scanTitle;
+      document.getElementById("lbl-scan-subtitle").innerText = dict.scanSubtitle;
+      document.getElementById("btn-scan-action").innerText = dict.scanBtn;
+      document.getElementById("lbl-pmjay-title").innerText = dict.pmjayTitle;
+      document.getElementById("lbl-pmjay-desc").innerText = dict.pmjayDesc;
+      document.getElementById("btn-continue-voice").innerText = dict.continueVoiceBtn;
+      
+      document.getElementById("ai-question").innerText = dict.aiQuestion;
+      document.getElementById("ai-question-sub").innerText = dict.aiQuestionSub;
+      document.getElementById("sym-knee-title").innerText = dict.kneeTitle;
+      document.getElementById("sym-chest-title").innerText = dict.chestTitle;
+      document.getElementById("sym-fever-title").innerText = dict.feverTitle;
+      document.getElementById("sym-stomach-title").innerText = dict.stomachTitle;
+      document.getElementById("mic-label").innerText = dict.micLabel;
+      document.getElementById("btn-next-scan").innerText = dict.nextScanBtn;
+
+      document.getElementById("lbl-scan-rx-title").innerText = dict.scanRxTitle;
+      document.getElementById("lbl-scan-rx-sub").innerText = dict.scanRxSub;
+      document.getElementById("btn-scan-rx-act").innerText = dict.scanRxAct;
+      document.getElementById("lbl-ocr-head").innerText = dict.ocrHead;
+      document.getElementById("btn-confirm-token").innerText = dict.confirmTokenBtn;
+
+      document.getElementById("lbl-token-done").innerText = dict.tokenDone;
+      document.getElementById("lbl-token-sub").innerText = dict.tokenSub;
+      document.getElementById("lbl-token-msg").innerText = dict.tokenMsg;
+      document.getElementById("btn-next-pat").innerText = dict.nextPatBtn;
+      document.getElementById("btn-listen-text").innerText = dict.listenBtn;
+
+      // Speak confirmation in the selected language
+      speakAudio(dict.welcomeVoice);
+      goToScreen("screen-identify");
+    }
+
+    function goToScreen(screenId) {
+      const screens = ["screen-language", "screen-identify", "screen-voice", "screen-scan", "screen-token"];
+      screens.forEach(s => document.getElementById(s).classList.add("hidden"));
+      document.getElementById(screenId).classList.remove("hidden");
+      updateStepBadges(screenId);
+      window.scrollTo(0, 0);
+    }
+
+    function updateStepBadges(screenId) {
+      const mapping = {
+        "screen-language": "step-badge-1",
+        "screen-identify": "step-badge-2",
+        "screen-voice": "step-badge-3",
+        "screen-scan": "step-badge-4",
+        "screen-token": "step-badge-5"
+      };
+      for (let i = 1; i <= 5; i++) {
+        const badge = document.getElementById(`step-badge-${i}`);
+        badge.className = "px-3 py-1.5 rounded-md bg-slate-200 text-slate-700";
+      }
+      const active = document.getElementById(mapping[screenId]);
+      if (active) active.className = "px-3 py-1.5 rounded-md bg-blue-700 text-white font-bold";
+    }
+
+    function scanAbhaSim() {
+      const dict = I18N[currentLanguage] || I18N["te-IN"];
+      speakAudio(dict.scanSuccessVoice);
+    }
+
+    function handleSymptomSelect(symptomKey) {
+      const dict = I18N[currentLanguage] || I18N["te-IN"];
+      if (symptomKey === "knee") {
+        document.getElementById("transcription-text").innerText = `"${dict.kneeTitle}"`;
+        speakAudio(dict.kneeVoice);
+      } else if (symptomKey === "chest") {
+        document.getElementById("transcription-text").innerText = `"${dict.chestTitle}"`;
+        document.getElementById("red-flag-banner").classList.remove("hidden");
+        speakAudio(dict.chestVoice);
+      } else if (symptomKey === "fever") {
+        document.getElementById("transcription-text").innerText = `"${dict.feverTitle}"`;
+        speakAudio(dict.feverVoice);
+      } else if (symptomKey === "stomach") {
+        document.getElementById("transcription-text").innerText = `"${dict.stomachTitle}"`;
+        speakAudio(dict.stomachVoice);
+      }
+    }
+
+    function checkRedFlag(text) {
+      const lower = text.toLowerCase();
+      const isRed = lower.includes("chest") || lower.includes("ఛాతీ") || lower.includes("सीना") || lower.includes("நெஞ்சு") || lower.includes("ಎದೆ");
+      if (isRed) {
+        const dict = I18N[currentLanguage] || I18N["te-IN"];
+        document.getElementById("red-flag-banner").classList.remove("hidden");
+        speakAudio(dict.chestVoice);
+      }
+    }
+
+    function runOcrScan() {
+      const dict = I18N[currentLanguage] || I18N["te-IN"];
+      speakAudio(dict.ocrSuccessVoice);
+    }
+
+    let currentAudioPlayer = null;
+
+    async function speakAudio(text) {
+      // 1. Try Live Sarvam AI Bulbul Sovereign Voice via Gateway Proxy
+      try {
+        if (currentAudioPlayer) {
+          currentAudioPlayer.pause();
+          currentAudioPlayer = null;
+        }
+        const res = await fetch("http://localhost:8000/api/v1/ai/tts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: text, language_code: currentLanguage })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.audio_base64) {
+            currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
+            await currentAudioPlayer.play();
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Falling back to local speech synthesis:", err);
+      }
+
+      // 2. Fallback to browser SpeechSynthesis
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = currentLanguage;
+        utterance.rate = 0.92;
+        const prefix = currentLanguage.split("-")[0];
+        const match = availableVoices.find(v => v.lang.startsWith(currentLanguage) || v.lang.startsWith(prefix));
+        if (match) utterance.voice = match;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function speakCurrentScreen() {
+      const dict = I18N[currentLanguage] || I18N["te-IN"];
+      const visible = document.querySelector("main > section:not(.hidden)");
+      if (visible) {
+        if (visible.id === "screen-language") speakAudio("దయచేసి స్క్రీన్ పై మీ భాషను ఎంచుకోండి.");
+        if (visible.id === "screen-identify") speakAudio(dict.welcomeVoice);
+        if (visible.id === "screen-voice") speakAudio(dict.aiVoicePrompt);
+        if (visible.id === "screen-scan") speakAudio(dict.scanRxTitle);
+        if (visible.id === "screen-token") speakAudio(dict.tokenVoice);
+      }
+    }
+  </script>
+</body>
+</html>
