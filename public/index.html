@@ -1158,28 +1158,58 @@
     }
 
     function selectAuthMethod(methodKey) {
-      const cardVoicePrompts = {
-        "qr": {
-          "en-IN": "Scan A B H A Q R code selected. Please hold your Q R code in front of the camera.",
-          "te-IN": "క్యూఆర్ కోడ్ స్కాన్ ఎంచుకోబడింది. దయచేసి కెమెరా ముందు ఉంచండి.",
-          "hi-IN": "QR कोड स्कैन चुना गया। कृपया कैमरे के सामने अपना QR कोड रखें।"
-        },
-        "mobile": {
-          "en-IN": "Mobile number selected. Please enter your ten digit mobile number to receive an O T P.",
-          "te-IN": "మొబైల్ నంబర్ ఎంచుకోబడింది. దయచేసి మీ పది అంకెల ఫోన్ నంబర్ నమోదు చేయండి.",
-          "hi-IN": "मोबाइल नंबर चुना गया। कृपया अपना 10-अंकीय मोबाइल नंबर दर्ज करें।"
-        },
-        "abha": {
-          "en-IN": "A B H A I D selected. Please enter your fourteen digit A B H A number or address.",
-          "te-IN": "ఆభా కార్డ్ ఎంచుకోబడింది. దయచేసి 14 అంకెల ఆభా సంఖ్య నమోదు చేయండి.",
-          "hi-IN": "ABHA ID चुना गया। कृपया अपना 14-अंकीय ABHA नंबर दर्ज करें।"
-        },
-        "aadhaar": {
-          "en-IN": "Aadhaar card selected. Please enter your twelve digit Aadhaar number for e K Y C verification.",
-          "te-IN": "ఆధార్ కార్డ్ ఎంచుకోబడింది. దయచేసి 12 అంకెల ఆధార్ సంఖ్య నమోదు చేయండి.",
-          "hi-IN": "आधार कार्ड चुना गया। कृपया अपना 12-अंकीय आधार नंबर दर्ज करें।"
-        }
-      };
+          const cardVoicePrompts = {
+      "qr": {
+        "en-IN": "Scan ABHA QR code selected. Please hold your QR code in front of the camera.",
+        "te-IN": "క్యూఆర్ కోడ్ స్కాన్ ఎంచుకోబడింది. దయచేసి కెమెరా ముందు ఉంచండి.",
+        "hi-IN": "क्यूआर कोड स्कैन चुना गया है। कृपया कैमरे के सामने अपना कोड रखें।",
+        "ta-IN": "கியூஆர் குறியீடு ஸ்கேன் தேர்ந்தெடுக்கப்பட்டது. கேமரா முன் காட்டவும்.",
+        "kn-IN": "ಕ್ಯೂಆರ್ ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಆಯ್ಕೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು ಕ್ಯಾಮೆರಾ ಮುಂದೆ ಇರಿಸಿ.",
+        "mr-IN": "क्यूआर कोड स्कॅन निवडले आहे. कृपया कॅमेऱ्यासमोर आपला कोड धरा.",
+        "bn-IN": "কিউআর কোড স্ক্যান নির্বাচন করা হয়েছে। অনুগ্রহ করে ক্যামেরার সামনে রাখুন।",
+        "gu-IN": "ક્યુઆર કોડ સ્કેન પસંદ કરેલ છે. કૃપા કરીને કેમેરા સામે રાખો."
+      },
+      "mobile": {
+        "en-IN": "Mobile number selected. Please enter your 10 digit mobile number to receive an OTP.",
+        "te-IN": "మొబైల్ నంబర్ ఎంచుకోబడింది. దయచేసి మీ 10 అంకెల ఫోన్ నంబర్ నమోదు చేయండి.",
+        "hi-IN": "मोबाइल नंबर चुना गया है। कृपया अपना 10 अंकों का फोन नंबर दर्ज करें।",
+        "ta-IN": "கைபேசி எண் தேர்ந்தெடுக்கப்பட்டது. உங்கள் 10 இலக்க எண்ணை உள்ளிடவும்.",
+        "kn-IN": "ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಆಯ್ಕೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು 10 ಅಂಕಿಯ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ.",
+        "mr-IN": "मोबाईल नंबर निवडला आहे. कृपया आपला 10 अंकी मोबाईल क्रमांक टाका.",
+        "bn-IN": "মোবাইল নম্বর নির্বাচন করা হয়েছে। আপনার ১০ সংখ্যার নম্বর লিখুন।",
+        "gu-IN": "મોબાઇલ નંબર પસંદ કરેલ છે. કૃપા કરીને તમારો 10 આંકડાનો નંબર દાખલ કરો."
+      },
+      "abha": {
+        "en-IN": "ABHA ID selected. Please enter your 14 digit ABHA number.",
+        "te-IN": "ఆభా కార్డ్ ఎంచుకోబడింది. దయచేసి 14 అంకెల ఆభా సంఖ్య నమోదు చేయండి.",
+        "hi-IN": "आभा कार्ड चुना गया है। कृपया अपना 14 अंकों का आभा नंबर दर्ज करें।",
+        "ta-IN": "ஆபா அட்டை தேர்ந்தெடுக்கப்பட்டது. 14 இலக்க எண்ணை உள்ளிடவும்.",
+        "kn-IN": "ಆಭಾ ಕಾರ್ಡ್ ಆಯ್ಕೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು 14 ಅಂಕಿಯ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ.",
+        "mr-IN": "आभा कार्ड निवडले आहे. कृपया आपला 14 अंकी आभा क्रमांक टाका.",
+        "bn-IN": "আভা কার্ড নির্বাচন করা হয়েছে। আপনার ১৪ সংখ্যার আভা নম্বর লিখুন।",
+        "gu-IN": "આભા કાર્ડ પસંદ કરેલ છે. કૃપા કરીને તમારો 14 આંકડાનો નંબર દાખલ કરો."
+      },
+      "aadhaar": {
+        "en-IN": "Aadhaar card selected. Please enter your 12 digit Aadhaar number.",
+        "te-IN": "ఆధార్ కార్డ్ ఎంచుకోబడింది. దయచేసి 12 అంకెల ఆధార్ సంఖ్య నమోదు చేయండి.",
+        "hi-IN": "आधार कार्ड चुना गया है। कृपया अपना 12 अंकों का आधार नंबर दर्ज करें।",
+        "ta-IN": "ஆதார் அட்டை தேர்ந்தெடுக்கப்பட்டது. 12 இலக்க எண்ணை உள்ளிடவும்.",
+        "kn-IN": "ಆಧಾರ್ ಕಾರ್ಡ್ ಆಯ್ಕೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು 12 ಅಂಕಿಯ ಆಧಾರ್ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ.",
+        "mr-IN": "आधार कार्ड निवडले आहे. कृपया आपला 12 अंकी आधार क्रमांक टाका.",
+        "bn-IN": "আধার কার্ড নির্বাচন করা হয়েছে। আপনার ১২ সংখ্যার আধার নম্বর লিখুন।",
+        "gu-IN": "આધાર કાર્ડ પસંદ કરેલ છે. કૃપા કરીને તમારો 12 આંકડાનો આધાર નંબર દાખલ કરો."
+      },
+      "register": {
+        "en-IN": "New patient registration selected. Please fill in your details to create an ABHA card.",
+        "te-IN": "కొత్త పేషెంట్ నమోదు ఎంచుకోబడింది. ఆభా కార్డ్ కోసం మీ వివరాలు పూరించండి.",
+        "hi-IN": "नया मरीज पंजीकरण चुना गया है। आभा कार्ड बनाने के लिए विवरण भरें।",
+        "ta-IN": "புதிய நோயாளி பதிவு தேர்ந்தெடுக்கப்பட்டது. விவரங்களை உள்ளிடவும்.",
+        "kn-IN": "ಹೊಸ ರೋಗಿ ನೋಂದಣಿ ಆಯ್ಕೆಯಾಗಿದೆ. ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.",
+        "mr-IN": "नवीन रुग्ण नोंदणी निवडली आहे. आभा कार्ड तयार करण्यासाठी माहिती भरा.",
+        "bn-IN": "নতুন রোগী নিবন্ধন নির্বাচন করা হয়েছে। তথ্য পূরণ করুন।",
+        "gu-IN": "નવા દર્દી નોંધણી પસંદ કરેલ છે. આભા કાર્ડ માટે વિગતો ભરો."
+      }
+    };
 
       ["qr", "mobile", "abha", "aadhaar", "register"].forEach(k => {
         const card = document.getElementById(`card-auth-${k}`);
@@ -1599,40 +1629,52 @@
 
       stopAllAudio();
 
-      // Phonetic pronunciation normalization for natural medical audio
-      let spokenText = rawText
-        .replace(/ABHA/gi, "A B H A")
-        .replace(/PM-JAY/gi, "P M J A Y")
-        .replace(/UIDAI/gi, "U I D A I")
-        .replace(/OTP/gi, "O T P")
-        .replace(/QR/gi, "Q R")
-        .replace(/Rx/gi, "prescription")
-        .replace(/OPD/gi, "O P D");
+      // Clean punctuation & symbols that trigger "dot dot" in Indic TTS engines
+      let cleanText = rawText
+        .replace(/•/g, " ")
+        .replace(/\.{2,}/g, " ")
+        .replace(/[_\/\\*~#|]/g, " ")
+        .replace(/-/g, " ")
+        .replace(/\bABHA\b/gi, currentLanguage === "en-IN" ? "A B H A" : "आभा")
+        .replace(/\bPM-JAY\b/gi, "PM JAY")
+        .replace(/\bUIDAI\b/gi, "UIDAI")
+        .replace(/\bOTP\b/gi, "OTP")
+        .replace(/\bQR\b/gi, currentLanguage === "en-IN" ? "Q R" : "क्यूआर")
+        .replace(/\bRx\b/gi, "prescription")
+        .replace(/\bOPD\b/gi, "OPD")
+        .trim();
 
       // Try local Sarvam backend if available on localhost
       if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
         fetch("http://localhost:8000/api/v1/ai/tts", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: spokenText, language_code: currentLanguage })
+          body: JSON.stringify({ text: cleanText, language_code: currentLanguage })
         }).then(res => res.json()).then(data => {
           if (data && data.audio_base64 && isVoiceActive) {
             currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
             currentAudioPlayer.play().catch(e => console.log("Audio play caught:", e));
           }
         }).catch(err => {
-          playBrowserSynthesis(spokenText);
+          playBrowserSynthesis(cleanText);
         });
       } else {
-        // Instant synchronous browser speech on cloud (Vercel) to prevent gesture expiration
-        playBrowserSynthesis(spokenText);
+        // Instant synchronous browser speech on cloud (Vercel)
+        playBrowserSynthesis(cleanText);
       }
     }
 
     function playBrowserSynthesis(text) {
       if (!("speechSynthesis" in window) || !isVoiceActive) return;
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
+
+      // Remove any remaining period characters from non-English text to prevent "dot" vocalization
+      let speakText = text;
+      if (currentLanguage !== "en-IN") {
+        speakText = speakText.replace(/\./g, " ").replace(/,/g, " ");
+      }
+
+      const utterance = new SpeechSynthesisUtterance(speakText);
       utterance.lang = currentLanguage;
       utterance.rate = 0.95;
       utterance.pitch = 1.0;
