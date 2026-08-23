@@ -446,7 +446,7 @@
           <div class="flex gap-2 pt-1">
             <button onclick="goToScreen('screen-language')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3 px-3.5 rounded-xl text-xs flex items-center justify-center gap-1 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-              <span>Back</span>
+              <span id="btn-voice-back-txt">Back</span>
             </button>
             <button id="btn-proceed-voice" onclick="proceedToVoiceIntake()" class="flex-1 bg-slate-900 hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow">
               Continue to Voice Symptom Intake ➔
@@ -491,7 +491,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
           <span id="sym-knee-title" class="font-bold text-slate-900 text-sm">మోకాళ్ళ / కీళ్ళ నొప్పులు</span>
-          <span class="text-[11px] text-slate-600">Knee & Joint Pain</span>
+          
         </button>
 
         <!-- Chest Pain (Triggers Red Flag) -->
@@ -509,7 +509,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
           <span id="sym-fever-title" class="font-bold text-slate-900 text-sm">తీవ్ర జ్వరం / చలి</span>
-          <span class="text-[11px] text-slate-600">High Fever & Chills</span>
+          
         </button>
 
         <!-- Stomach / Digestion -->
@@ -518,7 +518,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
           <span id="sym-stomach-title" class="font-bold text-slate-900 text-sm">కడుపు నొప్పి / అజీర్ణం</span>
-          <span class="text-[11px] text-slate-600">Stomach & Digestion</span>
+          
         </button>
       </div>
 
@@ -529,13 +529,13 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
           </svg>
         </button>
-        <p id="mic-label" class="font-bold text-slate-900 text-sm">మాట్లాడటానికి మైక్ నొక్కండి • Tap to Speak</p>
-        <p id="transcription-text" class="text-xs text-[#223D79] font-semibold italic min-h-[18px]">"నాకు 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది"</p>
+        <p id="mic-label" class="font-bold text-slate-900 text-sm">Tap Microphone to Speak</p>
+        <p id="transcription-text" class="text-xs text-[#223D79] font-semibold italic min-h-[18px]">"I have had pain in both knees for 6 months"</p>
 
         <div class="w-full pt-2 flex justify-between gap-3">
-          <button onclick="goToScreen('screen-identify')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3 px-5 rounded-xl text-xs flex items-center gap-1.5 transition">
+          <button id="btn-voice-back" onclick="goToScreen('screen-identify')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3 px-5 rounded-xl text-xs flex items-center gap-1.5 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-            <span>వెనుకకు • Back</span>
+            <span id="btn-voice-back-txt">Back</span>
           </button>
           <button onclick="goToScreen('screen-scan')" id="btn-next-scan" class="bg-slate-900 hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 text-white font-bold py-3 px-6 rounded-xl text-sm transition">
             ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx
@@ -603,7 +603,7 @@
           <div class="flex gap-3 pt-2">
             <button onclick="goToScreen('screen-voice')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-              <span>Back</span>
+              <span id="btn-voice-back-txt">Back</span>
             </button>
             <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="flex-1 bg-[#223D79] hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
               ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token
@@ -699,6 +699,7 @@
         tokenMsg: "Your case summary has been sent directly to the doctor.",
         tokenVoice: "Your intake is complete. Your token number is 42. Please proceed to OPD Consultation Room 4.",
         nextPatBtn: "Start Next Patient Intake",
+        transcriptionHint: "I have had pain in both knees for 6 months",
         listenBtn: "Listen"
       },
       "te-IN": {
@@ -725,7 +726,7 @@
         pmjayTitle: "ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్",
         pmjayDesc: "₹5,00,000 వార్షిక కవరేజ్ • 100% ఉచిత క్యాష్‌లెస్‌ చికిత్స",
         continueVoiceBtn: "లక్షణాలు చెప్పడానికి కొనసాగించండి ➔",
-        headerBack: "వెనుకకు • Back",
+        headerBack: "Back",
         aiQuestion: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
         aiQuestionSub: "నొప్పి ఉన్న భాగాన్ని తాకండి లేదా మాట్లాడండి",
         aiVoicePrompt: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
@@ -750,6 +751,7 @@
         tokenMsg: "మీ వివరాలు డాక్టర్ గారి స్క్రీన్ కు పంపబడ్డాయి.",
         tokenVoice: "మీ నమోదు పూర్తయింది. మీ టోకెన్ సంఖ్య 42. దయచేసి రూమ్ నంబర్ 4 వద్ద వేచి ఉండండి.",
         nextPatBtn: "మరో పేషెంట్ ప్రారంభించండి",
+        transcriptionHint: "I have had pain in both knees for 6 months",
         listenBtn: "వినండి"
       },
       "hi-IN": {
@@ -801,6 +803,7 @@
         tokenMsg: "आपका विवरण डॉक्टर की स्क्रीन पर भेज दिया गया है।",
         tokenVoice: "आपका पंजीकरण पूरा हो गया है। आपका टोकन नंबर 42 है। कृपया कक्ष 4 में जाएं।",
         nextPatBtn: "अगला मरीज शुरू करें",
+        transcriptionHint: "मुझे 6 महीने से दोनों घुटनों में दर्द है",
         listenBtn: "सुनें"
       },
       "ta-IN": {
@@ -852,6 +855,7 @@
         tokenMsg: "உங்கள் விவரங்கள் மருத்துவருக்கு அனுப்பப்பட்டன.",
         tokenVoice: "உங்கள் பதிவு முடிந்தது. உங்கள் டோக்கன் எண் 42. அறை 4 க்கு செல்லவும்.",
         nextPatBtn: "அடுத்த நோயாளி",
+        transcriptionHint: "எனக்கு 6 மாதங்களாக இரு முழங்கால்களிலும் வலி உள்ளது",
         listenBtn: "கேளுங்கள்"
       },
       "kn-IN": {
@@ -903,6 +907,7 @@
         tokenMsg: "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ವೈದ್ಯರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.",
         tokenVoice: "ನೋಂದಣಿ ಮುಗಿದಿದೆ. ನಿಮ್ಮ ಟೋಕನ್ ಸಂಖ್ಯೆ 42. ಕೊಠಡಿ 4 ಕ್ಕೆ ತೆರಳಿ.",
         nextPatBtn: "ಮುಂದಿನ ರೋಗಿ",
+        transcriptionHint: "ನನಗೆ 6 ತಿಂಗಳಿಂದ ಎರಡೂ ಮೊಣಕಾಲುಗಳಲ್ಲಿ ನೋವು ಇದೆ",
         listenBtn: "ಕೇಳಿ"
       },
       "mr-IN": {
@@ -954,6 +959,7 @@
         tokenMsg: "आपले तपशील डॉक्टरांना पाठवले आहेत.",
         tokenVoice: "आपली नोंदणी पूर्ण झाली. टोकन नंबर 42. कृपया रूम 4 मध्ये जा.",
         nextPatBtn: "पुढील रुग्ण",
+        transcriptionHint: "मला ६ महिन्यांपासून दोन्ही गुडघ्यांत वेदना होत आहेत",
         listenBtn: "ऐका"
       },
       "bn-IN": {
@@ -1005,6 +1011,7 @@
         tokenMsg: "আপনার তথ্য ডাক্তারের কাছে পাঠানো হয়েছে।",
         tokenVoice: "নিবন্ধন সম্পন্ন হয়েছে। আপনার টোকেন নম্বর 42। রুম ৪-এ যান।",
         nextPatBtn: "পরবর্তী রোগী",
+        transcriptionHint: "আমার 6 মাস ধরে দুই হাঁটুতে ব্যথা",
         listenBtn: "শুনুন"
       },
       "gu-IN": {
@@ -1056,6 +1063,7 @@
         tokenMsg: "તમારી વિગતો ડૉક્ટરને મોકલી દેવામાં આવી છે.",
         tokenVoice: "તમારી નોંધણી પૂર્ણ થઈ. તમારો ટોકન નંબર 42 છે. રૂમ 4 માં જાઓ.",
         nextPatBtn: "આગળનો દર્દી",
+        transcriptionHint: "મને 6 મહિનાથી બંને ઘૂંટણમાં દુખાવો છે",
         listenBtn: "સાંભળો"
       }
     };
@@ -1225,9 +1233,12 @@
       setTxt("btn-txt-verifyaadh", dict.btnVerifyAadh);
       setTxt("btn-proceed-voice", dict.continueVoiceBtn);
       setTxt("lbl-header-back", dict.headerBack || "Back");
+      setTxt("btn-voice-back-txt", dict.headerBack || "Back");
 
       setTxt("ai-question", dict.aiQuestion);
       setTxt("ai-question-sub", dict.aiQuestionSub);
+      setTxt("transcription-text", '"' + (dict.transcriptionHint || "Speak your symptoms clearly") + '"');
+
       setTxt("sym-knee-title", dict.kneeTitle);
       setTxt("sym-chest-title", dict.chestTitle);
       setTxt("sym-fever-title", dict.feverTitle);
