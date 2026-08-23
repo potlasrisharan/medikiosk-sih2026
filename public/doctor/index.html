@@ -335,6 +335,249 @@
     }
 
 
+    // Comprehensive Clinical Master Store for Doctor Portal
+    const CLINICAL_PROFILES = {
+      "enc-0042": {
+        id: "enc-0042",
+        tokenNumber: "#042",
+        patientName: "Ramesh Chandra",
+        age: 52,
+        gender: "Male",
+        avatar: "RC",
+        location: "Khammam, Telangana",
+        abhaId: "91-4829-1029-4821",
+        abhaAddress: "ramesh.chandra@abdm",
+        hasPmjay: true,
+        isEmergency: false,
+        nativeLang: "తెలుగు (Telugu)",
+        nativeSpeech: "\"నాకు గత 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది. ఉదయం లేవగానే బిగుతుగా ఉంటుంది, చలికాలంలో నొప్పి ఎక్కువవుతుంది.\"",
+        subjective: "52-year-old male presents with bilateral knee pain and crepitus for 6 months, aggravated by walking and cold exposure. Morning joint stiffness lasting ~30 mins. Walking capacity reduced to 200m. History of Hypertension on Telmisartan 40mg.",
+        objective: "Clinical Vitals: [Pending In-Person OPD Chamber Measurement]\nPhysical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tenderness, no acute effusion.\nScanned Lab Report (Sarvam 3B VLM OCR):\n• Serum Uric Acid: 7.8 mg/dL [CRITICAL HIGH] (Ref: 3.5 - 7.2 mg/dL)\n• Fasting Blood Sugar: 104 mg/dL [Normal]\n• HbA1c: 6.1% [Pre-diabetic]",
+        assessment: "1. Sandhigata Vata (Osteoarthritis / ICD-10 M17.0 / NAMASTE AYU-SAN-01)\n2. Hyperuricemia (Serum Uric Acid 7.8 mg/dL [HIGH])\n3. Mild Agnimandya (Manda Agni)",
+        dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dhatu Kshaya (Asthi-Majja)" },
+        planSummary: "1. Vata-pacifying Ayurvedic formulations + Anti-hyperuricemic therapy\n2. External Janu Basti with Ksheerabala Taila\n3. Low-purine dietary regimen (avoid red meat & lentils)",
+        aiSuggestions: [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD", dur: "15 Days", inst: "After food with warm water" },
+          { name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD", dur: "15 Days", inst: "Before food with equal water" },
+          { name: "Cap. Shallaki (500mg)", dose: "1 Cap", freq: "BD", dur: "15 Days", inst: "After meals (Cartilage support)" },
+          { name: "Ext. Janu Basti (Ksheerabala Taila)", dose: "1 Sitting", freq: "OD", dur: "7 Sittings", inst: "Panchakarma oil pooling" },
+          { name: "Tab. Febuxostat 40mg", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "Morning after breakfast (Uric acid lowering)" }
+        ],
+        activePrescription: [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
+          { name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD (Twice daily)", dur: "15 Days", inst: "Before food with equal water" },
+          { name: "Cap. Shallaki (500mg)", dose: "1 Cap", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals" },
+          { name: "Ext. Janu Basti (Ksheerabala Taila)", dose: "1 Sitting", freq: "OD", dur: "7 Sittings", inst: "Panchakarma Department" }
+        ]
+      },
+
+      "enc-0043": {
+        id: "enc-0043",
+        tokenNumber: "#043",
+        patientName: "Priya Sharma",
+        age: 34,
+        gender: "Female",
+        avatar: "PS",
+        location: "Hyderabad, Telangana",
+        abhaId: "91-5910-2941-8402",
+        abhaAddress: "priya.sharma@abdm",
+        hasPmjay: true,
+        isEmergency: false,
+        nativeLang: "हिन्दी (Hindi)",
+        nativeSpeech: "\"मुझे पिछले 3 हफ्तों से पेट में जलन, खट्टी डकारें और एसिडिटी की समस्या है, मसालेदार खाना खाने के बाद ज्यादा होती है।\"",
+        subjective: "34-year-old female presents with recurrent epigastric burning sensation, sour belching (Amlodgara), and post-prandial acid regurgitation for 3 weeks, aggravated after spicy foods, tea, and stress.",
+        objective: "Clinical Vitals: [Pending In-Person OPD Examination]\nAbdominal Exam: Mild epigastric tenderness on deep palpation, no hepatomegaly, no peritoneal signs.\nScanned Lab Report (Sarvam 3B VLM OCR):\n• Upper GI Endoscopy: Mild Erythematous Antral Gastritis (Non-ulcer dyspepsia)\n• H. Pylori Stool Antigen: Negative",
+        assessment: "1. Amlapitta (Acid Peptic Disorder / ICD-10 K21.9 / NAMASTE AYU-AML-02)\n2. Pitta-Kapha Prakopa (Vidagdha Pitta)",
+        dashavidha: { prakriti: "Pitta-Vata", agni: "Tikshna Agni", koshtha: "Mrudu", vikriti: "Pitta Dusti" },
+        planSummary: "1. Pitta Shamana & Vatanulomana line of treatment\n2. Dietary correction: Avoid spicy, oily, fermented foods\n3. Alkaline hydration with coconut water & CCF tea",
+        aiSuggestions: [
+          { name: "Avipattikar Churna", dose: "3 Grams", freq: "BD", dur: "15 Days", inst: "Before food with lukewarm water" },
+          { name: "Kamadudha Rasa (Mukta)", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "After meals with milk/water" },
+          { name: "Sutshekhar Rasa", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "After meals with honey/ghee" },
+          { name: "Syrup Sukumaram Kwatham", dose: "15 ml", freq: "BD", dur: "15 Days", inst: "Before food with equal water" },
+          { name: "Cap. Pantoprazole 40mg", dose: "1 Cap", freq: "OD", dur: "14 Days", inst: "Early morning empty stomach (30 mins before tea)" }
+        ],
+        activePrescription: [
+          { name: "Avipattikar Churna", dose: "3 Grams", freq: "BD (Twice daily)", dur: "15 Days", inst: "15 mins before meals with warm water" },
+          { name: "Kamadudha Rasa (Mukta Yukta)", dose: "1 Tab", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with milk" },
+          { name: "Sutshekhar Rasa", dose: "1 Tab", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with honey" },
+          { name: "Cap. Pantoprazole 40mg", dose: "1 Cap", freq: "OD (Morning)", dur: "14 Days", inst: "Empty stomach 30 mins before food" }
+        ]
+      },
+
+      "enc-e012": {
+        id: "enc-e012",
+        tokenNumber: "#E-012",
+        patientName: "Mohan Das",
+        age: 61,
+        gender: "Male",
+        avatar: "MD",
+        location: "Warangal, Telangana",
+        abhaId: "91-7712-4019-3382",
+        abhaAddress: "mohan.das@abdm",
+        hasPmjay: true,
+        isEmergency: true,
+        nativeLang: "हिन्दी (Hindi)",
+        nativeSpeech: "\"अचानक सीने में बहुत तेज दर्द हो रहा है, बाएं हाथ और जबड़े तक जा रहा है। पसीना आ रहा है और सांस फूल रही है।\"",
+        subjective: "61-year-old male presented via Kiosk with sudden-onset severe retrosternal crushing chest pain radiating to left arm and jaw for 30 minutes, accompanied by diaphoresis and acute dyspnea.",
+        objective: "EMERGENCY STAT PROTOCOL TRIGGERED:\n• Voice-Elicited Cardiac Red-Flag Symptoms: Crushing chest pain + jaw radiation + diaphoresis.\n• STAT ECG (Resuscitation Bay): ST-Elevation in leads V1-V4 (Anterior Wall STEMI)\n• STAT Cardiac Troponin-I: 1.84 ng/mL [CRITICAL HIGH] (Ref: <0.04 ng/mL)",
+        assessment: "1. Acute ST-Elevation Myocardial Infarction (STEMI / ICD-10 I21.0 / SNOMED 57054005)\n2. Priority 1 Critical Resuscitation Alert",
+        dashavidha: { prakriti: "Vata-Pitta", agni: "Vishamagni", koshtha: "Krura", vikriti: "Hridaya Marmaghata" },
+        planSummary: "STAT Emergency Actions:\n1. Oxygen via nasal cannula 4 L/min\n2. Dual Antiplatelet Therapy (DAPT) loading\n3. STAT transfer to Cath Lab for Primary PCI",
+        aiSuggestions: [
+          { name: "Tab. Aspirin 325mg (Chewable)", dose: "1 Tab", freq: "STAT", dur: "Single Dose", inst: "Chew immediately" },
+          { name: "Tab. Clopidogrel 300mg", dose: "4 Tabs (75mg ea)", freq: "STAT", dur: "Loading Dose", inst: "Swallow with water STAT" },
+          { name: "Tab. Atorvastatin 80mg", dose: "1 Tab", freq: "STAT", dur: "Loading Dose", inst: "High-intensity statin" },
+          { name: "Sublingual Sorbitrate 5mg", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "Place under tongue if SBP >100" },
+          { name: "Arjunarishta (Cardioprotective)", dose: "20 ml", freq: "BD", dur: "30 Days", inst: "Post-stabilization recovery phase" }
+        ],
+        activePrescription: [
+          { name: "Tab. Aspirin 325mg (Chewable)", dose: "1 Tab", freq: "STAT (Immediate)", dur: "Single Dose", inst: "Chew immediately" },
+          { name: "Tab. Clopidogrel 300mg", dose: "4 Tabs (75mg)", freq: "STAT (Loading)", dur: "Single Dose", inst: "Swallow immediately with water" },
+          { name: "Tab. Atorvastatin 80mg", dose: "1 Tab", freq: "STAT", dur: "Night", inst: "High-intensity lipid stabilization" },
+          { name: "Sublingual Sorbitrate 5mg", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "Under tongue for chest pain (BP >100)" }
+        ]
+      },
+
+      "enc-0044": {
+        id: "enc-0044",
+        tokenNumber: "#044",
+        patientName: "Ananya Verma",
+        age: 28,
+        gender: "Female",
+        avatar: "AV",
+        location: "Nizamabad, Telangana",
+        abhaId: "91-9123-4567-8901",
+        abhaAddress: "ananya.verma@abdm",
+        hasPmjay: true,
+        isEmergency: false,
+        nativeLang: "हिन्दी (Hindi)",
+        nativeSpeech: "\"मुझे 3 दिनों से बहुत तेज बुखार (102°F) और कंपकंपी है, सिर में तेज दर्द और पूरे शरीर में दर्द हो रहा है।\"",
+        subjective: "28-year-old female presents with acute high fever (recorded 102.2°F), rigors, severe frontal headache, and generalized myalgias for 3 days. Denies cough, shortness of breath, or rash.",
+        objective: "Clinical Vitals: Temp: 102.2°F, Pulse: 104 bpm, BP: 110/70 mmHg.\nPhysical Exam: Febrile, flushed facies, mild pharyngeal congestion, no petechiae.\nScanned Lab Report (Sarvam 3B VLM OCR):\n• Complete Blood Count (CBC): WBC 11,800/mcL [Mild Leukocytosis]\n• Platelet Count: 220,000/mcL [Normal]\n• Dengue NS1 / Malarial Smear: Negative",
+        assessment: "1. Vishama Jwara (Acute Viral Pyrexia / ICD-10 R50.9 / NAMASTE AYU-JWA-01)\n2. Vata-Kapha Jwara with Agnimandya",
+        dashavidha: { prakriti: "Pitta-Kapha", agni: "Manda Agni (Jwaragni)", koshtha: "Madhyama", vikriti: "Rasa-Dhatu Dusti" },
+        planSummary: "1. Langhana (Light diet: Moong dal khichdi & warm water)\n2. Jwaraghna (Antipyretic) & Amapachana therapy\n3. Adequate hydration with oral electrolytes",
+        aiSuggestions: [
+          { name: "Tab. Maha Sudarshan Ghanvati", dose: "2 Tabs", freq: "TDS", dur: "5 Days", inst: "After meals with warm water" },
+          { name: "Amritarishta (Giloy)", dose: "20 ml", freq: "BD", dur: "7 Days", inst: "After food with equal warm water" },
+          { name: "Tab. Tribhuvankirti Rasa", dose: "1 Tab", freq: "BD", dur: "5 Days", inst: "With ginger juice or honey" },
+          { name: "Tab. Paracetamol 650mg", dose: "1 Tab", freq: "SOS (Max TDS)", dur: "3 Days", inst: "Only if temp >100°F" },
+          { name: "Sudarshana Churna Kashaya", dose: "30 ml", freq: "BD", dur: "5 Days", inst: "Freshly boiled decoction" }
+        ],
+        activePrescription: [
+          { name: "Tab. Maha Sudarshan Ghanvati", dose: "2 Tabs", freq: "TDS (Thrice daily)", dur: "5 Days", inst: "After food with warm water" },
+          { name: "Amritarishta (Giloy Formulation)", dose: "20 ml", freq: "BD (Twice daily)", dur: "7 Days", inst: "After food with equal warm water" },
+          { name: "Tab. Tribhuvankirti Rasa", dose: "1 Tab", freq: "BD (Twice daily)", dur: "5 Days", inst: "With honey after food" },
+          { name: "Tab. Paracetamol 650mg", dose: "1 Tab", freq: "SOS (When needed)", dur: "3 Days", inst: "Take if temperature exceeds 100°F" }
+        ]
+      }
+    };
+
+    let currentSelectedEncId = "enc-0042";
+
+    function selectEncounter(encId) {
+      currentSelectedEncId = encId;
+      const data = CLINICAL_PROFILES[encId];
+      if (!data) return;
+
+      // 1. Highlight selected item in queue
+      ["enc-e012", "enc-0042", "enc-0043", "enc-0044"].forEach(k => {
+        const item = document.getElementById(`queue-item-${k}`);
+        if (!item) return;
+        if (k === encId) {
+          item.classList.add("border-2", "border-[#FFA530]", "bg-[#1a2f5e]");
+          item.classList.remove("border-[#D9CDBA]/30", "bg-slate-900/80");
+        } else {
+          item.classList.remove("border-2", "border-[#FFA530]", "bg-[#1a2f5e]");
+          item.classList.add("border-[#D9CDBA]/30", "bg-slate-900/80");
+        }
+      });
+
+      // 2. Update Patient Header
+      const nameEl = document.getElementById("patient-name-display");
+      if (nameEl) nameEl.innerText = data.patientName;
+
+      const metaEl = document.getElementById("patient-meta-display");
+      if (metaEl) metaEl.innerText = `${data.age} Yrs • ${data.gender} • ${data.location}`;
+
+      const avatarEl = document.getElementById("patient-avatar-display");
+      if (avatarEl) avatarEl.innerText = data.avatar;
+
+      const tokenEl = document.getElementById("token-badge");
+      if (tokenEl) tokenEl.innerText = `TOKEN ${data.tokenNumber}`;
+
+      const abhaDetailsEl = document.getElementById("patient-abha-details");
+      if (abhaDetailsEl) abhaDetailsEl.innerText = `ABHA ID: ${data.abhaId} • ${data.abhaAddress}`;
+
+      // 3. Update Cross-Lingual S: Subjective
+      const nativeEl = document.getElementById("soap-native-text");
+      if (nativeEl) nativeEl.innerText = data.nativeSpeech;
+
+      const langBadge = document.getElementById("patient-lang-badge");
+      if (langBadge) langBadge.innerText = data.nativeLang;
+
+      const soapSEl = document.getElementById("soap-s");
+      if (soapSEl) soapSEl.innerText = data.subjective;
+
+      // 4. Update O: Objective & Labs
+      const soapOEl = document.getElementById("soap-o");
+      if (soapOEl) soapOEl.innerText = data.objective;
+
+      // 5. Update A: Assessment & Dashavidha
+      const soapAEl = document.getElementById("soap-a");
+      if (soapAEl) soapAEl.innerText = data.assessment;
+
+      const dashPrakriti = document.getElementById("dash-prakriti");
+      if (dashPrakriti && data.dashavidha) dashPrakriti.innerText = data.dashavidha.prakriti;
+
+      const dashAgni = document.getElementById("dash-agni");
+      if (dashAgni && data.dashavidha) dashAgni.innerText = data.dashavidha.agni;
+
+      const dashKoshtha = document.getElementById("dash-koshtha");
+      if (dashKoshtha && data.dashavidha) dashKoshtha.innerText = data.dashavidha.koshtha;
+
+      const dashVikriti = document.getElementById("dash-vikriti");
+      if (dashVikriti && data.dashavidha) dashVikriti.innerText = data.dashavidha.vikriti;
+
+      // 6. Update P: Plan & Load Personalized Active Prescription Table
+      activeMedications = JSON.parse(JSON.stringify(data.activePrescription));
+      renderPrescriptionTable();
+
+      // 7. Update AI Drug Suggester Quick-Add Chips
+      renderAiSuggestionChips(data.aiSuggestions);
+
+      // 8. Re-initialize Lucide Icons
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+
+    function renderAiSuggestionChips(suggestions) {
+      const container = document.getElementById("ai-drug-chips-container");
+      if (!container || !suggestions) return;
+
+      container.innerHTML = suggestions.map((s, idx) => `
+        <button onclick="addSuggestedMedicine(${idx})" class="bg-[#1a2f5e] hover:bg-[#FFA530] hover:text-[#223D79] text-[#FFA530] border border-[#FFA530]/40 text-xs font-bold py-1 px-2.5 rounded-lg transition shadow-sm flex items-center gap-1">
+          <span>+ ${s.name}</span>
+          <span class="text-[10px] opacity-75 font-normal">(${s.freq})</span>
+        </button>
+      `).join("");
+    }
+
+    function addSuggestedMedicine(idx) {
+      const data = CLINICAL_PROFILES[currentSelectedEncId];
+      if (!data || !data.aiSuggestions || !data.aiSuggestions[idx]) return;
+      const s = data.aiSuggestions[idx];
+      activeMedications.push({
+        name: s.name,
+        dose: s.dose,
+        freq: s.freq,
+        dur: s.dur,
+        inst: s.inst
+      });
+      renderPrescriptionTable();
+    }
+
+
     // Interactive Prescription Pad State Engine
     let activeMedications = [
       { id: 1, name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
