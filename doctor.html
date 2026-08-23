@@ -140,14 +140,40 @@
 
       <!-- 15-Second Clinical SOAP Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
-        <!-- Subjective (History & Complaints) -->
-        <div class="p-4 rounded-xl bg-slate-800/70 border border-slate-700/80">
-          <div class="flex items-center gap-2 text-xs font-bold text-blue-400 mb-2 uppercase tracking-wide">
-            <i data-lucide="message-square" class="w-4 h-4"></i> Subjective (History & Voice Intake)
+        <!-- Subjective (Cross-Lingual Native Voice + Standardized Medical Translation) -->
+        <div class="p-4 rounded-xl bg-slate-800/70 border border-slate-700/80 space-y-2.5">
+          <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-400 uppercase tracking-wide">
+              <i data-lucide="languages" class="w-4 h-4 text-blue-400"></i>
+              <span>S: Subjective (Cross-Lingual AI Transcription & Translation)</span>
+            </div>
+            <span class="text-[10px] bg-blue-500/20 text-blue-300 font-bold px-2 py-0.5 rounded border border-blue-500/30">
+              Sarvam AI Saaras ➔ Clinical English
+            </span>
           </div>
-          <p id="soap-s" class="text-xs text-slate-200 leading-relaxed">
-            52-year-old male presents with bilateral knee pain for 6 months, aggravated by walking and cold weather. Morning stiffness lasting ~20 mins. History of Hypertension for 3 years on Telmisartan 40mg. No known drug allergies.
-          </p>
+
+          <!-- Original Patient Spoken Words in Mother Tongue -->
+          <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-700 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] text-slate-400 font-bold uppercase">
+                🗣️ Patient Spoken Words (Native Mother Tongue):
+              </span>
+              <span id="patient-lang-badge" class="text-[10px] text-amber-400 font-bold bg-amber-950/60 px-2 py-0.5 rounded border border-amber-500/40">తెలుగు (Telugu)</span>
+            </div>
+            <p id="soap-native-text" class="text-xs text-amber-200/90 italic font-medium">
+              "నాకు గత 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది. ఉదయం లేవగానే బిగుతుగా ఉంటుంది, చలికాలంలో నొప్పి ఎక్కువవుతుంది."
+            </p>
+          </div>
+
+          <!-- Standardized Translated Medical English for Consulting Doctor -->
+          <div class="space-y-1">
+            <span class="text-[10px] text-slate-400 font-bold uppercase">
+              🇬🇧 Standardized Translated Clinical Note (English):
+            </span>
+            <p id="soap-s" class="text-xs text-slate-200 leading-relaxed font-sans">
+              52-year-old male reports severe bilateral knee pain with crepitus for 6 months, worsening during early mornings and cold weather. Walking distance reduced to ~200m. Denies acute trauma.
+            </p>
+          </div>
         </div>
 
         <!-- Objective & Document OCR Labs -->
