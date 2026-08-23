@@ -308,6 +308,81 @@
       lucide.createIcons();
     }
 
+
+    // Interactive Prescription Pad State Engine
+    let activeMedications = [
+      { id: 1, name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
+      { id: 2, name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD (Twice daily)", dur: "15 Days", inst: "Before food with equal water" },
+      { id: 3, name: "Ext. Janu Basti (Ksheerabala Taila)", dose: "1 Sitting", freq: "OD", dur: "7 Sittings", inst: "Panchakarma Therapy" }
+    ];
+
+    function renderPrescriptionTable() {
+      const tbody = document.getElementById("prescription-table-body");
+      if (!tbody) return;
+
+      tbody.innerHTML = activeMedications.map((m, idx) => `
+        <tr class="hover:bg-slate-900/80 transition">
+          <td class="p-2.5 font-bold text-white">${m.name}</td>
+          <td class="p-2.5 text-slate-300">${m.dose}</td>
+          <td class="p-2.5"><span class="bg-blue-500/20 text-blue-300 font-bold px-2 py-0.5 rounded text-[11px]">${m.freq}</span></td>
+          <td class="p-2.5 text-slate-300">${m.dur}</td>
+          <td class="p-2.5 text-slate-400 text-[11px]">${m.inst}</td>
+          <td class="p-2.5 text-center">
+            <button onclick="removeMedicine(${idx})" class="text-rose-400 hover:text-rose-300 font-bold px-2 py-1 hover:bg-rose-950/40 rounded transition" title="Remove Medicine">
+              ✕
+            </button>
+          </td>
+        </tr>
+      `).join("");
+
+      // Sync with hidden textarea
+      const textarea = document.getElementById("plan-textarea");
+      if (textarea) {
+        textarea.value = "Prescribed Medications:\n" + activeMedications.map((m, i) => `${i+1}. ${m.name} - ${m.dose} ${m.freq} for ${m.dur} (${m.inst})`).join("\n");
+      }
+    }
+
+    function addSuggestedMedicine(name, dose, freq, dur, inst) {
+      // Avoid duplicate
+      if (activeMedications.some(m => m.name.toLowerCase() === name.toLowerCase())) {
+        alert(name + " is already in the prescription pad!");
+        return;
+      }
+      activeMedications.push({ id: Date.now(), name, dose, freq, dur, inst });
+      renderPrescriptionTable();
+    }
+
+    function addCustomMedicine() {
+      const name = document.getElementById("new-med-name").value.trim();
+      const dose = document.getElementById("new-med-dose").value.trim() || "1 Tab";
+      const freq = document.getElementById("new-med-freq").value;
+      const dur = document.getElementById("new-med-dur").value.trim() || "15 Days";
+
+      if (!name) {
+        alert("Please enter medicine name");
+        return;
+      }
+
+      activeMedications.push({
+        id: Date.now(),
+        name: name,
+        dose: dose,
+        freq: freq,
+        dur: dur,
+        inst: "As advised by physician"
+      });
+
+      document.getElementById("new-med-name").value = "";
+      document.getElementById("new-med-dose").value = "";
+      document.getElementById("new-med-dur").value = "";
+      renderPrescriptionTable();
+    }
+
+    function removeMedicine(idx) {
+      activeMedications.splice(idx, 1);
+      renderPrescriptionTable();
+    }
+
     function approvePrescription() {
       document.getElementById("success-banner").classList.remove("hidden");
       lucide.createIcons();
