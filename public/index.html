@@ -725,36 +725,40 @@
       currentLanguage = langCode;
       const dict = I18N[langCode] || I18N["te-IN"];
       
-      // Update UI texts across screens
-      document.getElementById("lbl-scan-title").innerText = dict.scanTitle;
-      document.getElementById("lbl-scan-subtitle").innerText = dict.scanSubtitle;
-      document.getElementById("btn-scan-action").innerText = dict.scanBtn;
-      document.getElementById("lbl-pmjay-title").innerText = dict.pmjayTitle;
-      document.getElementById("lbl-pmjay-desc").innerText = dict.pmjayDesc;
-      document.getElementById("btn-continue-voice").innerText = dict.continueVoiceBtn;
+      function setTxt(id, val) {
+        const el = document.getElementById(id);
+        if (el && val) el.innerText = val;
+      }
+
+      // Update UI texts safely
+      setTxt("lbl-scan-title", dict.scanTitle);
+      setTxt("lbl-scan-subtitle", dict.scanSubtitle);
+      setTxt("btn-scan-action", dict.scanBtn);
+      setTxt("lbl-pmjay-title", dict.pmjayTitle);
+      setTxt("lbl-pmjay-desc", dict.pmjayDesc);
+      setTxt("btn-continue-voice", dict.continueVoiceBtn);
       
-      document.getElementById("ai-question").innerText = dict.aiQuestion;
-      document.getElementById("ai-question-sub").innerText = dict.aiQuestionSub;
-      document.getElementById("sym-knee-title").innerText = dict.kneeTitle;
-      document.getElementById("sym-chest-title").innerText = dict.chestTitle;
-      document.getElementById("sym-fever-title").innerText = dict.feverTitle;
-      document.getElementById("sym-stomach-title").innerText = dict.stomachTitle;
-      document.getElementById("mic-label").innerText = dict.micLabel;
-      document.getElementById("btn-next-scan").innerText = dict.nextScanBtn;
+      setTxt("ai-question", dict.aiQuestion);
+      setTxt("ai-question-sub", dict.aiQuestionSub);
+      setTxt("sym-knee-title", dict.kneeTitle);
+      setTxt("sym-chest-title", dict.chestTitle);
+      setTxt("sym-fever-title", dict.feverTitle);
+      setTxt("sym-stomach-title", dict.stomachTitle);
+      setTxt("mic-label", dict.micLabel);
+      setTxt("btn-next-scan", dict.nextScanBtn);
 
-      document.getElementById("lbl-scan-rx-title").innerText = dict.scanRxTitle;
-      document.getElementById("lbl-scan-rx-sub").innerText = dict.scanRxSub;
-      document.getElementById("btn-scan-rx-act").innerText = dict.scanRxAct;
-      document.getElementById("lbl-ocr-head").innerText = dict.ocrHead;
-      document.getElementById("btn-confirm-token").innerText = dict.confirmTokenBtn;
+      setTxt("lbl-scan-rx-title", dict.scanRxTitle);
+      setTxt("lbl-scan-rx-sub", dict.scanRxSub);
+      setTxt("btn-scan-rx-act", dict.scanRxAct);
+      setTxt("lbl-ocr-head", dict.ocrHead);
+      setTxt("btn-confirm-token", dict.confirmTokenBtn);
 
-      document.getElementById("lbl-token-done").innerText = dict.tokenDone;
-      document.getElementById("lbl-token-sub").innerText = dict.tokenSub;
-      document.getElementById("lbl-token-msg").innerText = dict.tokenMsg;
-      document.getElementById("btn-next-pat").innerText = dict.nextPatBtn;
-      document.getElementById("btn-listen-text").innerText = dict.listenBtn;
+      setTxt("lbl-token-done", dict.tokenDone);
+      setTxt("lbl-token-sub", dict.tokenSub);
+      setTxt("lbl-token-msg", dict.tokenMsg);
+      setTxt("btn-next-pat", dict.nextPatBtn);
 
-      // Speak confirmation in the selected language
+      // Speak confirmation and navigate
       speakAudio(dict.welcomeVoice);
       goToScreen("screen-identify");
     }
