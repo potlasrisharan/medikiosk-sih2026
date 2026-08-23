@@ -43,7 +43,7 @@ SOAP_STORE = {
         encounter_id="enc-0042",
         subjective="Patient reports severe knee stiffness and crepitus, aggravated during early mornings and cold exposure. Walking capacity reduced to 200 meters. Denies trauma.",
         objective="Vitals: BP 134/86 mmHg, HR 74 bpm, SpO2 98%, BMI 26.2. Crepitus audible on passive bilateral knee flexion. Bilateral medial joint line tenderness (+). No erythema.",
-        assessment="1. Sandhigata Vata (ICD-10 M17.0 / NAMASTE AYU-SAN-01)\n2. Hyperuricemia (Serum Uric Acid 7.8 mg/dL [HIGH])\n3. Mild Agnimandya (Manda Agni)",
+        assessment="1. Sandhigata Vata (Osteoarthritis / ICD-10 M17.0 / NAMASTE AYU-SAN-01)\n2. Hyperuricemia (Serum Uric Acid 7.8 mg/dL [HIGH])\n3. Mild Agnimandya (Manda Agni)",
         plan="Rx Formulations:\n1. Tab. Yograj Guggulu 2 tabs BD with warm water pc (15 days)\n2. Kwath. Maharasnadi 20ml with equal water BD ac (15 days)\n3. Ext. Janu Basti with Ksheerabala Taila 7 sittings\n\nInvestigations Ordered:\n- Bilateral Knee AP/Lateral Weight-bearing X-ray\n- Repeat Serum Uric Acid after 4 weeks",
         critical_alerts=["Serum Uric Acid: 7.8 mg/dL [HIGH] (Ref: 3.5 - 7.2 mg/dL)"],
         dashavidha_matrix={
@@ -132,10 +132,9 @@ async def get_soap_note(encounter_id: str):
 
 @router.get("/encounter/{encounter_id}/fhir")
 async def get_encounter_fhir(encounter_id: str):
-    return fhir_service.generate_opd_document_bundle(
+    soap = SOAP_STORE.get(encounter_id, SOAP_STORE["enc-0042"])
+    return fhir_service.generate_document_bundle(
         encounter_id=encounter_id,
         patient_id="pat-048291",
-        patient_name="Ramesh Chandra",
-        practitioner_id="doc-84920",
-        practitioner_name="Dr. Vaidya Ananya Sharma, MD (Ayu)"
+        soap_note=soap.model_dump()
     )
