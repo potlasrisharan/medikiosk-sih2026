@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/doctor", "destination": "/doctor/index.html" },
+    { "source": "/kiosk", "destination": "/kiosk/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
