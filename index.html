@@ -134,7 +134,7 @@
   </div>
 
   <!-- Main Container -->
-  <main class="flex-1 max-w-5xl w-full mx-auto p-6 flex flex-col justify-center">
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 pt-6 pb-44 flex flex-col justify-start min-h-screen">
 
     <!-- =================================================================== -->
     <!-- SCREEN 1: LANGUAGE SELECTION -->
@@ -1334,6 +1334,19 @@
       if (el) el.value = "9876543210";
     }
 
+        function toggleDemoFooter() {
+      const container = document.getElementById("demo-buttons-container");
+      const lbl = document.getElementById("btn-toggle-footer-lbl");
+      if (!container || !lbl) return;
+      if (container.classList.contains("hidden")) {
+        container.classList.remove("hidden");
+        lbl.innerText = "Hide ✕";
+      } else {
+        container.classList.add("hidden");
+        lbl.innerText = "Show 🔑";
+      }
+    }
+
     function loadDemoPatient(id, name, age, gender, abhaNumber, abhaAddress, authMethod, pmjay, symptom, phone, aadhaar) {
       currentPatient.id = id;
       currentPatient.name = name;
@@ -2021,15 +2034,20 @@
     }
   </script>
   <!-- Fixed Bottom Bar: 1-Click Demo Patient Credentials (SQLite DB Synced) -->
-  <footer class="fixed bottom-0 left-0 right-0 bg-[#223D79] text-white border-t-2 border-[#FFA530] shadow-2xl py-3 px-4 z-50">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2.5">
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-[#FFA530] animate-ping"></span>
-        <span class="text-xs font-black tracking-wider text-[#FFA530] uppercase">
-          🔑 Demo Patient Profiles (1-Click Fill & Login):
-        </span>
+  <footer id="demo-footer-bar" class="fixed bottom-0 left-0 right-0 bg-[#223D79] text-white border-t-2 border-[#FFA530] shadow-2xl py-2.5 px-4 z-40 transition-all duration-200">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+      <div class="flex items-center justify-between w-full md:w-auto gap-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FFA530] animate-ping"></span>
+          <span class="text-xs font-black tracking-wider text-[#FFA530] uppercase">
+            🔑 Demo Profiles (1-Click Auto-Fill):
+          </span>
+        </div>
+        <button onclick="toggleDemoFooter()" class="text-[11px] bg-white/10 hover:bg-white/20 text-[#D9CDBA] px-2 py-0.5 rounded border border-[#D9CDBA]/30">
+          <span id="btn-toggle-footer-lbl">Hide ✕</span>
+        </button>
       </div>
-      <div class="flex flex-wrap items-center gap-2">
+      <div id="demo-buttons-container" class="flex flex-wrap items-center gap-2">
         <button onclick="loadDemoPatient('pat-048291', 'Ramesh Chandra', 52, 'Male', '91-4829-1029-4821', 'ramesh.chandra@abdm', 'ABHA Scan & Share', true, 'Bilateral knee joint pain with crepitus', '9876543210', '892019204821')" class="bg-white/10 hover:bg-[#FFA530] hover:text-[#223D79] text-white border border-[#D9CDBA]/40 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow flex items-center gap-1.5">
           <span>👴 Ramesh Chandra (52M - Knee OA)</span>
         </button>
