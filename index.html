@@ -538,9 +538,15 @@
         </button>
         <p id="mic-label" class="font-bold text-slate-900 text-sm">Tap Microphone to Speak • మాట్లాడటానికి మైక్ నొక్కండి</p>
         <div class="w-full space-y-2 mt-1">
-          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-left">
-            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">🎙️ Spoken Audio (Native):</span>
-            <p id="transcription-text" class="text-xs text-slate-800 font-semibold italic mt-0.5 min-h-[18px]">"I have had pain in both knees for 6 months"</p>
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-left flex items-center justify-between gap-2">
+            <div class="flex-1">
+              <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">🎙️ Spoken Audio (Native):</span>
+              <p id="transcription-text" class="text-xs text-slate-800 font-semibold italic mt-0.5 min-h-[18px]">"I have had pain in both knees for 6 months"</p>
+            </div>
+            <button id="btn-replay-speech" onclick="replaySpokenConfirmation()" title="Re-play spoken confirmation audio" class="px-2.5 py-1.5 bg-white hover:bg-slate-100 text-[#223D79] border border-slate-300 rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-sm transition">
+              <svg class="w-3.5 h-3.5 text-[#223D79]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+              <span id="lbl-replay-btn">🔊 Listen</span>
+            </button>
           </div>
           <div id="kiosk-live-translation-card" class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-left">
             <span class="text-[10px] uppercase font-bold text-emerald-700 tracking-wider flex items-center gap-1">
@@ -1362,6 +1368,7 @@
       setTxt("sym-stomach-title", dict.stomachTitle);
       setTxt("mic-label", dict.micLabel);
       setTxt("btn-next-scan", dict.nextScanBtn);
+      setTxt("lbl-replay-btn", "🔊 " + (dict.listenBtn || "Listen"));
 
       setTxt("lbl-scan-rx-title", dict.scanRxTitle);
       setTxt("lbl-scan-rx-sub", dict.scanRxSub);
@@ -2130,26 +2137,56 @@
       }
     }
 
+    function speakSpokenConfirmation(symptomText) {
+      if (!isVoiceActive || !symptomText) return;
+      
+      let msg = "";
+      if (currentLanguage === "te-IN") {
+        msg = `నమోదు చేయబడింది: ${symptomText}. దయచేసి వివరాలను సరిచూసుకోండి.`;
+      } else if (currentLanguage === "hi-IN") {
+        msg = `दर्ज किया गया: ${symptomText}. कृपया स्क्रीन पर पुष्टि करें।`;
+      } else if (currentLanguage === "ta-IN") {
+        msg = `பதிவு செய்யப்பட்டது: ${symptomText}. தயவுசெய்து சரிபார்க்கவும்.`;
+      } else if (currentLanguage === "kn-IN") {
+        msg = `ದಾಖಲಿಸಲಾಗಿದೆ: ${symptomText}. ದಯವಿಟ್ಟು ಪರಿಶೀಲಿಸಿ.`;
+      } else if (currentLanguage === "mr-IN") {
+        msg = `नोंदवले गेले आहे: ${symptomText}. कृपया तपासा.`;
+      } else if (currentLanguage === "bn-IN") {
+        msg = `নথিভুক্ত করা হয়েছে: ${symptomText}. অনুগ্রহ করে যাচাই করুন।`;
+      } else if (currentLanguage === "gu-IN") {
+        msg = `નોંધાયેલ છે: ${symptomText}. કૃપા કરીને ચકાસો.`;
+      } else {
+        // English
+        msg = `Recorded: ${symptomText}. Please review on screen and tap Next.`;
+      }
+
+      speakAudio(msg);
+    }
+
+    function replaySpokenConfirmation() {
+      const text = currentPatient.selectedSymptom || (document.getElementById("transcription-text") ? document.getElementById("transcription-text").innerText.replace(/"/g, "") : "");
+      if (text) {
+        speakSpokenConfirmation(text);
+      }
+    }
+
     function handleSymptomSelect(symptomKey) {
       const dict = I18N[currentLanguage] || I18N["en-IN"];
       let text = "";
       if (symptomKey === "knee") {
         text = dict.kneeTitle;
-        speakAudio(dict.kneeVoice);
       } else if (symptomKey === "chest") {
         text = dict.chestTitle;
         document.getElementById("red-flag-banner")?.classList.remove("hidden");
-        speakAudio(dict.chestVoice);
       } else if (symptomKey === "fever") {
         text = dict.feverTitle;
-        speakAudio(dict.feverVoice);
       } else if (symptomKey === "stomach") {
         text = dict.stomachTitle;
-        speakAudio(dict.stomachVoice);
       }
       document.getElementById("transcription-text").innerText = `"${text}"`;
       currentPatient.selectedSymptom = text;
       translateKioskSymptomLive(text);
+      speakSpokenConfirmation(text);
     }
 
     function openVoiceModal() {
@@ -2369,6 +2406,7 @@
         currentPatient.selectedSymptom = text;
         document.getElementById("transcription-text").innerText = `"${text}"`;
         translateKioskSymptomLive(text);
+        speakSpokenConfirmation(text);
       }
       closeVoiceModal();
     }
@@ -2458,6 +2496,7 @@
           
           if (currentPatient.selectedSymptom && currentPatient.selectedSymptom.length > 1) {
             await translateKioskSymptomLive(currentPatient.selectedSymptom);
+            speakSpokenConfirmation(currentPatient.selectedSymptom);
           }
         };
 
