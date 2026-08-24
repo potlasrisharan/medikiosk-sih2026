@@ -2159,17 +2159,61 @@
       const isTe = (currentLanguage === "te-IN");
       const isHi = (currentLanguage === "hi-IN");
       const isTa = (currentLanguage === "ta-IN");
+      const isKn = (currentLanguage === "kn-IN");
+      const isMr = (currentLanguage === "mr-IN");
+      const isBn = (currentLanguage === "bn-IN");
+      const isGu = (currentLanguage === "gu-IN");
       const isEn = (currentLanguage === "en-IN");
       
       // Update Title and Subtitle based strictly on language
       const titleEl = document.getElementById("modal-title-text");
       const descEl = document.getElementById("modal-desc-text");
       const samplesHead = document.getElementById("modal-samples-header");
-      const placeholderText = isTe ? "మీ లక్షణాలను ఇక్కడ చెప్పండి లేదా టైప్ చేయండి..." : (isHi ? "अपने लक्षण यहाँ बोलें या लिखें..." : (isTa ? "உங்கள் அறிகுறிகளை இங்கே கூறவும்..." : "Speak or type your symptoms here in English..."));
+      let placeholderText = "Speak or type your symptoms here...";
+      let titleText = "🎙️ Voice Symptom Intake";
+      let descText = "Speak into your mic or select/type your symptoms below:";
+      let samplesHeadText = "Quick Voice Samples (1-Tap Select):";
+
+      if (isTe) {
+        titleText = "🎙️ వాయిస్ ఇన్పుట్";
+        descText = "మైక్‌లో మాట్లాడండి లేదా క్రింద మీ లక్షణాలను ఎంచుకోండి/రాయండి:";
+        placeholderText = "మీ లక్షణాలను ఇక్కడ చెప్పండి లేదా టైప్ చేయండి...";
+        samplesHeadText = "త్వరిత నమూనాలు (1-Tap):";
+      } else if (isHi) {
+        titleText = "🎙️ वॉइस लक्षण दर्ज करें";
+        descText = "माइक में बोलें या नीचे दिए गए लक्षणों को चुनें/लिखें:";
+        placeholderText = "अपने लक्षण यहाँ बोलें या लिखें...";
+        samplesHeadText = "त्वरित लक्षण नमूने (1-Tap):";
+      } else if (isTa) {
+        titleText = "🎙️ குரல் பதிவு";
+        descText = "மைக் வழியாக பேசவும் அல்லது கீழே உள்ள அறிகுறிகளைத் தேர்ந்தெடுக்கவும்:";
+        placeholderText = "உங்கள் அறிகுறிகளை இங்கே கூறவும்...";
+        samplesHeadText = "விரைவு மாதிரிகள் (1-Tap):";
+      } else if (isKn) {
+        titleText = "🎙️ ಧ್ವನಿ ಇನ್‌ಪುಟ್";
+        descText = "ಮೈಕ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ ಅಥವಾ ಕೆಳಗಿನ ಲಕ್ಷಣಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ/ಬರೆಯಿರಿ:";
+        placeholderText = "ನಿಮ್ಮ ಲಕ್ಷಣಗಳನ್ನು ಇಲ್ಲಿ ಮಾತನಾಡಿ ಅಥವಾ ಬರೆಯಿರಿ...";
+        samplesHeadText = "ತ್ವರಿತ ಮಾದರಿಗಳು (1-Tap):";
+      } else if (isMr) {
+        titleText = "🎙️ व्हॉइस इनपुट";
+        descText = "माईकमध्ये बोला किंवा खालील लक्षणे निवडा/लिहा:";
+        placeholderText = "आपली लक्षणे येथे बोला किंवा लिहा...";
+        samplesHeadText = "त्वरित नमुने (1-Tap):";
+      } else if (isBn) {
+        titleText = "🎙️ ভয়েস ইনপুট";
+        descText = "মাইকে বলুন বা নীচের লক্ষণগুলি নির্বাচন করুন/লিখুন:";
+        placeholderText = "আপনার লক্ষণ এখানে বলুন বা লিখুন...";
+        samplesHeadText = "দ্রুত নমুনা (1-Tap):";
+      } else if (isGu) {
+        titleText = "🎙️ વૉઇસ ઇનપુટ";
+        descText = "માઇકમાં બોલો અથવા નીચે આપેલા લક્ષણો પસંદ કરો/લખો:";
+        placeholderText = "તમારા લક્ષણો અહીં બોલો અથવા લખો...";
+        samplesHeadText = "ઝડપી નમૂનાઓ (1-Tap):";
+      }
       
-      if (titleEl) titleEl.innerText = isTe ? "🎙️ వాయిస్ ఇన్పుట్ • Voice Intake" : (isHi ? "🎙️ वॉइस लक्षण दर्ज करें • Voice Intake" : (isTa ? "🎙️ குரல் பதிவு • Voice Intake" : "🎙️ Voice Symptom Intake"));
-      if (descEl) descEl.innerText = isTe ? "మైక్‌లో మాట్లాడండి లేదా క్రింద మీ లక్షణాలను ఎంచుకోండి/రాయండి:" : (isHi ? "माइक में बोलें या नीचे दिए गए लक्षणों को चुनें/लिखें:" : (isTa ? "மைக் வழியாக பேசவும் அல்லது கீழே உள்ள அறிகுறிகளைத் தேர்ந்தெடுக்கவும்:" : "Speak into your mic or select/type your symptoms below:"));
-      if (samplesHead) samplesHead.innerText = isTe ? "త్వరిత నమూనాలు (1-Tap Voice Samples):" : (isHi ? "त्वरित लक्षण नमूने (1-Tap):" : (isTa ? "விரைவு குரல் மாதிரிகள் (1-Tap):" : "Quick Voice Samples (1-Tap Select):"));
+      if (titleEl) titleEl.innerText = titleText;
+      if (descEl) descEl.innerText = descText;
+      if (samplesHead) samplesHead.innerText = samplesHeadText;
       
       const textarea = document.getElementById("modal-voice-text");
       if (textarea) {
@@ -2223,6 +2267,66 @@
             </button>
             <button onclick="applyModalVoiceSample('வயிற்றில் கடுமையான எரிச்சல் மற்றும் அஜீரணம் உள்ளது')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
               🌿 "வயிற்று வலி & எரிச்சல்" (Acidity)
+            </button>
+          `;
+        } else if (isKn) {
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('ನನಗೆ ತೀವ್ರ ಎದೆ ನೋವು ಮತ್ತು ಉಸಿರಾಟದ ತೊಂದರೆ ಇದೆ')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "ತೀವ್ರ ಎದೆ ನೋವು" (Chest Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('ನನಗೆ 6 ತಿಂಗಳಿಂದ ಎರಡೂ ಮೊಣಕಾಲುಗಳಲ್ಲಿ ನೋವು ಇದೆ')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "ಮಂಡಿ & ಕೀಲು ನೋವು" (Knee Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('ನನಗೆ 2 ದಿನಗಳಿಂದ ತೀವ್ರ ಜ್ವರ ಮತ್ತು ಚಳಿ ಇದೆ')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "ತೀವ್ರ ಜ್ವರ ಮತ್ತು ಚಳಿ" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('ಹೊಟ್ಟೆಯಲ್ಲಿ ತೀವ್ರ ಉರಿ ಮತ್ತು ಗ್ಯಾಸ್ಟ್ರಿಕ್ ಇದೆ')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "ಹೊಟ್ಟೆ ನೋವು & ಗ್ಯಾಸ್ಟ್ರಿಕ್" (Acidity)
+            </button>
+          `;
+        } else if (isMr) {
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('छातीत अचानक तीव्र वेदना होत आहेत आणि घाम येत आहे')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "छातीत तीव्र वेदना" (Chest Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('मला ६ महिन्यांपासून दोन्ही गुडघ्यांत तीव्र वेदना आहेत')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "गुडघे व सांधेदुखी" (Knee Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('मला ३ दिवसांपासून तीव्र ताप आणि थंडी वाजत आहे')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "तीव्र ताप व थंडी" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('पोटात खूप जळजळ आणि ॲसिडिटी होत आहे')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "पोटदुखी व ॲसिडिटी" (Acidity)
+            </button>
+          `;
+        } else if (isBn) {
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('বুকে তীব্র ব্যথা এবং শ্বাসকষ্ট হচ্ছে')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "বুকে তীব্র ব্যথা" (Chest Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('আমার ৬ মাস ধরে দুই হাঁটুতে ব্যথা ও শক্ত ভাব')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "হাঁটু ও জয়েন্টে ব্যথা" (Knee Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('আমার ৩ দিন ধরে খুব বেশি জ্বর ও কাঁপুনি')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "তীব্র জ্বর ও কাঁপুনি" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('পেটে প্রচণ্ড জ্বালাপোড়া এবং গ্যাস হচ্ছে')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "পেট ব্যথা ও এসিডিটি" (Acidity)
+            </button>
+          `;
+        } else if (isGu) {
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('છાતીમાં અચાનક તીવ્ર દુખાવો અને પરસેવો થાય છે')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "છાતીમાં તીવ્ર દુખાવો" (Chest Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('મને ૬ મહિનાથી બંને ઘૂંટણમાં સખત દુખાવો છે')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "ઘૂંટણ અને સાંધાનો દુખાવો" (Knee Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('મને ૩ દિવસથી તીવ્ર તાવ અને ઠંડી લાગે છે')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "તીવ્ર તાવ અને ઠંડી" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('પેટમાં ખૂબ બળતરા અને એસિડિટી થાય છે')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "પેટનો દુખાવો અને એસિડિટી" (Acidity)
             </button>
           `;
         } else {
