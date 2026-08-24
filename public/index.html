@@ -9,58 +9,6 @@
   <title>MediKiosk — Multilingual Voice Kiosk</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // --- SECURITY: IDLE TIMEOUT LOGIC ---
-    let lastActivityTime = Date.now();
-    let idleTimer = null;
-    const MAX_IDLE_SECONDS = 180; // 3 minutes total
-    const SHOW_WARNING_SECONDS = 60; // Show clock after 1 min
-
-    function resetIdleTimer() {
-      lastActivityTime = Date.now();
-      const warningBanner = document.getElementById("idle-warning-banner");
-      if (warningBanner) warningBanner.classList.add("hidden");
-    }
-
-    // Attach to all user interactions
-    document.addEventListener("click", resetIdleTimer);
-    document.addEventListener("touchstart", resetIdleTimer);
-    document.addEventListener("keypress", resetIdleTimer);
-    document.addEventListener("mousemove", resetIdleTimer);
-
-    function startIdleMonitor() {
-      if (idleTimer) clearInterval(idleTimer);
-      idleTimer = setInterval(() => {
-        // Do not timeout if they are on the Language Selection (0) or Final Token (4) screens
-        if (currentScreenIndex === 0 || currentScreenIndex === 4) return;
-
-        // Do not timeout if they are actively recording voice
-        if (isRecording) return;
-
-        const idleSeconds = Math.floor((Date.now() - lastActivityTime) / 1000);
-        
-        if (idleSeconds >= MAX_IDLE_SECONDS) {
-          // Purge session
-          resetIdleTimer();
-          purgeAndRestartIntake();
-          goToScreen('screen-language');
-        } else if (idleSeconds >= SHOW_WARNING_SECONDS) {
-          // Show countdown
-          const remaining = MAX_IDLE_SECONDS - idleSeconds;
-          const mins = Math.floor(remaining / 60);
-          const secs = remaining % 60;
-          const formattedSecs = secs < 10 ? "0" + secs : secs;
-          
-          const warningBanner = document.getElementById("idle-warning-banner");
-          const countdownText = document.getElementById("idle-countdown-text");
-          
-          if (warningBanner) warningBanner.classList.remove("hidden");
-          if (countdownText) countdownText.innerText = `${mins}:${formattedSecs}`;
-        }
-      }, 1000);
-    }
-
-    // Start monitor on load
-    startIdleMonitor();
 
     tailwind.config = {
       theme: {
