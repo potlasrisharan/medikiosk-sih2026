@@ -2442,14 +2442,18 @@
       btn.innerText = "Evaluating Triage Priority...";
       btn.disabled = true;
 
-      // 1. Live AI Translation and Emergency Triage via Groq API
+      // 1. Live AI Clinical Pharmacology, Translation & Triage Engine via Groq API
       let isEmergency = false;
       const symptomLower = (currentPatient.selectedSymptom || "").toLowerCase();
-      const fallbackEmergency = symptomLower.includes("chest") || symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने") || symptomLower.includes("bullet") || symptomLower.includes("బుల్లెట్") || symptomLower.includes("గుండె");
+      const fallbackEmergency = symptomLower.includes("chest") || symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने") || symptomLower.includes("bullet") || symptomLower.includes("బుల్లెట్") || symptomLower.includes("గుండె") || symptomLower.includes("heart") || symptomLower.includes("stroke") || symptomLower.includes("రక్తం");
       
       let englishSymptom = currentPatient.englishTranslation || currentPatient.selectedSymptom || "General health consultation";
       let clinicalAssessment = "";
-      
+      let planSummary = "";
+      let dashavidha = { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dosha Dusti" };
+      let aiSuggestions = [];
+      let activePrescription = [];
+
       try {
         const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
@@ -2462,11 +2466,11 @@
             messages: [
               {
                 role: "system",
-                content: "You are a clinical AI translation and triage engine. Analyze the patient's spoken symptom (in Telugu, Hindi, Tamil, Kannada, Marathi, Bengali, Gujarati, or English). Return ONLY a JSON object with: 1. 'english_translation': Clear, accurate clinical English translation of the symptom. 2. 'is_emergency': boolean (true for heart attack, chest pain, stroke, bullet/gunshot wound, trauma, severe hemorrhage, acute respiratory failure, false otherwise). 3. 'clinical_assessment': 1-sentence diagnostic assessment in English."
+                content: "You are an expert physician clinical pharmacologist and triage specialist. Analyze the patient's symptoms (which may be in any Indian language or English). Return ONLY a JSON object with keys: 1. english_translation (accurate English translation), 2. is_emergency (boolean: true for chest pain, acute coronary syndrome, stroke, bullet wound, severe trauma, massive bleeding, acute respiratory failure, false otherwise), 3. clinical_assessment (1-sentence diagnostic summary), 4. planSummary (clinical management plan summary), 5. dashavidha (object with keys: prakriti, agni, koshtha, vikriti), 6. aiSuggestions (array of 2-4 drug objects with keys: name, dose, freq, dur, inst strictly tailored to this exact diagnosis), 7. activePrescription (array of 1-3 primary drug objects with keys: name, dose, freq, dur, inst tailored to this diagnosis)."
               },
               {
                 role: "user",
-                content: currentPatient.selectedSymptom || "General consultation"
+                content: "Patient Symptom: " + (currentPatient.selectedSymptom || "General consultation")
               }
             ],
             response_format: { type: "json_object" }
@@ -2481,14 +2485,90 @@
           }
           isEmergency = (content.is_emergency === true || content.is_emergency === "true") || fallbackEmergency;
           clinicalAssessment = content.clinical_assessment || "";
+          planSummary = content.planSummary || "";
+          if (content.dashavidha) dashavidha = content.dashavidha;
+          if (Array.isArray(content.aiSuggestions) && content.aiSuggestions.length > 0) aiSuggestions = content.aiSuggestions;
+          if (Array.isArray(content.activePrescription) && content.activePrescription.length > 0) activePrescription = content.activePrescription;
         }
       } catch (e) {
-        console.error("Groq Triage/Translation failed", e);
+        console.error("Groq dynamic prescription failed, using specific clinical category fallback", e);
         isEmergency = fallbackEmergency;
-        if (symptomLower.includes("మోకాళ్ళ") || symptomLower.includes("घुटनों")) englishSymptom = "Bilateral knee joint pain with crepitus";
-        else if (symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने")) englishSymptom = "Acute crushing chest pain radiating to left arm";
-        else if (symptomLower.includes("జ్వరం") || symptomLower.includes("बुखार")) englishSymptom = "High grade fever with chills";
-        else if (symptomLower.includes("కడుపు") || symptomLower.includes("पेट")) englishSymptom = "Severe stomach pain and acid reflux";
+      }
+
+      // Disease-Specific Clinical Regimen Fallback if AI arrays were empty
+      if (aiSuggestions.length === 0 || activePrescription.length === 0) {
+        if (isEmergency || symptomLower.includes("ఛాతీ") || symptomLower.includes("chest") || symptomLower.includes("सीने") || symptomLower.includes("bullet") || symptomLower.includes("heart")) {
+          isEmergency = true;
+          clinicalAssessment = "1. Acute Coronary Syndrome (STEMI/NSTEMI Rule-out)\n2. Immediate Resuscitation & Coronary Bay Triage";
+          planSummary = "Emergency STAT protocol: Dual antiplatelet loading, sublingual nitrates, continuous cardiac monitoring, immediate 12-lead ECG and troponin testing.";
+          dashavidha = { prakriti: "Pitta-Vata", agni: "Tikshnagni", koshtha: "Krura", vikriti: "Hridaya Sroto-rodha" };
+          aiSuggestions = [
+            { name: "Tab. Aspirin 325mg (Chewable)", dose: "325 mg", freq: "STAT", dur: "Immediate", inst: "Chew immediately" },
+            { name: "Tab. Clopidogrel 300mg", dose: "300 mg", freq: "STAT", dur: "Single loading dose", inst: "Take with water" },
+            { name: "Sorbitrate 5mg (Sublingual)", dose: "5 mg", freq: "SOS", dur: "Every 5 mins up to 3 doses", inst: "Keep under tongue" },
+            { name: "O2 Therapy via NRBM", dose: "6-8 L/min", freq: "STAT", dur: "Continuous", inst: "Titrate to SpO2 >94%" }
+          ];
+          activePrescription = [
+            { name: "Tab. Aspirin 325mg (Chewable)", dose: "325 mg", freq: "STAT", dur: "Single Dose", inst: "Chew immediately" },
+            { name: "Tab. Clopidogrel 300mg", dose: "300 mg", freq: "STAT", dur: "Single Dose", inst: "Take immediately" }
+          ];
+        } else if (symptomLower.includes("కడుపు") || symptomLower.includes("మంట") || symptomLower.includes("అజీర్ణం") || symptomLower.includes("पेट") || symptomLower.includes("stomach") || symptomLower.includes("acidity") || symptomLower.includes("reflux")) {
+          clinicalAssessment = "1. Gastroesophageal Reflux Disease (GERD) & Acid Peptic Disorder\n2. Amlapitta (Pitta Prakopa)";
+          planSummary = "Proton pump inhibitor therapy, mucosal cytoprotection, dietary lifestyle modification (avoid spicy/fermented food, small frequent meals).";
+          dashavidha = { prakriti: "Pitta Pradhana", agni: "Tikshna Agni / Vidagdha", koshtha: "Mridu", vikriti: "Amlapitta Dusti" };
+          aiSuggestions = [
+            { name: "Cap. Pantoprazole 40mg", dose: "40 mg", freq: "OD (Once daily)", dur: "14 Days", inst: "Take 30 mins before breakfast" },
+            { name: "Syp. Sucralfate + Oxetacaine", dose: "10 ml", freq: "TDS", dur: "7 Days", inst: "1 hour before meals" },
+            { name: "Tab. Avipattikar Churna", dose: "3 grams", freq: "BD", dur: "15 Days", inst: "With warm water before food" },
+            { name: "Tab. Kamadudha Ras", dose: "250 mg", freq: "BD", dur: "15 Days", inst: "After meals with honey" }
+          ];
+          activePrescription = [
+            { name: "Cap. Pantoprazole 40mg", dose: "40 mg", freq: "OD", dur: "14 Days", inst: "Take 30 mins before breakfast" },
+            { name: "Syp. Sucralfate 10ml", dose: "10 ml", freq: "TDS", dur: "7 Days", inst: "1 hour before meals" }
+          ];
+        } else if (symptomLower.includes("జ్వరం") || symptomLower.includes("చలి") || symptomLower.includes("बुखार") || symptomLower.includes("fever") || symptomLower.includes("chills")) {
+          clinicalAssessment = "1. Acute Febrile Illness (Jwara)\n2. Differential: Viral Fever / Early Dengue / Malaria";
+          planSummary = "Antipyretic therapy, aggressive oral hydration, complete blood count & peripheral smear monitoring, tepid sponging.";
+          dashavidha = { prakriti: "Vata-Pitta", agni: "Vishamagni", koshtha: "Madhyama", vikriti: "Santapa Jwara" };
+          aiSuggestions = [
+            { name: "Tab. Paracetamol 650mg", dose: "650 mg", freq: "TDS / SOS", dur: "5 Days", inst: "Take after food with plenty of water" },
+            { name: "Oral Rehydration Salts (ORS)", dose: "1 Liter/day", freq: "Continuous", dur: "5 Days", inst: "Sip throughout the day" },
+            { name: "Tab. Mahasudarshan Ghanvati", dose: "2 Tabs", freq: "BD", dur: "7 Days", inst: "After food with warm water" },
+            { name: "Syp. Giloy Kwath", dose: "20 ml", freq: "BD", dur: "7 Days", inst: "Immunity & platelet booster" }
+          ];
+          activePrescription = [
+            { name: "Tab. Paracetamol 650mg", dose: "650 mg", freq: "TDS (8hrly)", dur: "5 Days", inst: "After meals (Max 3g/day)" },
+            { name: "Oral Rehydration Salts (ORS)", dose: "1 Sachet in 1L water", freq: "Ad libitum", dur: "5 Days", inst: "Maintain hydration" }
+          ];
+        } else if (symptomLower.includes("తల") || symptomLower.includes("headache") || symptomLower.includes("सिर")) {
+          clinicalAssessment = "1. Tension-Type Cephalea / Shirashoola\n2. Stress-induced Cervicogenic Headache";
+          planSummary = "Analgesic therapy, sleep hygiene, cervical ergonomics, hydration, Shiroabhyanga with Brahmi Taila.";
+          dashavidha = { prakriti: "Vata-Pitta", agni: "Madhyama", koshtha: "Madhyama", vikriti: "Shirashoola" };
+          aiSuggestions = [
+            { name: "Tab. Naproxen 250mg + Domperidone", dose: "1 Tab", freq: "BD / SOS", dur: "3 Days", inst: "Take after meals" },
+            { name: "Tab. Brahmi Vati (Gold)", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "With warm milk before bedtime" },
+            { name: "Tab. Shirashuladi Vajra Ras", dose: "250 mg", freq: "BD", dur: "10 Days", inst: "After food with lukewarm water" }
+          ];
+          activePrescription = [
+            { name: "Tab. Naproxen 250mg", dose: "250 mg", freq: "BD SOS", dur: "3 Days", inst: "After meals" },
+            { name: "Tab. Shirashuladi Vajra Ras", dose: "250 mg", freq: "BD", dur: "10 Days", inst: "After meals" }
+          ];
+        } else {
+          // Default Knee / Joint Pain (Sandhigata Vata)
+          clinicalAssessment = "1. Bilateral Primary Knee Osteoarthritis (Grade 2)\n2. Sandhigata Vata with Asthi-Majja Kshaya";
+          planSummary = "Comprehensive multimodal joint preservation: Ayurvedic Chondro-protective formulation, topical anti-inflammatory taila, quadriceps strengthening physiotherapy.";
+          dashavidha = { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Sandhigata Vata" };
+          aiSuggestions = [
+            { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD", dur: "15 Days", inst: "After meals with warm water" },
+            { name: "Syp. Maharasnadi Kwatha", dose: "20 ml", freq: "BD", dur: "15 Days", inst: "Dilute with 20ml warm water before food" },
+            { name: "Mahanarayana Taila (Local)", dose: "10 ml", freq: "BD", dur: "30 Days", inst: "Gentle local application on knees" },
+            { name: "Tab. Glucosamine Sulfate 1500mg", dose: "1 Tab", freq: "OD", dur: "60 Days", inst: "After breakfast" }
+          ];
+          activePrescription = [
+            { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
+            { name: "Syp. Maharasnadi Kwatha", dose: "20 ml", freq: "BD", dur: "15 Days", inst: "Before meals with equal water" }
+          ];
+        }
       }
 
       // Generate sequential unique token
@@ -2512,22 +2592,14 @@
         isEmergency: isEmergency,
         nativeLang: currentLanguage === "te-IN" ? "తెలుగు (Telugu)" : (currentLanguage === "hi-IN" ? "हिन्दी (Hindi)" : (currentLanguage === "ta-IN" ? "தமிழ் (Tamil)" : "English")),
         nativeSpeech: `"${currentPatient.selectedSymptom}"`,
+        englishTranslation: englishSymptom,
         subjective: `${currentPatient.age}-year-old ${currentPatient.gender.toLowerCase()} presents with: ${englishSymptom}.\n\n(Original Spoken Audio: "${currentPatient.selectedSymptom}")`,
         objective: `Clinical Vitals: [Pending In-Person Chamber Measurement]\nVoice-Elicited Intake: ${currentPatient.selectedSymptom}`,
-        assessment: isEmergency ? "1. Critical Acute Presentation (Priority Triage Alert)\n2. Immediate Resuscitation / Stabilisation Required" : "1. General OPD Evaluation & AYUSH Clinical Management",
-        dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dosha Dusti" },
-        planSummary: isEmergency ? "STAT ER Transfer & Resuscitation Protocol" : "Physician Evaluation & Personalized Pharmacological Prescribing",
-        aiSuggestions: isEmergency ? [
-          { name: "Tab. Aspirin 325mg", dose: "1 Tab", freq: "STAT", dur: "Immediate", inst: "Chew immediately" },
-          { name: "O2 Therapy", dose: "10L/min", freq: "STAT", dur: "Continuous", inst: "Via NRBM" }
-        ] : [
-          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD", dur: "15 Days", inst: "After meals" }
-        ],
-        activePrescription: isEmergency ? [
-          { name: "Tab. Aspirin 325mg (Chewable)", dose: "1 Tab", freq: "STAT", dur: "Single Dose", inst: "Chew immediately" }
-        ] : [
-          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" }
-        ],
+        assessment: clinicalAssessment || (isEmergency ? "1. Critical Acute Presentation (Priority Triage Alert)\n2. Immediate Resuscitation / Stabilisation Required" : "1. General OPD Evaluation & Clinical Management"),
+        dashavidha: dashavidha,
+        planSummary: planSummary || (isEmergency ? "STAT ER Transfer & Resuscitation Protocol" : "Physician Evaluation & Personalized Pharmacological Prescribing"),
+        aiSuggestions: aiSuggestions,
+        activePrescription: activePrescription,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
