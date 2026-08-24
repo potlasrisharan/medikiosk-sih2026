@@ -1975,7 +1975,7 @@
 
     function toggleMicRecording() {
       if (!recognition) {
-        handleSymptomSelect("knee");
+        alert("⚠️ Your browser does not support Voice Recognition.\n\nPlease use Google Chrome, Microsoft Edge, or Safari to use the voice feature.\n\n(Note: Brave browser blocks voice recognition for privacy reasons).");
         return;
       }
       if (isRecording) {
