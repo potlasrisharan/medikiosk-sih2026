@@ -395,7 +395,7 @@
             </span>
           </td>
           <td class="p-3 text-right space-x-1.5">
-            <button onclick="viewPatientFhir('${tx.name}', '${tx.abha}', '${tx.complaint.replace(/'/g, "")}')" class="bg-[#223D79] hover:bg-[#1a2f5e] text-white px-2.5 py-1 rounded text-[11px] font-bold shadow transition">
+            <button onclick="viewPatientFhir('${tx.name}', '${tx.abha}', '${(tx.complaint || "General OPD").replace(/'/g, "")}')" class="bg-[#223D79] hover:bg-[#1a2f5e] text-white px-2.5 py-1 rounded text-[11px] font-bold shadow transition">
               FHIR R4
             </button>
           </td>

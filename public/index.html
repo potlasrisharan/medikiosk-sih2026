@@ -600,14 +600,18 @@
             </div>
           </div>
 
-          <div class="flex gap-3 pt-2">
-            <button onclick="goToScreen('screen-voice')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-              <span id="btn-voice-back-txt">Back</span>
+          <div class="flex flex-col gap-3 pt-2">
+            <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="w-full bg-[#223D79] hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-emerald-600/20">
+              పత్రాలు ఉన్నాయి - ధృవీకరించి టోకెన్ పొందండి ➔ (Has Documents & Get Token)
             </button>
-            <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="flex-1 bg-[#223D79] hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition">
-              ధృవీకరించి టోకెన్ పొందండి ➔ Confirm & Get Token
-            </button>
+            <div class="flex gap-3">
+              <button onclick="goToScreen('screen-voice')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
+                <span id="btn-voice-back-txt">Back</span>
+              </button>
+              <button onclick="generateDynamicTokenAndRegister()" class="flex-1 bg-white hover:bg-gray-50 text-[#77797C] border border-[#D9CDBA] font-bold py-3.5 px-4 rounded-xl text-sm transition">
+                పత్రాలు లేవు ➔ Skip / No Documents
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1956,14 +1960,25 @@
     if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognition = new SpeechRec();
-      recognition.continuous = false;
+      recognition.continuous = true;
       recognition.interimResults = false;
 
       recognition.onresult = async function(event) {
-        const transcript = event.results[0][0].transcript;
-        document.getElementById("transcription-text").innerText = `"${transcript}"`;
-        currentPatient.selectedSymptom = transcript;
-        speakAudio(transcript);
+        // Append all transcripts from this session
+        let newTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+             newTranscript += event.results[i][0].transcript + " ";
+          }
+        }
+        if (!newTranscript) return;
+        
+        if (!currentPatient.selectedSymptom) currentPatient.selectedSymptom = "";
+        currentPatient.selectedSymptom = (currentPatient.selectedSymptom + " " + newTranscript).trim();
+        
+        document.getElementById("transcription-text").innerText = `"${currentPatient.selectedSymptom}"`;
+        // Only speak the newly added part so it doesn't overlap excessively
+        speakAudio(newTranscript);
       };
 
       recognition.onend = function() {
@@ -1980,6 +1995,9 @@
       }
       if (isRecording) {
         recognition.stop();
+        isRecording = false;
+        document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
+        document.getElementById("mic-btn")?.classList.add("bg-blue-700");
       } else {
         recognition.lang = currentLanguage;
         recognition.start();
