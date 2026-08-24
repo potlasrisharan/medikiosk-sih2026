@@ -842,8 +842,31 @@
     }
 
     function approvePrescription() {
-      document.getElementById("success-banner").classList.remove("hidden");
+      const data = CLINICAL_PROFILES[currentSelectedEncId];
+      if (!data) return;
+      
+      const banner = document.getElementById("success-banner");
+      banner.classList.remove("hidden");
+      
+      // Update the text in the banner dynamically
+      const bannerSpan = banner.querySelector("span");
+      if (bannerSpan) {
+        bannerSpan.innerHTML = `<i data-lucide="check" class="w-4 h-4"></i> ${data.patientName} (${data.tokenNumber}) Approved! NRCeS FHIR R4 Bundle linked to ABDM and printed.`;
+      }
+      
+      // Update the left sidebar queue item to show it's approved
+      const queueItem = document.getElementById(`queue-item-${currentSelectedEncId}`);
+      if (queueItem) {
+        queueItem.classList.remove("border-[#FFA530]", "border-rose-500", "border-[#D9CDBA]/30");
+        queueItem.classList.add("border-emerald-500", "bg-emerald-50");
+        const statusEl = queueItem.querySelector(".text-[#FFA530], .text-rose-400");
+        if (statusEl) {
+           statusEl.innerHTML = `<span class="text-emerald-600">✅ Approved</span>`;
+        }
+      }
+      
       lucide.createIcons();
+      alert(`✅ Encounter ${data.tokenNumber} for ${data.patientName} has been approved.\n\nFHIR R4 Bundle generated and synced to ABDM Gateway.`);
     }
   </script>
 </body>
