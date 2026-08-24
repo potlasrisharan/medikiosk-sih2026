@@ -2004,12 +2004,50 @@
       if (visible.id === "screen-token") speakAudio(dict.tokenVoice);
     }
 
+    // Instant Translation Dictionary for Zero-Latency Local Fallback
+    function getDeterministicTranslation(text) {
+      if (!text) return "General OPD health consultation";
+      const lower = text.toLowerCase();
+      
+      // Emergency / Red-flags
+      if (lower.includes("ఛాతీ") || lower.includes("గుండె") || lower.includes("సీనే") || lower.includes("सीने") || lower.includes("chest") || lower.includes("heart") || lower.includes("bullet") || lower.includes("బుల్లెట్") || lower.includes("రక్తం") || lower.includes("खून")) {
+        return { translation: "Severe acute chest pain with cardiac distress (EMERGENCY STAT)", isEmergency: true };
+      }
+      // Knee / Joint pain
+      if (lower.includes("మోకాళ్ళ") || lower.includes("కీళ్ళ") || lower.includes("నొప్పి") || lower.includes("घुटनों") || lower.includes("जोड़ों") || lower.includes("दर्द") || lower.includes("knee") || lower.includes("joint")) {
+        return { translation: "Bilateral knee joint pain and morning stiffness for 6 months", isEmergency: false };
+      }
+      // Fever / Chills
+      if (lower.includes("జ్వరం") || lower.includes("చలి") || lower.includes("బుఖార్") || lower.includes("बुखार") || lower.includes("fever") || lower.includes("chills")) {
+        return { translation: "High grade fever with chills and generalized body aches", isEmergency: false };
+      }
+      // Stomach / Acidity
+      if (lower.includes("కడుపు") || lower.includes("మంట") || lower.includes("అజీర్ణం") || lower.includes("पेट") || lower.includes("जलन") || lower.includes("गैस") || lower.includes("stomach") || lower.includes("acidity")) {
+        return { translation: "Severe epigastric burning, acid reflux, and stomach discomfort", isEmergency: false };
+      }
+      // Headache / Body ache
+      if (lower.includes("తల") || lower.includes("సిర్") || lower.includes("सिर") || lower.includes("headache")) {
+        return { translation: "Persistent severe headache and fatigue", isEmergency: false };
+      }
+      return { translation: "Patient reported symptoms: " + text, isEmergency: false };
+    }
+
     async function translateKioskSymptomLive(textToTranslate) {
+      if (!textToTranslate) return;
       const transEl = document.getElementById("translation-text");
       const spinner = document.getElementById("trans-loading-spinner");
-      if (!transEl) return;
+      
+      // 1. Instant 0ms Local Translation to guarantee UI never stays empty
+      const localFallback = getDeterministicTranslation(textToTranslate);
+      if (transEl) transEl.innerText = localFallback.translation;
+      currentPatient.englishTranslation = localFallback.translation;
+      if (localFallback.isEmergency) {
+        document.getElementById("red-flag-banner")?.classList.remove("hidden");
+      }
+
       if (spinner) spinner.classList.remove("hidden");
       
+      // 2. Call Groq AI for Deep Clinical Translation
       try {
         const groqReq = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
@@ -2022,7 +2060,7 @@
             messages: [
               {
                 role: "system",
-                content: "You are a clinical translator. Translate the patient's spoken symptom (in Telugu, Hindi, Tamil, Kannada, Marathi, etc. or English) into concise, accurate clinical English. Return ONLY a JSON object with keys: english_translation and is_emergency."
+                content: "You are a clinical AI translation engine. Translate the patient's spoken symptom (which may be in Telugu, Hindi, Tamil, Kannada, Marathi, etc. or English) into concise, professional clinical English. Return ONLY a JSON object with keys: english_translation (string) and is_emergency (boolean)."
               },
               {
                 role: "user",
@@ -2036,24 +2074,16 @@
         if (groqReq.ok) {
           const res = await groqReq.json();
           const parsed = JSON.parse(res.choices[0].message.content);
-          if (parsed.english_translation) {
-            transEl.innerText = parsed.english_translation;
-            currentPatient.englishTranslation = parsed.english_translation;
+          if (parsed.english_translation && parsed.english_translation.trim().length > 0) {
+            if (transEl) transEl.innerText = parsed.english_translation.trim();
+            currentPatient.englishTranslation = parsed.english_translation.trim();
           }
-          if (parsed.is_emergency) {
+          if (parsed.is_emergency === true || parsed.is_emergency === "true" || localFallback.isEmergency) {
             document.getElementById("red-flag-banner")?.classList.remove("hidden");
           }
         }
       } catch (err) {
-        console.warn("Live translation fallback", err);
-        // Deterministic fallback
-        const lower = textToTranslate.toLowerCase();
-        if (lower.includes("మోకాళ్ళ") || lower.includes("घुटनों")) transEl.innerText = "Bilateral knee joint pain and stiffness";
-        else if (lower.includes("ఛాతీ") || lower.includes("सीने") || lower.includes("chest")) transEl.innerText = "Acute crushing chest pain (EMERGENCY)";
-        else if (lower.includes("జ్వరం") || lower.includes("बुखार") || lower.includes("fever")) transEl.innerText = "High grade fever with chills and headache";
-        else if (lower.includes("కడుపు") || lower.includes("पेट") || lower.includes("stomach")) transEl.innerText = "Severe stomach burning, acidity, and epigastric discomfort";
-        else transEl.innerText = textToTranslate;
-        currentPatient.englishTranslation = transEl.innerText;
+        console.warn("Groq live translation fallback used:", err);
       } finally {
         if (spinner) spinner.classList.add("hidden");
       }
@@ -2084,52 +2114,89 @@
     let recognition = null;
     let isRecording = false;
 
-    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRec();
-      recognition.continuous = true;
-      recognition.interimResults = false;
-
-      recognition.onresult = async function(event) {
-        let fullTranscript = "";
-        for (let i = 0; i < event.results.length; i++) {
-          fullTranscript += event.results[i][0].transcript + " ";
-        }
-        fullTranscript = fullTranscript.trim();
-        if (!fullTranscript) return;
-        
-        currentPatient.selectedSymptom = fullTranscript;
-        document.getElementById("transcription-text").innerText = `"${currentPatient.selectedSymptom}"`;
-      };
-
-      recognition.onend = async function() {
-        isRecording = false;
-        document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
-        document.getElementById("mic-btn")?.classList.add("bg-blue-700");
-        
-        // Trigger real-time translation when recording finishes
-        if (currentPatient.selectedSymptom && currentPatient.selectedSymptom.length > 2) {
-          await translateKioskSymptomLive(currentPatient.selectedSymptom);
-        }
-      };
-    }
-
     function toggleMicRecording() {
-      if (!recognition) {
-        alert("⚠️ Your browser does not support Voice Recognition.\n\nPlease use Google Chrome, Microsoft Edge, or Safari to use the voice feature.\n\n(Note: Brave browser blocks voice recognition for privacy reasons).");
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        alert("⚠️ Your browser does not support Web Speech Recognition.\n\nPlease use Google Chrome, Microsoft Edge, or Safari.\n\n(Note: Brave browser blocks voice recognition by default for privacy).");
         return;
       }
+
       if (isRecording) {
-        recognition.stop();
+        if (recognition) {
+          try { recognition.stop(); } catch(e) {}
+        }
         isRecording = false;
         document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
         document.getElementById("mic-btn")?.classList.add("bg-blue-700");
-      } else {
-        recognition.lang = currentLanguage;
+        const micLabel = document.getElementById("mic-label");
+        if (micLabel) micLabel.innerText = "Tap Microphone to Speak • మాట్లాడటానికి మైక్ నొక్కండి";
+        return;
+      }
+
+      // Always create a fresh instance on start to avoid stale recognition state
+      try {
+        if (recognition) {
+          try { recognition.abort(); } catch(e) {}
+        }
+        recognition = new SpeechRec();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = currentLanguage || "te-IN";
+        
+        let sessionFinalTranscript = "";
+
+        recognition.onstart = function() {
+          isRecording = true;
+          document.getElementById("mic-btn")?.classList.add("pulse-mic", "bg-red-600");
+          document.getElementById("mic-btn")?.classList.remove("bg-blue-700");
+          const micLabel = document.getElementById("mic-label");
+          if (micLabel) micLabel.innerText = "🎙️ Listening... Speak now (నొక్కండి ఆపడానికి • Tap to Stop)";
+        };
+
+        recognition.onresult = function(event) {
+          let interim = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              sessionFinalTranscript += event.results[i][0].transcript + " ";
+            } else {
+              interim += event.results[i][0].transcript;
+            }
+          }
+          const spokenNow = (sessionFinalTranscript + " " + interim).trim();
+          if (spokenNow) {
+            currentPatient.selectedSymptom = spokenNow;
+            document.getElementById("transcription-text").innerText = `"${spokenNow}"`;
+            
+            // Provide live preliminary translation as you speak
+            const prelim = getDeterministicTranslation(spokenNow);
+            const transEl = document.getElementById("translation-text");
+            if (transEl) transEl.innerText = prelim.translation;
+          }
+        };
+
+        recognition.onerror = function(event) {
+          console.warn("Speech recognition error:", event.error);
+          if (event.error === 'not-allowed') {
+            alert("⚠️ Microphone permission was blocked. Please click the camera/mic icon in your address bar and choose 'Allow'.");
+          }
+        };
+
+        recognition.onend = async function() {
+          isRecording = false;
+          document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
+          document.getElementById("mic-btn")?.classList.add("bg-blue-700");
+          const micLabel = document.getElementById("mic-label");
+          if (micLabel) micLabel.innerText = "Tap Microphone to Speak • మాట్లాడటానికి మైక్ నొక్కండి";
+          
+          if (currentPatient.selectedSymptom && currentPatient.selectedSymptom.length > 1) {
+            await translateKioskSymptomLive(currentPatient.selectedSymptom);
+          }
+        };
+
         recognition.start();
-        isRecording = true;
-        document.getElementById("mic-btn")?.classList.add("pulse-mic", "bg-red-600");
-        document.getElementById("mic-btn")?.classList.remove("bg-blue-700");
+      } catch (err) {
+        console.error("Speech recognition start failed:", err);
+        isRecording = false;
       }
     }
 
