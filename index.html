@@ -2000,6 +2000,8 @@
       let isEmergency = false;
       const symptomLower = (currentPatient.selectedSymptom || "").toLowerCase();
       
+      const fallbackEmergency = symptomLower.includes("chest") || symptomLower.includes("ఛాతీ") || symptomLower.includes("bullet") || symptomLower.includes("బుల్లెట్");
+      
       try {
         const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
@@ -2016,7 +2018,7 @@
               },
               {
                 role: "user",
-                content: currentPatient.selectedSymptom
+                content: currentPatient.selectedSymptom || ""
               }
             ],
             response_format: { type: "json_object" }
@@ -2024,11 +2026,11 @@
         });
         const data = await groqRes.json();
         const content = JSON.parse(data.choices[0].message.content);
-        isEmergency = content.is_emergency === true || content.is_emergency === "true";
+        // Merge AI judgment with deterministic keyword safety net
+        isEmergency = (content.is_emergency === true || content.is_emergency === "true") || fallbackEmergency;
       } catch (e) {
         console.error("Groq Triage failed", e);
-        // Fallback
-        isEmergency = symptomLower.includes("chest") || symptomLower.includes("ఛాతీ") || symptomLower.includes("bullet") || symptomLower.includes("బుల్లెట్");
+        isEmergency = fallbackEmergency;
       }
 
       // Mock Translation Engine for Demo
