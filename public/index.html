@@ -2330,7 +2330,7 @@
 
     function purgeAndRestartIntake() {
       // Reset Token Screen styling if it was an emergency
-      const tokenDisplay = document.querySelector("#screen-token h3").nextElementSibling.nextElementSibling.querySelector(".text-6xl");
+      const tokenDisplay = document.querySelector("#screen-token .text-6xl");
       if (tokenDisplay) tokenDisplay.className = "text-6xl font-black text-[#223D79] my-1";
       
       const container = document.querySelector("#screen-token > div");
