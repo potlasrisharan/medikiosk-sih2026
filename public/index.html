@@ -536,8 +536,20 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
           </svg>
         </button>
-        <p id="mic-label" class="font-bold text-slate-900 text-sm">Tap Microphone to Speak</p>
-        <p id="transcription-text" class="text-xs text-[#223D79] font-semibold italic min-h-[18px]">"I have had pain in both knees for 6 months"</p>
+        <p id="mic-label" class="font-bold text-slate-900 text-sm">Tap Microphone to Speak • మాట్లాడటానికి మైక్ నొక్కండి</p>
+        <div class="w-full space-y-2 mt-1">
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-left">
+            <span class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">🎙️ Spoken Audio (Native):</span>
+            <p id="transcription-text" class="text-xs text-slate-800 font-semibold italic mt-0.5 min-h-[18px]">"I have had pain in both knees for 6 months"</p>
+          </div>
+          <div id="kiosk-live-translation-card" class="p-3 bg-emerald-50 border border-emerald-300 rounded-xl text-left">
+            <span class="text-[10px] uppercase font-bold text-emerald-700 tracking-wider flex items-center gap-1">
+              <span>🌐 AI Real-Time Translation (English):</span>
+              <span id="trans-loading-spinner" class="hidden text-[10px] text-emerald-600 animate-pulse">Translating via Groq Llama-3...</span>
+            </span>
+            <p id="translation-text" class="text-xs text-emerald-900 font-bold mt-0.5 min-h-[18px]">Bilateral knee joint pain with morning stiffness for 6 months.</p>
+          </div>
+        </div>
 
         <div class="w-full pt-2 flex justify-between gap-3">
           <button id="btn-voice-back" onclick="goToScreen('screen-identify')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3 px-5 rounded-xl text-xs flex items-center gap-1.5 transition">
@@ -1992,26 +2004,81 @@
       if (visible.id === "screen-token") speakAudio(dict.tokenVoice);
     }
 
+    async function translateKioskSymptomLive(textToTranslate) {
+      const transEl = document.getElementById("translation-text");
+      const spinner = document.getElementById("trans-loading-spinner");
+      if (!transEl) return;
+      if (spinner) spinner.classList.remove("hidden");
+      
+      try {
+        const groqReq = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer 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",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "llama3-8b-8192",
+            messages: [
+              {
+                role: "system",
+                content: "You are a clinical translator. Translate the patient's spoken symptom (in Telugu, Hindi, Tamil, Kannada, Marathi, etc. or English) into concise, accurate clinical English. Return ONLY a JSON object: {"english_translation": "...", "is_emergency": true/false}"
+              },
+              {
+                role: "user",
+                content: textToTranslate
+              }
+            ],
+            response_format: { type: "json_object" }
+          })
+        });
+        
+        if (groqReq.ok) {
+          const res = await groqReq.json();
+          const parsed = JSON.parse(res.choices[0].message.content);
+          if (parsed.english_translation) {
+            transEl.innerText = parsed.english_translation;
+            currentPatient.englishTranslation = parsed.english_translation;
+          }
+          if (parsed.is_emergency) {
+            document.getElementById("red-flag-banner")?.classList.remove("hidden");
+          }
+        }
+      } catch (err) {
+        console.warn("Live translation fallback", err);
+        // Deterministic fallback
+        const lower = textToTranslate.toLowerCase();
+        if (lower.includes("మోకాళ్ళ") || lower.includes("घुटनों")) transEl.innerText = "Bilateral knee joint pain and stiffness";
+        else if (lower.includes("ఛాతీ") || lower.includes("सीने") || lower.includes("chest")) transEl.innerText = "Acute crushing chest pain (EMERGENCY)";
+        else if (lower.includes("జ్వరం") || lower.includes("बुखार") || lower.includes("fever")) transEl.innerText = "High grade fever with chills and headache";
+        else if (lower.includes("కడుపు") || lower.includes("पेट") || lower.includes("stomach")) transEl.innerText = "Severe stomach burning, acidity, and epigastric discomfort";
+        else transEl.innerText = textToTranslate;
+        currentPatient.englishTranslation = transEl.innerText;
+      } finally {
+        if (spinner) spinner.classList.add("hidden");
+      }
+    }
+
     function handleSymptomSelect(symptomKey) {
       const dict = I18N[currentLanguage] || I18N["en-IN"];
+      let text = "";
       if (symptomKey === "knee") {
-        document.getElementById("transcription-text").innerText = `"${dict.kneeTitle}"`;
-        currentPatient.selectedSymptom = dict.kneeTitle;
+        text = dict.kneeTitle;
         speakAudio(dict.kneeVoice);
       } else if (symptomKey === "chest") {
-        document.getElementById("transcription-text").innerText = `"${dict.chestTitle}"`;
-        currentPatient.selectedSymptom = dict.chestTitle;
+        text = dict.chestTitle;
         document.getElementById("red-flag-banner")?.classList.remove("hidden");
         speakAudio(dict.chestVoice);
       } else if (symptomKey === "fever") {
-        document.getElementById("transcription-text").innerText = `"${dict.feverTitle}"`;
-        currentPatient.selectedSymptom = dict.feverTitle;
+        text = dict.feverTitle;
         speakAudio(dict.feverVoice);
       } else if (symptomKey === "stomach") {
-        document.getElementById("transcription-text").innerText = `"${dict.stomachTitle}"`;
-        currentPatient.selectedSymptom = dict.stomachTitle;
+        text = dict.stomachTitle;
         speakAudio(dict.stomachVoice);
       }
+      document.getElementById("transcription-text").innerText = `"${text}"`;
+      currentPatient.selectedSymptom = text;
+      translateKioskSymptomLive(text);
     }
 
     let recognition = null;
@@ -2024,27 +2091,26 @@
       recognition.interimResults = false;
 
       recognition.onresult = async function(event) {
-        // Append all transcripts from this session
-        let newTranscript = "";
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-          if (event.results[i].isFinal) {
-             newTranscript += event.results[i][0].transcript + " ";
-          }
+        let fullTranscript = "";
+        for (let i = 0; i < event.results.length; i++) {
+          fullTranscript += event.results[i][0].transcript + " ";
         }
-        if (!newTranscript) return;
+        fullTranscript = fullTranscript.trim();
+        if (!fullTranscript) return;
         
-        if (!currentPatient.selectedSymptom) currentPatient.selectedSymptom = "";
-        currentPatient.selectedSymptom = (currentPatient.selectedSymptom + " " + newTranscript).trim();
-        
+        currentPatient.selectedSymptom = fullTranscript;
         document.getElementById("transcription-text").innerText = `"${currentPatient.selectedSymptom}"`;
-        // Only speak the newly added part so it doesn't overlap excessively
-        speakAudio(newTranscript);
       };
 
-      recognition.onend = function() {
+      recognition.onend = async function() {
         isRecording = false;
         document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
         document.getElementById("mic-btn")?.classList.add("bg-blue-700");
+        
+        // Trigger real-time translation when recording finishes
+        if (currentPatient.selectedSymptom && currentPatient.selectedSymptom.length > 2) {
+          await translateKioskSymptomLive(currentPatient.selectedSymptom);
+        }
       };
     }
 
@@ -2145,11 +2211,13 @@
       btn.innerText = "Evaluating Triage Priority...";
       btn.disabled = true;
 
-      // 1. Evaluate Emergency Status Live via Groq API
+      // 1. Live AI Translation and Emergency Triage via Groq API
       let isEmergency = false;
       const symptomLower = (currentPatient.selectedSymptom || "").toLowerCase();
+      const fallbackEmergency = symptomLower.includes("chest") || symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने") || symptomLower.includes("bullet") || symptomLower.includes("బుల్లెట్") || symptomLower.includes("గుండె");
       
-      const fallbackEmergency = symptomLower.includes("chest") || symptomLower.includes("ఛాతీ") || symptomLower.includes("bullet") || symptomLower.includes("బుల్లెట్");
+      let englishSymptom = currentPatient.englishTranslation || currentPatient.selectedSymptom || "General health consultation";
+      let clinicalAssessment = "";
       
       try {
         const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -2163,32 +2231,34 @@
             messages: [
               {
                 role: "system",
-                content: "You are an ER Triage AI. Return a JSON object with 'is_emergency': true if the patient's symptom implies a critical, life-threatening, or acute medical emergency (e.g. heart attack, stroke, gunshot, bullet wound, extreme bleeding, severe trauma), and false otherwise."
+                content: "You are a clinical AI translation and triage engine. Analyze the patient's spoken symptom (in Telugu, Hindi, Tamil, Kannada, Marathi, Bengali, Gujarati, or English). Return ONLY a JSON object with: 1. 'english_translation': Clear, accurate clinical English translation of the symptom. 2. 'is_emergency': boolean (true for heart attack, chest pain, stroke, bullet/gunshot wound, trauma, severe hemorrhage, acute respiratory failure, false otherwise). 3. 'clinical_assessment': 1-sentence diagnostic assessment in English."
               },
               {
                 role: "user",
-                content: currentPatient.selectedSymptom || ""
+                content: currentPatient.selectedSymptom || "General consultation"
               }
             ],
             response_format: { type: "json_object" }
           })
         });
-        const data = await groqRes.json();
-        const content = JSON.parse(data.choices[0].message.content);
-        // Merge AI judgment with deterministic keyword safety net
-        isEmergency = (content.is_emergency === true || content.is_emergency === "true") || fallbackEmergency;
+        
+        if (groqRes.ok) {
+          const data = await groqRes.json();
+          const content = JSON.parse(data.choices[0].message.content);
+          if (content.english_translation && content.english_translation.trim().length > 0) {
+            englishSymptom = content.english_translation.trim();
+          }
+          isEmergency = (content.is_emergency === true || content.is_emergency === "true") || fallbackEmergency;
+          clinicalAssessment = content.clinical_assessment || "";
+        }
       } catch (e) {
-        console.error("Groq Triage failed", e);
+        console.error("Groq Triage/Translation failed", e);
         isEmergency = fallbackEmergency;
+        if (symptomLower.includes("మోకాళ్ళ") || symptomLower.includes("घुटनों")) englishSymptom = "Bilateral knee joint pain with crepitus";
+        else if (symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने")) englishSymptom = "Acute crushing chest pain radiating to left arm";
+        else if (symptomLower.includes("జ్వరం") || symptomLower.includes("बुखार")) englishSymptom = "High grade fever with chills";
+        else if (symptomLower.includes("కడుపు") || symptomLower.includes("पेट")) englishSymptom = "Severe stomach pain and acid reflux";
       }
-
-      // Mock Translation Engine for Demo
-      let englishSymptom = currentPatient.selectedSymptom;
-      if (symptomLower.includes("మోకాళ్ళ") || symptomLower.includes("घुटनों")) englishSymptom = "bilateral knee joint pain and stiffness";
-      else if (symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने")) englishSymptom = "acute crushing chest pain radiating to left arm";
-      else if (symptomLower.includes("జ్వరం") || symptomLower.includes("बुखार")) englishSymptom = "high grade fever with chills";
-      else if (symptomLower.includes("కడుపు") || symptomLower.includes("पेट")) englishSymptom = "severe stomach pain and acid reflux";
-      else if (currentLanguage !== "en-IN") englishSymptom = "generalized pain and discomfort (translated from native audio: " + currentPatient.selectedSymptom + ")";
 
       // Generate sequential unique token
       let nextNum = parseInt(localStorage.getItem("MEDIKIOSK_LAST_TOKEN_NUM") || "44") + 1;
@@ -2211,7 +2281,7 @@
         isEmergency: isEmergency,
         nativeLang: currentLanguage === "te-IN" ? "తెలుగు (Telugu)" : (currentLanguage === "hi-IN" ? "हिन्दी (Hindi)" : (currentLanguage === "ta-IN" ? "தமிழ் (Tamil)" : "English")),
         nativeSpeech: `"${currentPatient.selectedSymptom}"`,
-        subjective: `${currentPatient.age}-year-old ${currentPatient.gender.toLowerCase()} presents with ${englishSymptom}. Elicited via MediKiosk Sovereign Kiosk.`,
+        subjective: `${currentPatient.age}-year-old ${currentPatient.gender.toLowerCase()} presents with: ${englishSymptom}.\n\n(Original Spoken Audio: "${currentPatient.selectedSymptom}")`,
         objective: `Clinical Vitals: [Pending In-Person Chamber Measurement]\nVoice-Elicited Intake: ${currentPatient.selectedSymptom}`,
         assessment: isEmergency ? "1. Critical Acute Presentation (Priority Triage Alert)\n2. Immediate Resuscitation / Stabilisation Required" : "1. General OPD Evaluation & AYUSH Clinical Management",
         dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dosha Dusti" },

@@ -603,7 +603,8 @@
                 </div>
               </div>
               <h3 class="font-bold text-[#223D79] text-sm">${p.patientName} (${p.age}${p.gender === "Male" ? "M" : "F"})</h3>
-              <p class="text-xs text-[#77797C] mt-0.5 line-clamp-1">${p.nativeSpeech || p.subjective}</p>
+              <p class="text-xs font-bold text-emerald-800 mt-0.5 line-clamp-1">🌐 ${p.englishTranslation || p.subjective}</p>
+              <p class="text-[11px] text-[#77797C] mt-0.5 line-clamp-1 italic">${p.nativeSpeech || ''}</p>
               <div class="mt-2 flex items-center justify-between text-[11px] text-[#77797C]">
                 <span>Intake: ${p.timestamp || "10:30 AM"}</span>
                 <span class="${p.isEmergency ? "text-rose-400 font-black" : "text-[#FFA530] font-bold"} flex items-center gap-1">
