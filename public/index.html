@@ -567,13 +567,13 @@
           <div class="flex items-center justify-between border-b border-slate-200 pb-3">
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-red-600 animate-ping"></span>
-              <h3 class="font-bold text-base text-[#223D79]">🎙️ Voice Intake • వాయిస్ ఇన్పుట్</h3>
+              <h3 id="modal-title-text" class="font-bold text-base text-[#223D79]">🎙️ Voice Intake</h3>
             </div>
             <button onclick="closeVoiceModal()" class="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
           </div>
 
           <div class="space-y-3">
-            <p class="text-xs text-slate-600">Speak into your mic or select/type your symptoms below in any Indian language:</p>
+            <p id="modal-desc-text" class="text-xs text-slate-600">Speak into your mic or select/type your symptoms below:</p>
             
             <div class="p-3 bg-slate-50 border-2 border-dashed border-[#223D79]/40 rounded-2xl text-center space-y-2">
               <div class="flex justify-center items-center gap-1.5 h-6">
@@ -583,31 +583,20 @@
                 <span class="w-1 bg-[#223D79] h-4 animate-pulse"></span>
                 <span class="w-1 bg-emerald-600 h-2 animate-pulse"></span>
               </div>
-              <textarea id="modal-voice-text" rows="3" class="w-full p-2.5 text-xs text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#223D79] focus:outline-none" placeholder="Type or speak symptoms in Telugu, Hindi, Tamil, English... (ఉదా: నాకు 3 రోజులుగా తీవ్రమైన ఛాతీ నొప్పి ఉంది)"></textarea>
+              <textarea id="modal-voice-text" rows="3" class="w-full p-2.5 text-xs text-slate-900 border border-slate-300 rounded-xl focus:ring-2 focus:ring-[#223D79] focus:outline-none" placeholder="Describe your symptoms in your language..."></textarea>
             </div>
 
-            <!-- Quick Spoken Audio Samples for Instant Demo -->
+            <!-- Dynamic Quick Spoken Audio Samples for Instant Demo -->
             <div class="space-y-1.5">
-              <span class="text-[11px] font-bold text-slate-700">Quick Voice Samples (1-Tap Translate):</span>
-              <div class="grid grid-cols-2 gap-2 text-[11px]">
-                <button onclick="applyModalVoiceSample('నాకు 3 రోజులుగా తీవ్రమైన ఛాతీ నొప్పి మరియు గుండెల్లో మంట ఉంది')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
-                  🚨 "నాకు తీవ్రమైన ఛాతీ నొప్పి ఉంది" (Chest Pain)
-                </button>
-                <button onclick="applyModalVoiceSample('నాకు గత 6 నెలలుగా రెండు మోకాళ్ళలో విపరీతమైన నొప్పిగా ఉంది')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
-                  🦴 "రెండు మోకాళ్ళలో నొప్పి" (Knee OA)
-                </button>
-                <button onclick="applyModalVoiceSample('मुझे 2 दिनों से बहुत तेज बुखार और कंपकंपी है')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
-                  🌡️ "मुझे बहुत तेज बुखार है" (Fever)
-                </button>
-                <button onclick="applyModalVoiceSample('నా కడుపులో విపరీతమైన మంట మరియు అజీర్ణం ఉంది')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
-                  🌿 "కడుపులో మంట & అజీర్ణం" (Acidity)
-                </button>
+              <span id="modal-samples-header" class="text-[11px] font-bold text-slate-700">Quick Voice Samples (1-Tap):</span>
+              <div id="modal-samples-container" class="grid grid-cols-2 gap-2 text-[11px]">
+                <!-- Populated dynamically by openVoiceModal() based on currentLanguage -->
               </div>
             </div>
 
             <div class="flex gap-2 pt-2">
-              <button onclick="closeVoiceModal()" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
-              <button onclick="confirmModalVoiceInput()" class="flex-1 py-2.5 bg-[#223D79] hover:bg-[#1a2f5e] text-white font-bold rounded-xl text-xs shadow">✓ Submit & Translate</button>
+              <button onclick="closeVoiceModal()" id="btn-modal-cancel" class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs">Cancel</button>
+              <button onclick="confirmModalVoiceInput()" id="btn-modal-submit" class="flex-1 py-2.5 bg-[#223D79] hover:bg-[#1a2f5e] text-white font-bold rounded-xl text-xs shadow">✓ Submit & Translate</button>
             </div>
           </div>
         </div>
@@ -2165,14 +2154,98 @@
 
     function openVoiceModal() {
       const modal = document.getElementById("voice-input-modal");
-      if (modal) {
-        modal.classList.remove("hidden");
-        const textarea = document.getElementById("modal-voice-text");
-        if (textarea) {
-          textarea.value = currentPatient.selectedSymptom || "";
-          textarea.focus();
+      if (!modal) return;
+      
+      const isTe = (currentLanguage === "te-IN");
+      const isHi = (currentLanguage === "hi-IN");
+      const isTa = (currentLanguage === "ta-IN");
+      const isEn = (currentLanguage === "en-IN");
+      
+      // Update Title and Subtitle based strictly on language
+      const titleEl = document.getElementById("modal-title-text");
+      const descEl = document.getElementById("modal-desc-text");
+      const samplesHead = document.getElementById("modal-samples-header");
+      const placeholderText = isTe ? "మీ లక్షణాలను ఇక్కడ చెప్పండి లేదా టైప్ చేయండి..." : (isHi ? "अपने लक्षण यहाँ बोलें या लिखें..." : (isTa ? "உங்கள் அறிகுறிகளை இங்கே கூறவும்..." : "Speak or type your symptoms here in English..."));
+      
+      if (titleEl) titleEl.innerText = isTe ? "🎙️ వాయిస్ ఇన్పుట్ • Voice Intake" : (isHi ? "🎙️ वॉइस लक्षण दर्ज करें • Voice Intake" : (isTa ? "🎙️ குரல் பதிவு • Voice Intake" : "🎙️ Voice Symptom Intake"));
+      if (descEl) descEl.innerText = isTe ? "మైక్‌లో మాట్లాడండి లేదా క్రింద మీ లక్షణాలను ఎంచుకోండి/రాయండి:" : (isHi ? "माइक में बोलें या नीचे दिए गए लक्षणों को चुनें/लिखें:" : (isTa ? "மைக் வழியாக பேசவும் அல்லது கீழே உள்ள அறிகுறிகளைத் தேர்ந்தெடுக்கவும்:" : "Speak into your mic or select/type your symptoms below:"));
+      if (samplesHead) samplesHead.innerText = isTe ? "త్వరిత నమూనాలు (1-Tap Voice Samples):" : (isHi ? "त्वरित लक्षण नमूने (1-Tap):" : (isTa ? "விரைவு குரல் மாதிரிகள் (1-Tap):" : "Quick Voice Samples (1-Tap Select):"));
+      
+      const textarea = document.getElementById("modal-voice-text");
+      if (textarea) {
+        textarea.placeholder = placeholderText;
+        textarea.value = currentPatient.selectedSymptom || "";
+      }
+
+      // Populate Quick Samples strictly matching the selected language
+      const samplesContainer = document.getElementById("modal-samples-container");
+      if (samplesContainer) {
+        if (isTe) {
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('నాకు 3 రోజులుగా తీవ్రమైన ఛాతీ నొప్పి మరియు గుండెల్లో మంట ఉంది')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "తీవ్రమైన ఛాతీ నొప్పి" (Chest Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('నాకు గత 6 నెలలుగా రెండు మోకాళ్ళలో విపరీతమైన నొప్పిగా ఉంది')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "మోకాళ్ళ నొప్పులు" (Knee Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('నాకు 2 రోజులుగా చాలా ఎక్కువ జ్వరం మరియు చలిగా ఉంది')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "ఎక్కువ జ్వరం & చలి" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('నా కడుపులో విపరీతమైన మంట, గ్యాస్ మరియు అజీర్ణం ఉంది')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "కడుపులో మంట & అజీర్ణం" (Acidity)
+            </button>
+          `;
+        } else if (isHi) {
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('अचानक सीने में बहुत तेज दर्द हो रहा है, सांस फूल रही है')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "सीने में तेज दर्द" (Chest Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('मुझे दोनों घुटनों में पिछले 6 महीनों से दर्द और अकड़न है')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "घुटनों में दर्द" (Knee Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('मुझे 3 दिनों से बहुत तेज बुखार और कंपकंपी है')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "तेज बुखार और ठंड" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('पेट में बहुत जलन, गैस और खट्टी डकारें आ रही हैं')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "पेट में जलन और गैस" (Acidity)
+            </button>
+          `;
+        } else if (isTa) {
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('எனக்கு நெஞ்சில் கடுமையான வலி மற்றும் மூச்சுத் திணறல் உள்ளது')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "நெஞ்சு வலி" (Chest Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('எனக்கு இரண்டு முழங்கால்களிலும் கடுமையான வலி உள்ளது')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "முழங்கால் வலி" (Knee Pain)
+            </button>
+            <button onclick="applyModalVoiceSample('எனக்கு 2 நாட்களாக கடுமையான காய்ச்சல் மற்றும் நடுக்கம் உள்ளது')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "காய்ச்சல் & நடுக்கம்" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('வயிற்றில் கடுமையான எரிச்சல் மற்றும் அஜீரணம் உள்ளது')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "வயிற்று வலி & எரிச்சல்" (Acidity)
+            </button>
+          `;
+        } else {
+          // Pure English
+          samplesContainer.innerHTML = `
+            <button onclick="applyModalVoiceSample('I have acute crushing chest pain radiating to my left arm')" class="p-2 text-left rounded-lg bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 font-medium">
+              🚨 "Acute crushing chest pain" (Emergency)
+            </button>
+            <button onclick="applyModalVoiceSample('I have had severe pain and morning stiffness in both knees for 6 months')" class="p-2 text-left rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-medium">
+              🦴 "Bilateral knee joint pain" (Knee OA)
+            </button>
+            <button onclick="applyModalVoiceSample('I have high grade fever with chills and headache for 2 days')" class="p-2 text-left rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-medium">
+              🌡️ "High fever with chills" (Fever)
+            </button>
+            <button onclick="applyModalVoiceSample('Severe epigastric burning, acid reflux, and indigestion after meals')" class="p-2 text-left rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-medium">
+              🌿 "Epigastric burning & reflux" (Acidity)
+            </button>
+          `;
         }
       }
+
+      modal.classList.remove("hidden");
+      if (textarea) textarea.focus();
     }
 
     function closeVoiceModal() {
@@ -2218,7 +2291,7 @@
         document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
         document.getElementById("mic-btn")?.classList.add("bg-blue-700");
         const micLabel = document.getElementById("mic-label");
-        if (micLabel) micLabel.innerText = "Tap Microphone to Speak • మాట్లాడటానికి మైక్ నొక్కండి";
+        const d_dict = I18N[currentLanguage] || I18N["en-IN"]; if (micLabel) micLabel.innerText = d_dict.micLabel || "Tap Microphone to Speak";
         return;
       }
 
@@ -2239,7 +2312,7 @@
           document.getElementById("mic-btn")?.classList.add("pulse-mic", "bg-red-600");
           document.getElementById("mic-btn")?.classList.remove("bg-blue-700");
           const micLabel = document.getElementById("mic-label");
-          if (micLabel) micLabel.innerText = "🎙️ Listening... Speak now (నొక్కండి ఆపడానికి • Tap to Stop)";
+          if (micLabel) micLabel.innerText = (currentLanguage === "en-IN") ? "🎙️ Listening... Speak clearly (Tap to Stop)" : "🎙️ Listening... (నొక్కండి ఆపడానికి • Tap to Stop)";
         };
 
         recognition.onresult = function(event) {
@@ -2277,7 +2350,7 @@
           document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
           document.getElementById("mic-btn")?.classList.add("bg-blue-700");
           const micLabel = document.getElementById("mic-label");
-          if (micLabel) micLabel.innerText = "Tap Microphone to Speak • మాట్లాడటానికి మైక్ నొక్కండి";
+          const d_dict = I18N[currentLanguage] || I18N["en-IN"]; if (micLabel) micLabel.innerText = d_dict.micLabel || "Tap Microphone to Speak";
           
           if (currentPatient.selectedSymptom && currentPatient.selectedSymptom.length > 1) {
             await translateKioskSymptomLive(currentPatient.selectedSymptom);
