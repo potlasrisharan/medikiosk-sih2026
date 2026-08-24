@@ -159,6 +159,25 @@
         <p class="text-slate-500 text-xs">Touch any language below to begin case-taking • భాషను ఎంచుకోవడానికి తాకండి</p>
       </div>
 
+      <!-- Prominent Zero-Click Emergency Panic Button (Bypasses Language Choice for Critical Patients) -->
+      <div class="max-w-3xl mx-auto">
+        <button onclick="triggerImmediateEmergency()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-700 hover:to-rose-800 text-white font-black text-base md:text-lg shadow-xl shadow-red-600/30 border-2 border-red-400 flex items-center justify-between transition transform hover:scale-[1.01] active:scale-[0.98] animate-pulse">
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-white animate-ping"></span>
+            <div class="text-left">
+              <div class="flex items-center gap-2">
+                <span class="text-xl">🚨</span>
+                <span class="tracking-wide">ZERO-CLICK EMERGENCY OVERRIDE</span>
+              </div>
+              <p class="text-[11px] font-medium text-red-100 mt-0.5">అత్యవసర చికిత్స • आपातकालीन • அவசர சிகிச்சை • ತಕ್ಷಣದ ತುರ್ತು</p>
+            </div>
+          </div>
+          <span class="text-xs uppercase bg-white text-red-700 font-black px-3.5 py-2 rounded-xl border border-red-200 shadow-sm">
+            STAT ER ➔
+          </span>
+        </button>
+      </div>
+
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto pt-4">
         <!-- Telugu -->
         <button onclick="setLang('te-IN')" class="touch-card bg-white border-2 border-slate-300 hover:border-[#223D79] hover:bg-[#D9CDBA]/20 p-6 rounded-2xl text-center shadow-sm">
@@ -2584,31 +2603,36 @@
       localStorage.setItem("MEDIKIOSK_LAST_TOKEN_NUM", nextNum.toString());
       const tokenStr = `#E-0${nextNum}`;
       
-      // 2. Create Dummy Unidentified Emergency Patient
+      // 2. Create STAT Emergency Encounter
       const newEncounter = {
         id: "enc-" + Date.now().toString().slice(-6),
         tokenNumber: tokenStr,
-        patientName: "UNKNOWN EMERGENCY PATIENT",
+        patientName: "STAT EMERGENCY WALK-IN",
         age: 45,
         gender: "Unknown",
         avatar: "ER",
-        location: "Kiosk Walk-in",
-        abhaId: "Pending",
-        abhaAddress: "pending@abdm",
+        location: "Kiosk #1 (Emergency Point-of-Entry)",
+        abhaId: "Emergency-STAT",
+        abhaAddress: "emergency@abdm",
         hasPmjay: false,
         isEmergency: true,
         nativeLang: "Emergency Override",
-        nativeSpeech: "N/A (Bypassed)",
-        subjective: "Patient pressed the Immediate Emergency button on the kiosk. Requires STAT clinical stabilization.",
-        objective: "Clinical Vitals: [Pending Triage Assessment]",
-        assessment: "1. Undifferentiated Acute Medical Emergency (Priority 1 Triage Alert)\n2. Immediate Resuscitation / Stabilisation Required",
-        dashavidha: { prakriti: "N/A", agni: "N/A", koshtha: "N/A", vikriti: "N/A" },
-        planSummary: "STAT ER Transfer & Resuscitation Protocol",
+        nativeSpeech: "Zero-Click Emergency Button Pressed",
+        englishTranslation: "Acute un-triaged emergency presentation. Patient bypassed kiosk intake for immediate resuscitation.",
+        subjective: "Patient triggered Zero-Click Emergency Override at the Kiosk. Immediate clinical stabilization and airway/breathing/circulation assessment required.",
+        objective: "Clinical Vitals: [Pending STAT Resuscitation Bay 1 Assessment]",
+        assessment: "1. Priority 1 Acute Undifferentiated Medical Emergency\n2. Immediate ER Resuscitation & Crash Cart Protocol Activated",
+        dashavidha: { prakriti: "Pitta-Vata", agni: "Tikshna", koshtha: "Krura", vikriti: "STAT Critical" },
+        planSummary: "Immediate Resuscitation Protocol: Airway/Breathing/Circulation stabilization, continuous cardiac monitoring, wide-bore IV access, 12-lead ECG STAT.",
         aiSuggestions: [
-          { name: "O2 Therapy", dose: "10L/min", freq: "STAT", dur: "Continuous", inst: "Via NRBM" },
-          { name: "IV Access", dose: "18G", freq: "STAT", dur: "Immediate", inst: "Bilateral" }
+          { name: "Tab. Aspirin 325mg (Chewable)", dose: "325 mg", freq: "STAT", dur: "Immediate", inst: "Chew immediately" },
+          { name: "O2 Therapy via NRBM", dose: "10 L/min", freq: "STAT", dur: "Continuous", inst: "Maintain SpO2 >94%" },
+          { name: "IV Normal Saline 0.9%", dose: "500 ml", freq: "STAT", dur: "Immediate", inst: "Bilateral 18G cannula" }
         ],
-        activePrescription: [],
+        activePrescription: [
+          { name: "Tab. Aspirin 325mg (Chewable)", dose: "325 mg", freq: "STAT", dur: "Single Dose", inst: "Chew immediately" },
+          { name: "O2 Therapy via NRBM", dose: "10 L/min", freq: "STAT", dur: "Continuous", inst: "Immediate emergency oxygen" }
+        ],
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       
@@ -2627,23 +2651,31 @@
         tokenDisplay.className = "text-6xl font-black text-rose-700 my-1";
       }
       
-      const container = document.querySelector("#screen-token .bg-white.border-2");
+      const container = document.querySelector("#screen-token > div");
       if (container) {
-        container.className = "bg-rose-100 border-4 border-rose-500 p-8 rounded-3xl max-w-md mx-auto shadow-2xl space-y-4 animate-pulse";
+        container.className = "bg-rose-50 border-4 border-rose-600 p-8 rounded-3xl max-w-md mx-auto shadow-2xl space-y-4 animate-pulse";
       }
       
-      document.getElementById("lbl-token-done").innerText = "EMERGENCY TRIAGE ACTIVATED";
-      document.getElementById("lbl-token-done").className = "font-black text-2xl text-rose-800";
-      document.getElementById("lbl-token-sub").innerText = "DO NOT MOVE • సిబ్బంది వస్తున్నారు";
-      document.getElementById("lbl-token-msg").innerText = "Nursing staff has been alerted and is approaching you immediately.";
-      document.getElementById("lbl-token-msg").className = "text-sm font-bold text-rose-700";
+      const lblDone = document.getElementById("lbl-token-done");
+      if (lblDone) {
+        lblDone.innerText = "🚨 STAT EMERGENCY TRIAGE ACTIVATED";
+        lblDone.className = "font-black text-2xl text-rose-800";
+      }
+      const lblSub = document.getElementById("lbl-token-sub");
+      if (lblSub) lblSub.innerText = "DO NOT MOVE • సిబ్బంది వస్తున్నారు • आपातकालीन";
+      
+      const lblMsg = document.getElementById("lbl-token-msg");
+      if (lblMsg) {
+        lblMsg.innerText = "Emergency Crash Cart & Nursing Team has been alerted. ER staff is approaching you immediately.";
+        lblMsg.className = "text-sm font-bold text-rose-700";
+      }
       
       // Remove PMJAY badge
       const badge = document.querySelector("#screen-token .bg-amber-100");
       if (badge) badge.style.display = "none";
       
       // 5. Speak Audio
-      speakAudio("Emergency Triage Activated. Please do not move. Nursing staff is approaching you immediately. అత్యవసర పరిస్థితి నమోదు చేయబడింది. దయచేసి కదలకండి, సిబ్బంది మీ వద్దకు వస్తున్నారు.");
+      speakAudio("Emergency Triage Activated! Please do not move. Nursing and ER staff has been alerted and is approaching you immediately. అత్యవసర పరిస్థితి నమోదు చేయబడింది. దయచేసి కదలకండి, సిబ్బంది మీ వద్దకు వస్తున్నారు.");
       
       // 6. Go to Screen
       goToScreen("screen-token");
