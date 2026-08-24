@@ -2022,7 +2022,7 @@
             messages: [
               {
                 role: "system",
-                content: "You are a clinical translator. Translate the patient's spoken symptom (in Telugu, Hindi, Tamil, Kannada, Marathi, etc. or English) into concise, accurate clinical English. Return ONLY a JSON object: {"english_translation": "...", "is_emergency": true/false}"
+                content: "You are a clinical translator. Translate the patient's spoken symptom (in Telugu, Hindi, Tamil, Kannada, Marathi, etc. or English) into concise, accurate clinical English. Return ONLY a JSON object with keys: english_translation and is_emergency."
               },
               {
                 role: "user",
