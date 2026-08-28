@@ -46,6 +46,34 @@
     .bg-brand-grey { background-color: #77797C !important; }
     .text-brand-grey { color: #77797C !important; }
     .border-brand-grey { border-color: #77797C !important; }
+  
+    /* GIGW 3.0 High Contrast Accessibility Mode */
+    body.high-contrast-mode {
+      background-color: #000000 !important;
+      color: #FFFF00 !important;
+    }
+    body.high-contrast-mode .touch-card,
+    body.high-contrast-mode .bg-white,
+    body.high-contrast-mode .bg-slate-50,
+    body.high-contrast-mode main section {
+      background-color: #121212 !important;
+      color: #FFFF00 !important;
+      border-color: #FFFF00 !important;
+    }
+    body.high-contrast-mode p,
+    body.high-contrast-mode span,
+    body.high-contrast-mode h1,
+    body.high-contrast-mode h2,
+    body.high-contrast-mode h3,
+    body.high-contrast-mode div {
+      color: #FFFF00 !important;
+    }
+    body.high-contrast-mode button {
+      border: 2px solid #FFFF00 !important;
+      background-color: #000000 !important;
+      color: #FFFF00 !important;
+    }
+
   </style>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&display=swap");
@@ -58,9 +86,64 @@
       70% { box-shadow: 0 0 0 22px rgba(29, 78, 216, 0); }
       100% { box-shadow: 0 0 0 0 rgba(29, 78, 216, 0); }
     }
+  
+    /* GIGW 3.0 High Contrast Accessibility Mode */
+    body.high-contrast-mode {
+      background-color: #000000 !important;
+      color: #FFFF00 !important;
+    }
+    body.high-contrast-mode .touch-card,
+    body.high-contrast-mode .bg-white,
+    body.high-contrast-mode .bg-slate-50,
+    body.high-contrast-mode main section {
+      background-color: #121212 !important;
+      color: #FFFF00 !important;
+      border-color: #FFFF00 !important;
+    }
+    body.high-contrast-mode p,
+    body.high-contrast-mode span,
+    body.high-contrast-mode h1,
+    body.high-contrast-mode h2,
+    body.high-contrast-mode h3,
+    body.high-contrast-mode div {
+      color: #FFFF00 !important;
+    }
+    body.high-contrast-mode button {
+      border: 2px solid #FFFF00 !important;
+      background-color: #000000 !important;
+      color: #FFFF00 !important;
+    }
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 </head>
+  <!-- GIGW 3.0 National Indian Government Tricolor Bar -->
+  <div class="h-1.5 w-full bg-gradient-to-r from-[#FF9933] via-white to-[#138808]"></div>
+
+  <!-- GIGW 3.0 Accessibility & Institutional Header -->
+  <div class="bg-[#0B3C5D] text-white text-[11px] px-4 sm:px-8 py-1.5 flex flex-wrap items-center justify-between border-b border-[#0B3C5D]/40 select-none">
+    <div class="flex items-center space-x-2">
+      <span class="font-bold tracking-wider text-amber-300">भारत सरकार • Government of India</span>
+      <span class="text-slate-400">|</span>
+      <span class="text-slate-200 hidden sm:inline">Ministry of Ayush & National Health Authority (NHA)</span>
+    </div>
+    <div class="flex items-center space-x-3 mt-1 sm:mt-0 font-semibold">
+      <div class="flex items-center space-x-1 bg-[#07273D] px-2 py-0.5 rounded border border-white/20">
+        <span class="text-slate-300 text-[10px] mr-1">Text:</span>
+        <button onclick="changeFontSize(-1)" title="Decrease Font Size" class="hover:text-amber-300 px-1 font-bold">A-</button>
+        <button onclick="changeFontSize(0)" title="Default Font Size" class="hover:text-amber-300 px-1 font-bold">A</button>
+        <button onclick="changeFontSize(1)" title="Increase Font Size" class="hover:text-amber-300 px-1 font-bold">A+</button>
+      </div>
+      <button onclick="toggleHighContrast()" title="Toggle High Contrast Mode" class="bg-[#07273D] hover:bg-amber-400 hover:text-slate-900 text-white px-2 py-0.5 rounded border border-white/20 transition flex items-center gap-1 text-[10px]">
+        <span>🌓 Contrast</span>
+      </button>
+      <span class="text-emerald-400 font-bold flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>ABDM GIGW 3.0</span>
+      </span>
+    </div>
+  </div>
+
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-[#D9CDBA]/40">
   <!-- Unified 5-Dashboard Suite Navigation (Aligned to 5-Color Palette) -->
     <!-- Unified 5-Dashboard Suite Navigation (5-Color Palette: #223D79, #77797C, #FFFFFF, #D9CDBA, #FFA530) -->
