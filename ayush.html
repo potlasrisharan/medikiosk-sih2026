@@ -1,251 +1,419 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediKiosk — AYUSH Dashavidha Pariksha Clinical Portal</title>
+  <title>MediKiosk — AYUSH Dashavidha Pariksha & EMR Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              navy: "#223D79",
-              navyDark: "#15254b",
-              navyLight: "#2e4f9c",
-              grey: "#77797C",
-              greyLight: "#9ca3af",
-              white: "#FFFFFF",
-              beige: "#D9CDBA",
-              beigeLight: "#f4f0eb",
-              orange: "#FFA530",
-              orangeHover: "#ff9510"
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    :root {
-      --brand-navy: #223D79;
-      --brand-grey: #77797C;
-      --brand-white: #FFFFFF;
-      --brand-beige: #D9CDBA;
-      --brand-orange: #FFA530;
-    }
-    body {
-      background-color: #0d1527;
-      color: #f8fafc;
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #15254b;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #FFA530;
-      border-radius: 3px;
-    }
-  </style>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
-    body { font-family: "Plus Jakarta Sans", sans-serif; }
+    body { font-family: 'Public Sans', 'Noto Sans Devanagari', sans-serif; }
   </style>
 </head>
-<body class="bg-[#f4f1ed] text-[#223D79] min-h-screen flex flex-col">
-  <!-- Unified 5-Dashboard Suite Navigation -->
-    <!-- Unified 5-Dashboard Suite Navigation (5-Color Palette: #223D79, #77797C, #FFFFFF, #D9CDBA, #FFA530) -->
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
+
+  <!-- Top Tricolor Accent -->
+  <div class="h-1.5 w-full bg-gradient-to-r from-[#FF9933] via-white to-[#138808]"></div>
+
+  <!-- Unified Navigation -->
   <nav class="bg-[#223D79] text-[#D9CDBA] border-b-2 border-[#FFA530] text-xs px-6 py-2.5 flex flex-wrap items-center justify-between sticky top-0 z-50 shadow-md">
     <div class="flex items-center space-x-3">
       <span class="w-2.5 h-2.5 rounded-full bg-[#FFA530] animate-pulse"></span>
-      <span class="font-extrabold text-[#223D79] tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
+      <span class="font-extrabold text-white tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
-      <a href="/" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📱 Patient Kiosk</a>
-      <a href="/doctor" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🩺 Doctor Portal</a>
-      <a href="/triage" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">🚨 Emergency Triage</a>
+      <a href="/" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">📱 Patient Kiosk</a>
+      <a href="/doctor" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">🩺 Doctor Portal</a>
+      <a href="/triage" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">🚨 Emergency Triage</a>
       <a href="/ayush" class="bg-[#FFA530] text-[#223D79] font-black shadow px-3 py-1 rounded-md">🌿 AYUSH Dashavidha</a>
-      <a href="/admin" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#223D79] text-white border border-[#D9CDBA]/20 transition">📊 Admin & ABDM Hub</a>
+      <a href="/admin" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-[#1a2f5e] border border-[#D9CDBA]/20 transition">📊 Admin & ABDM Hub</a>
     </div>
   </nav>
 
   <!-- Header -->
-  <header class="bg-[#223D79] text-white border border-[#D9CDBA]/80 shadow-sm border-b border-[#D9CDBA]/60 px-6 py-4 flex items-center justify-between">
-    <div class="flex items-center space-x-4">
-<img src="/assets/logo.jpg" alt="Ministry of Ayush Emblem" class="w-10 h-10 rounded-full shadow-md border border-amber-400/60 object-cover inline-block">
+  <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shadow-sm">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-800 flex items-center justify-center font-bold text-lg shadow-sm">
+        🌿
+      </div>
       <div>
-        <h1 class="font-bold text-lg text-white flex items-center gap-2">
-          AYUSH Dashavidha Pariksha Clinical Suite
-          <span class="text-xs bg-emerald-500/20 text-[#223D79] px-2 py-0.5 rounded-full border border-emerald-500/30">Charaka Samhita Standard</span>
+        <h1 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <span>AYUSH Clinical Examination & Dashavidha Pariksha Hub</span>
+          <span class="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full font-bold uppercase">ABDM NRCeS Ayush Ready</span>
         </h1>
-        <p class="text-xs text-[#77797C]">All India Institute of Ayurveda (AIIA) • Rogabhishagjitiya Vimanam (8:94-130)</p>
+        <p class="text-xs text-slate-500">All India Institute of Ayurveda (AIIA) • Digital Prakriti & Vikriti Assessment</p>
       </div>
     </div>
-    <div class="flex items-center gap-3 text-xs">
-      <span class="bg-white shadow-sm px-3 py-1.5 rounded-lg border border-[#D9CDBA]/60 font-bold text-emerald-700">
-        Sandhigata Vata Active Case
-      </span>
+    <div class="flex items-center space-x-3 text-xs">
+      <div class="flex items-center gap-2 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl">
+        <span class="text-slate-500 font-medium">Active Queue:</span>
+        <span id="ayush-queue-count" class="font-extrabold text-[#223D79]">4 Patients</span>
+      </div>
     </div>
   </header>
 
-  <main class="flex-1 p-6 grid grid-cols-12 gap-6">
-    <!-- Left Column: 10-Fold Assessment Matrix (8 Cols) -->
-    <section class="col-span-12 lg:col-span-8 bg-white border border-[#D9CDBA]/80 shadow-sm rounded-2xl border border-[#D9CDBA]/60 p-6 space-y-6">
-      <div class="flex items-center justify-between border-b border-[#D9CDBA]/60 pb-4">
-        <div>
-          <h2 class="font-bold text-base text-[#223D79]">Patient: Ramesh Chandra (52M) • Token #042</h2>
-          <p class="text-xs text-[#77797C]">AI Scribe Synthesized Dashavidha Pariksha Matrix</p>
-        </div>
-        <span class="text-xs bg-amber-500/20 text-[#77797C] font-bold px-3 py-1 rounded-full border border-amber-500/30">PM-JAY Cashless Ayush</span>
-      </div>
+  <!-- Main Content Layout -->
+  <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-      <!-- 10 Parameters Grid -->
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-emerald-500/40">
-          <p class="text-[10px] text-emerald-700 font-bold uppercase">1. Prakriti (Constitution)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Vata-Kapha</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Cold intolerance, dry skin</p>
+    <!-- Left Column: Patient Queue Selector -->
+    <div class="lg:col-span-4 space-y-4">
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+          <h2 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <i data-lucide="users" class="w-4 h-4 text-[#223D79]"></i>
+            <span>AYUSH OPD Patient Queue</span>
+          </h2>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
         </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-rose-500/40">
-          <p class="text-[10px] text-rose-400 font-bold uppercase">2. Vikriti (Morbidity)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Vata Vriddhi</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Sandhigata / Joint crepitus</p>
+
+        <div id="ayush-patient-list" class="space-y-2 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
+          <!-- Dynamically populated patient queue cards -->
         </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-[#D9CDBA]/60">
-          <p class="text-[10px] text-[#77797C] font-bold uppercase">3. Sara (Tissue Quality)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Asthi Madhyama</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Moderate bone density</p>
+      </div>
+    </div>
+
+    <!-- Right Column: Active Patient Dashavidha Pariksha Profile -->
+    <div class="lg:col-span-8 space-y-6">
+
+      <!-- Patient Header Banner -->
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-4">
+          <div id="pat-avatar" class="w-14 h-14 rounded-2xl bg-[#223D79] text-[#FFA530] font-black text-xl flex items-center justify-center shadow-md">
+            RC
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="pat-name-header" class="font-bold text-xl text-slate-900">Ramesh Chandra (52M)</h2>
+              <span id="pat-token-badge" class="bg-[#223D79] text-white font-black text-xs px-2.5 py-0.5 rounded-lg shadow-sm">#042</span>
+            </div>
+            <p id="pat-complaint-sub" class="text-xs text-slate-600 mt-1 font-medium">Bilateral knee joint pain with crepitus</p>
+            <div class="flex items-center gap-2 mt-1 text-[11px] text-slate-500 font-mono">
+              <span id="pat-abha-id">ABHA: 91-4829-1029-4821</span>
+              <span>•</span>
+              <span id="pat-lang-badge" class="text-blue-700 font-bold">తెలుగు (Telugu)</span>
+            </div>
+          </div>
         </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-[#D9CDBA]/60">
-          <p class="text-[10px] text-[#77797C] font-bold uppercase">4. Samhanana (Compactness)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Madhyama</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Average build</p>
-        </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-[#D9CDBA]/60">
-          <p class="text-[10px] text-[#77797C] font-bold uppercase">5. Pramana (Anthropometry)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">BMI 26.2</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Height 172cm, Wt 78kg</p>
-        </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-[#D9CDBA]/60">
-          <p class="text-[10px] text-[#77797C] font-bold uppercase">6. Satmya (Habituation)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Madhura-Lavana</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Rice & pulses habituated</p>
-        </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-[#D9CDBA]/60">
-          <p class="text-[10px] text-[#77797C] font-bold uppercase">7. Sattva (Mental Strength)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Madhyama Sattva</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Good compliance</p>
-        </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-amber-500/40">
-          <p class="text-[10px] text-amber-400 font-bold uppercase">8. Ahara-shakti (Agni)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Manda Agni</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Delayed digestion, bloating</p>
-        </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-[#D9CDBA]/60">
-          <p class="text-[10px] text-[#77797C] font-bold uppercase">9. Vyayama-shakti (Work)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Avara (Low)</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Exertion causes pain</p>
-        </div>
-        <div class="p-3 bg-white shadow-sm/80 rounded-xl border border-[#D9CDBA]/60">
-          <p class="text-[10px] text-[#77797C] font-bold uppercase">10. Vaya (Age Period)</p>
-          <p class="font-bold text-[#223D79] mt-1 text-sm">Pravriddha (52Y)</p>
-          <p class="text-[11px] text-[#77797C] mt-0.5">Vata dominance phase</p>
+
+        <div class="flex flex-col items-end space-y-2">
+          <span id="pat-pmjay-badge" class="text-xs bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full border border-amber-300">
+            PM-JAY Cashless Ayush
+          </span>
+          <span id="pat-emergency-badge" class="hidden text-xs bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full border border-red-300 animate-pulse">
+            🚨 STAT Triage
+          </span>
         </div>
       </div>
 
-      <!-- Ayurvedic Prescription & Panchakarma Recommendations -->
-      <div class="p-4 rounded-xl bg-white shadow-sm/60 border border-[#D9CDBA]/60 space-y-3">
-        <h3 class="font-bold text-xs text-emerald-700 uppercase tracking-wide flex items-center gap-1.5">
-          <i data-lucide="leaf" class="w-4 h-4"></i> Tailored Ayurvedic Formulations & Therapy Plan
-        </h3>
-        <div class="grid grid-cols-2 gap-3 text-xs">
-          <div class="p-3 bg-white border border-[#D9CDBA]/80 shadow-sm rounded-lg border border-[#D9CDBA]/60">
-            <p class="font-bold text-[#223D79]">1. Yograj Guggulu</p>
-            <p class="text-[#77797C] text-[11px]">2 tabs BD after meals with warm water (Anti-inflammatory for Sandhigata Vata)</p>
-          </div>
-          <div class="p-3 bg-white border border-[#D9CDBA]/80 shadow-sm rounded-lg border border-[#D9CDBA]/60">
-            <p class="font-bold text-[#223D79]">2. Maharasnadi Kwatha</p>
-            <p class="text-[#77797C] text-[11px]">20 ml with equal water BD before food (Deepana & Vata-pacifying)</p>
-          </div>
+      <!-- 10 Dashavidha Pariksha Parameters Grid -->
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <h3 class="font-bold text-sm text-[#223D79] flex items-center gap-2">
+            <i data-lucide="activity" class="w-4 h-4 text-emerald-600"></i>
+            <span>10-Point Dashavidha Pariksha (दशविध परीक्षा) Matrix</span>
+          </h3>
+          <span class="text-[11px] font-bold text-slate-500">AI Scribe Synthesized</span>
         </div>
-        <div class="p-3 bg-emerald-950/30 border border-emerald-500/30 rounded-lg text-xs text-[#223D79]">
+
+        <div id="dashavidha-grid" class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+          <!-- Dynamically populated 10 cards -->
+        </div>
+      </div>
+
+      <!-- Tailored Ayurvedic Formulations & Panchakarma Recommendations -->
+      <div class="bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+          <h3 class="font-bold text-sm text-emerald-800 flex items-center gap-2">
+            <i data-lucide="leaf" class="w-4 h-4 text-emerald-600"></i>
+            <span>Tailored Ayurvedic Formulations & Panchakarma Protocol</span>
+          </h3>
+          <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">Ministry of Ayush Pharmacopeia</span>
+        </div>
+
+        <div id="ayush-formulations-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <!-- Dynamically populated drug cards -->
+        </div>
+
+        <div id="ayush-panchakarma-box" class="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-950 font-medium">
           <strong>Panchakarma Protocol:</strong> Janu Basti with Ksheerabala Taila (7 sittings) + Patra Pinda Sweda.
         </div>
       </div>
-    </section>
 
-    <!-- Right Column: Nadi & Dosha Balance Radar (4 Cols) -->
-    <section class="col-span-12 lg:col-span-4 bg-white border border-[#D9CDBA]/80 shadow-sm rounded-2xl border border-[#D9CDBA]/60 p-6 space-y-5">
-      <h3 class="font-bold text-sm text-[#223D79] flex items-center gap-2">
-        <i data-lucide="compass" class="w-4 h-4 text-emerald-700"></i> Dosha Equilibrium Index
-      </h3>
-
-      <div class="space-y-3 text-xs">
-        <div>
-          <div class="flex justify-between text-[#77797C] mb-1">
-            <span>Vata Dosha (Aggravated):</span>
-            <span class="font-bold text-rose-400">68% [HIGH]</span>
-          </div>
-          <div class="w-full bg-white shadow-sm h-2.5 rounded-full overflow-hidden">
-            <div class="bg-rose-500 h-full w-[68%]"></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between text-[#77797C] mb-1">
-            <span>Pitta Dosha (Balanced):</span>
-            <span class="font-bold text-emerald-700">22% [NORMAL]</span>
-          </div>
-          <div class="w-full bg-white shadow-sm h-2.5 rounded-full overflow-hidden">
-            <div class="bg-emerald-500 h-full w-[22%]"></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="flex justify-between text-[#77797C] mb-1">
-            <span>Kapha Dosha (Mild Manda):</span>
-            <span class="font-bold text-amber-400">35% [MILD]</span>
-          </div>
-          <div class="w-full bg-white shadow-sm h-2.5 rounded-full overflow-hidden">
-            <div class="bg-amber-500 h-full w-[35%]"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-3.5 bg-white shadow-sm/60 rounded-xl border border-[#D9CDBA]/60 text-xs space-y-2">
-        <p class="font-bold text-[#223D79]">Dietary & Lifestyle Advice (Ahara-Vihara):</p>
-        <ul class="text-[#77797C] space-y-1 list-disc pl-4 text-[11px]">
-          <li>Avoid cold, dry, and fermented food items.</li>
-          <li>Encourage warm ghee, sesame oil, and ginger decoctions.</li>
-          <li>Avoid walking on hard surfaces in cold morning hours.</li>
-        </ul>
-      </div>
-    </section>
+    </div>
   </main>
+
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    lucide.createIcons();
+
+    // Default Seed Queue
+    const DEFAULT_AYUSH_QUEUE = [
+      {
+        id: "enc-0042",
+        tokenNumber: "#042",
+        patientName: "Ramesh Chandra",
+        age: 52,
+        gender: "Male",
+        avatar: "RC",
+        abhaId: "91-4829-1029-4821",
+        hasPmjay: true,
+        isEmergency: false,
+        nativeLang: "తెలుగు (Telugu)",
+        nativeSpeech: '"నాకు మోకాళ్ళ నొప్పులు ఉన్నాయి"',
+        englishTranslation: "Bilateral knee joint pain with crepitus for 6 months",
+        dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Sandhigata Vata" },
+        formulations: [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD", dur: "15 Days", inst: "After meals with warm water (Anti-inflammatory for Sandhigata Vata)" },
+          { name: "Syp. Maharasnadi Kwatha", dose: "20 ml", freq: "BD", dur: "15 Days", inst: "Dilute with 20ml warm water before food (Deepana & Vata-pacifying)" }
+        ],
+        panchakarma: "Janu Basti with Ksheerabala Taila (7 sittings) + Patra Pinda Sweda for joint lubrication."
+      },
+      {
+        id: "enc-0043",
+        tokenNumber: "#043",
+        patientName: "Priya Sharma",
+        age: 34,
+        gender: "Female",
+        avatar: "PS",
+        abhaId: "91-8821-3940-1928",
+        hasPmjay: false,
+        isEmergency: false,
+        nativeLang: "हिन्दी (Hindi)",
+        nativeSpeech: '"पेट में बहुत जलन और खट्टी डकारें हैं"',
+        englishTranslation: "Severe epigastric burning, acid reflux, and indigestion after meals",
+        dashavidha: { prakriti: "Pitta Pradhana", agni: "Tikshna Agni", koshtha: "Mridu", vikriti: "Amlapitta Dusti" },
+        formulations: [
+          { name: "Tab. Avipattikar Churna", dose: "3 grams", freq: "BD", dur: "15 Days", inst: "With warm water before food (Neutralizes excess hydrochloric acid)" },
+          { name: "Tab. Kamadudha Ras (Moti Yukta)", dose: "250 mg", freq: "BD", dur: "15 Days", inst: "After meals with honey (Soothes mucosal burning)" }
+        ],
+        panchakarma: "Takra Dhara (Buttermilk Forehead Stream) + Virechana with Trivrit Lehyam for Pitta Shodhana."
+      },
+      {
+        id: "enc-0044",
+        tokenNumber: "#044",
+        patientName: "Ananya Verma",
+        age: 28,
+        gender: "Female",
+        avatar: "AV",
+        abhaId: "91-1029-3849-5820",
+        hasPmjay: true,
+        isEmergency: false,
+        nativeLang: "English",
+        nativeSpeech: '"High fever with chills and severe body ache"',
+        englishTranslation: "High grade febrile illness with shivering for 2 days",
+        dashavidha: { prakriti: "Vata-Pitta", agni: "Vishamagni", koshtha: "Madhyama", vikriti: "Santapa Jwara" },
+        formulations: [
+          { name: "Tab. Mahasudarshan Ghanvati", dose: "2 Tabs", freq: "BD", dur: "7 Days", inst: "After food with warm water (Natural antipyretic & antiviral)" },
+          { name: "Syp. Giloy Kwath (Amrita)", dose: "20 ml", freq: "BD", dur: "7 Days", inst: "Immunity and platelet protective" }
+        ],
+        panchakarma: "Langhana (Therapeutic Fasting) + Shadanga Paniya medicated water hydration."
+      },
+      {
+        id: "enc-e012",
+        tokenNumber: "#E-012",
+        patientName: "Mohan Das",
+        age: 61,
+        gender: "Male",
+        avatar: "MD",
+        abhaId: "91-9921-1029-3382",
+        hasPmjay: true,
+        isEmergency: true,
+        nativeLang: "తెలుగు (Telugu)",
+        nativeSpeech: '"ఛాతీలో తీవ్ర నొప్పి మరియు ఊపిరి ఆడటం లేదు"',
+        englishTranslation: "Acute crushing chest pain radiating to left shoulder and diaphoresis",
+        dashavidha: { prakriti: "Pitta-Vata", agni: "Tikshnagni", koshtha: "Krura", vikriti: "Hridaya Sroto-rodha" },
+        formulations: [
+          { name: "Tab. Hridyarnava Rasa", dose: "125 mg", freq: "BD", dur: "STAT SOS", inst: "With Arjuna Kwatha under strict monitoring" },
+          { name: "Arjunarishta", dose: "20 ml", freq: "BD", dur: "30 Days", inst: "With equal quantity of water after meals" }
+        ],
+        panchakarma: "Hrid Basti with Dashamula Taila + Immediate Allopathic Coronary ICU Bay Transfer."
+      }
+    ];
+
+    let currentQueue = [];
+    let selectedPatientId = null;
+
+    function loadAyushQueue() {
+      let shared = [];
       try {
-        const queue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
-        if (queue.length > 0) {
-          const latest = queue[0];
-          document.querySelector("h2").innerText = `Patient: ${latest.patientName} (${latest.age}${latest.gender === 'Male' ? 'M' : 'F'}) • Token ${latest.tokenNumber}`;
-          
-          if (latest.isEmergency) {
-            const badge = document.querySelector(".bg-amber-500\\/20");
-            badge.className = "text-xs bg-rose-500/20 text-rose-600 font-bold px-3 py-1 rounded-full border border-rose-500/30";
-            badge.innerText = "STAT EMERGENCY";
-            
-            document.querySelector(".text-emerald-700.font-bold.text-sm").innerText = "Sandhigata Vata Active Case (Critical Priority)";
-          }
-        }
+        shared = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
       } catch (e) {}
+
+      // Combine user-created patients with seed patients
+      const combined = [...shared];
+      DEFAULT_AYUSH_QUEUE.forEach(dp => {
+        if (!combined.some(p => p.tokenNumber === dp.tokenNumber || p.patientName === dp.patientName)) {
+          combined.push(dp);
+        }
+      });
+
+      currentQueue = combined;
+      document.getElementById("ayush-queue-count").innerText = `${currentQueue.length} Patients`;
+
+      renderPatientQueueList();
+
+      if (!selectedPatientId && currentQueue.length > 0) {
+        selectedPatientId = currentQueue[0].id || currentQueue[0].tokenNumber;
+      }
+      renderActivePatient();
+    }
+
+    function renderPatientQueueList() {
+      const container = document.getElementById("ayush-patient-list");
+      if (!container) return;
+
+      container.innerHTML = currentQueue.map(pat => {
+        const patId = pat.id || pat.tokenNumber;
+        const isSelected = patId === selectedPatientId;
+        const isEmerg = pat.isEmergency || pat.tokenNumber?.startsWith("#E-");
+
+        return `
+          <div onclick="selectAyushPatient('${patId}')" class="p-3 rounded-xl border-2 transition cursor-pointer flex items-center justify-between ${isSelected ? 'bg-emerald-50/80 border-emerald-600 shadow-sm' : 'bg-slate-50 hover:bg-slate-100 border-slate-200'}">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl ${isEmerg ? 'bg-red-600 text-white' : 'bg-[#223D79] text-[#FFA530]'} font-bold flex items-center justify-center text-xs">
+                ${pat.avatar || pat.patientName.slice(0,2).toUpperCase()}
+              </div>
+              <div>
+                <p class="font-bold text-xs text-slate-900">${pat.patientName} (${pat.age}${pat.gender ? pat.gender[0] : 'M'})</p>
+                <p class="text-[11px] text-slate-500 truncate max-w-[160px]">${pat.englishTranslation || pat.nativeSpeech || 'General Case'}</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="font-black text-xs ${isEmerg ? 'text-red-600' : 'text-[#223D79]'}">${pat.tokenNumber}</span>
+              ${isEmerg ? '<span class="block text-[9px] bg-red-100 text-red-700 font-bold px-1 rounded">STAT ER</span>' : ''}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function selectAyushPatient(patId) {
+      selectedPatientId = patId;
+      renderPatientQueueList();
+      renderActivePatient();
+    }
+
+    function renderActivePatient() {
+      const pat = currentQueue.find(p => (p.id || p.tokenNumber) === selectedPatientId) || currentQueue[0];
+      if (!pat) return;
+
+      const isEmerg = pat.isEmergency || pat.tokenNumber?.startsWith("#E-");
+
+      // Update Header
+      document.getElementById("pat-avatar").innerText = pat.avatar || pat.patientName.slice(0,2).toUpperCase();
+      document.getElementById("pat-name-header").innerText = `${pat.patientName} (${pat.age}${pat.gender ? pat.gender[0] : 'M'})`;
+      document.getElementById("pat-token-badge").innerText = pat.tokenNumber;
+      document.getElementById("pat-complaint-sub").innerText = pat.englishTranslation || pat.nativeSpeech || "General Consultation";
+      document.getElementById("pat-abha-id").innerText = `ABHA: ${pat.abhaId || '91-4829-1029-4821'}`;
+      document.getElementById("pat-lang-badge").innerText = pat.nativeLang || "English";
+
+      const pmjayBadge = document.getElementById("pat-pmjay-badge");
+      if (pmjayBadge) pmjayBadge.className = pat.hasPmjay ? "text-xs bg-amber-100 text-amber-900 font-bold px-3 py-1 rounded-full border border-amber-300" : "hidden";
+
+      const emergBadge = document.getElementById("pat-emergency-badge");
+      if (emergBadge) emergBadge.className = isEmerg ? "text-xs bg-red-100 text-red-700 font-bold px-3 py-1 rounded-full border border-red-300 animate-pulse" : "hidden";
+
+      // Synthesize Dynamic Dashavidha Pariksha
+      const dv = pat.dashavidha || {};
+      const prakriti = dv.prakriti || (isEmerg ? "Pitta-Vata" : "Vata-Kapha");
+      const vikriti = dv.vikriti || (isEmerg ? "Hridaya Sroto-rodha" : "Sandhigata Vata");
+      const agni = dv.agni || (isEmerg ? "Tikshnagni" : "Manda Agni");
+      const koshtha = dv.koshtha || (isEmerg ? "Krura" : "Madhyama");
+
+      const gridHtml = `
+        <div class="p-3 bg-slate-50 rounded-xl border border-emerald-300">
+          <p class="text-[10px] text-emerald-800 font-bold uppercase">1. Prakriti (Constitution)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">${prakriti}</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Physical & psychological baseline</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-rose-300">
+          <p class="text-[10px] text-rose-700 font-bold uppercase">2. Vikriti (Morbidity)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">${vikriti}</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Dosha vitiation state</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <p class="text-[10px] text-slate-600 font-bold uppercase">3. Sara (Tissue Quality)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">Asthi-Majja Madhyama</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Tissue integrity level</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <p class="text-[10px] text-slate-600 font-bold uppercase">4. Samhanana (Build)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">Madhyama</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Symmetrical body frame</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <p class="text-[10px] text-slate-600 font-bold uppercase">5. Pramana (Anthropometry)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">BMI 24.8</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Standard physical metrics</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <p class="text-[10px] text-slate-600 font-bold uppercase">6. Satmya (Habituation)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">Shadrasa Satmya</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Regional diet habituated</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <p class="text-[10px] text-slate-600 font-bold uppercase">7. Sattva (Mental State)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">Pravara Sattva</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">High treatment compliance</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-amber-300">
+          <p class="text-[10px] text-amber-800 font-bold uppercase">8. Ahara-shakti (Agni)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">${agni}</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Digestive & metabolic fire</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <p class="text-[10px] text-slate-600 font-bold uppercase">9. Vyayama-shakti (Work)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">${isEmerg ? 'Avara (Critical)' : 'Madhyama'}</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">Physical endurance score</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+          <p class="text-[10px] text-slate-600 font-bold uppercase">10. Vaya (Age Period)</p>
+          <p class="font-bold text-[#223D79] mt-1 text-sm">Vaya: ${pat.age}Y</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">${pat.age > 50 ? 'Vata dominance phase' : 'Pitta dominance phase'}</p>
+        </div>
+      `;
+      document.getElementById("dashavidha-grid").innerHTML = gridHtml;
+
+      // Formulations
+      let forms = pat.formulations || [];
+      if (forms.length === 0 && pat.aiSuggestions) {
+        forms = pat.aiSuggestions.map(d => ({
+          name: d.name,
+          dose: d.dose,
+          freq: d.freq,
+          dur: d.dur,
+          inst: d.inst
+        }));
+      }
+      if (forms.length === 0) {
+        forms = [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD", dur: "15 Days", inst: "After meals with warm water (Anti-inflammatory for Sandhigata Vata)" },
+          { name: "Syp. Maharasnadi Kwatha", dose: "20 ml", freq: "BD", dur: "15 Days", inst: "Dilute with 20ml warm water before food" }
+        ];
+      }
+
+      document.getElementById("ayush-formulations-grid").innerHTML = forms.map((f, idx) => `
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+          <p class="font-bold text-[#223D79]">${idx + 1}. ${f.name}</p>
+          <p class="text-slate-600 text-[11px] mt-0.5">${f.dose || ''} ${f.freq || ''} • ${f.dur || ''} (${f.inst || 'Take with warm water'})</p>
+        </div>
+      `).join("");
+
+      // Panchakarma
+      const panchakarmaText = pat.panchakarma || (isEmerg ? "Hrid Basti with Dashamula Taila + Immediate Allopathic Coronary ICU Bay Transfer." : "Janu Basti with Ksheerabala Taila (7 sittings) + Patra Pinda Sweda for joint lubrication and Vata Shamana.");
+      document.getElementById("ayush-panchakarma-box").innerHTML = `<strong>Panchakarma Protocol:</strong> ${panchakarmaText}`;
+    }
+
+    // Storage Event Listener for Real-Time Cross-Tab Reactivity
+    window.addEventListener("storage", function(event) {
+      if (event.key === "MEDIKIOSK_SHARED_QUEUE") {
+        console.log("AYUSH Portal: Synchronizing live queue update from MediKiosk...");
+        loadAyushQueue();
+      }
     });
+
+    // Initialize on page load
+    loadAyushQueue();
   </script>
-  <script>lucide.createIcons();</script>
 </body>
 </html>
