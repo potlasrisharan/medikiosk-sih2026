@@ -7,6 +7,18 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>MediKiosk — Multilingual Voice Kiosk</title>
+  <script>
+    // Suppress Tailwind Play CDN production notice in browser console
+    (function() {
+      const origWarn = console.warn;
+      console.warn = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com should not be used in production')) {
+          return;
+        }
+        origWarn.apply(console, args);
+      };
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
 
@@ -768,15 +780,15 @@
           </div>
 
           <div class="flex flex-col gap-3 pt-2">
-            <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="w-full bg-[#223D79] hover:bg-emerald-800 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-emerald-600/20">
-              పత్రాలు ఉన్నాయి - ధృవీకరించి టోకెన్ పొందండి ➔ (Has Documents & Get Token)
+            <button onclick="generateDynamicTokenAndRegister()" id="btn-confirm-token" class="w-full bg-[#223D79] hover:bg-[#1a2f5e] text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-[#223D79]/20">
+              Confirm & Generate Token ➔
             </button>
             <div class="flex gap-3">
-              <button onclick="goToScreen('screen-voice')" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
-                <span id="btn-voice-back-txt">Back</span>
+              <button onclick="goToScreen('screen-voice')" id="btn-scan-back" class="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-1 transition">
+                <span>Back</span>
               </button>
-              <button onclick="generateDynamicTokenAndRegister()" class="flex-1 bg-white hover:bg-gray-50 text-[#77797C] border border-[#D9CDBA] font-bold py-3.5 px-4 rounded-xl text-sm transition">
-                పత్రాలు లేవు ➔ Skip / No Documents
+              <button onclick="generateDynamicTokenAndRegister()" id="btn-skip-rx" class="flex-1 bg-white hover:bg-gray-50 text-slate-600 border border-slate-300 font-bold py-3.5 px-4 rounded-xl text-sm transition">
+                Skip / No Documents ➔
               </button>
             </div>
           </div>
@@ -1584,9 +1596,12 @@
 
       setTxt("lbl-scan-rx-title", dict.scanRxTitle);
       setTxt("lbl-scan-rx-sub", dict.scanRxSub);
-      setTxt("btn-scan-rx-act", dict.scanRxAct);
-      setTxt("lbl-ocr-head", dict.ocrHead);
-      setTxt("btn-confirm-token", dict.confirmTokenBtn);
+      setTxt("btn-scan-rx-act", (dict.scanRxAct || "Open Camera & Digitize"));
+      setTxt("lbl-ocr-head", (dict.ocrHead || "Extracted Clinical Entities (96% Accuracy)"));
+      setTxt("btn-confirm-token", (dict.confirmTokenBtn || "Confirm & Generate Token ➔"));
+      
+      const skipBtnText = currentLanguage === "te-IN" ? "పత్రాలు లేవు ➔ స్కిప్ చేయండి" : (currentLanguage === "hi-IN" ? "पर्चे नहीं हैं ➔ आगे बढ़ें" : (currentLanguage === "ta-IN" ? "மருந்து சீட்டு இல்லை ➔ தொடரவும்" : (currentLanguage === "kn-IN" ? "ದಾಖಲೆಗಳಿಲ್ಲ ➔ ಮುಂದುವರಿಯಿರಿ" : (currentLanguage === "mr-IN" ? "कागदपत्रे नाहीत ➔ पुढे जा" : (currentLanguage === "bn-IN" ? "প্রেসক্রিপশন নেই ➔ এগিয়ে যান" : (currentLanguage === "gu-IN" ? "દસ્તાવેજો નથી ➔ આગળ વધો" : "Skip / No Documents ➔"))))));
+      setTxt("btn-skip-rx", skipBtnText);
       setTxt("lbl-token-done", dict.tokenDone);
       setTxt("lbl-token-sub", dict.tokenSub);
       setTxt("lbl-token-msg", dict.tokenMsg);
@@ -2050,7 +2065,7 @@
       const video = document.getElementById("video-abha");
       const canvas = document.getElementById("qr-canvas");
       if (!canvas || !video) return;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
       function checkFrame() {
         if (video.readyState === video.HAVE_ENOUGH_DATA && typeof jsQR !== "undefined") {
