@@ -130,12 +130,12 @@
     </div>
     <div class="flex items-center space-x-3 mt-1 sm:mt-0 font-semibold">
       <div class="flex items-center space-x-1 bg-[#07273D] px-2 py-0.5 rounded border border-white/20">
-        <span class="text-slate-300 text-[10px] mr-1">Text:</span>
-        <button onclick="changeFontSize(-1)" title="Decrease Font Size" class="hover:text-amber-300 px-1 font-bold">A-</button>
-        <button onclick="changeFontSize(0)" title="Default Font Size" class="hover:text-amber-300 px-1 font-bold">A</button>
-        <button onclick="changeFontSize(1)" title="Increase Font Size" class="hover:text-amber-300 px-1 font-bold">A+</button>
+        <span class="text-slate-300 text-[10px] mr-1 font-medium">Text:</span>
+        <button id="btn-font-dec" onclick="changeFontSize(-1)" title="Decrease Font Size" class="hover:text-amber-300 px-1 font-bold transition">A-</button>
+        <button id="btn-font-reset" onclick="changeFontSize(0)" title="Default Font Size" class="text-amber-300 hover:text-amber-300 px-1 font-bold transition">A</button>
+        <button id="btn-font-inc" onclick="changeFontSize(1)" title="Increase Font Size" class="hover:text-amber-300 px-1 font-bold transition">A+</button>
       </div>
-      <button onclick="toggleHighContrast()" title="Toggle High Contrast Mode" class="bg-[#07273D] hover:bg-amber-400 hover:text-slate-900 text-white px-2 py-0.5 rounded border border-white/20 transition flex items-center gap-1 text-[10px]">
+      <button id="btn-high-contrast" onclick="toggleHighContrast()" title="Toggle High Contrast Mode" class="bg-[#07273D] hover:bg-amber-400 hover:text-slate-900 text-white px-2.5 py-0.5 rounded border border-white/20 transition flex items-center gap-1 text-[10px] font-bold">
         <span>🌓 Contrast</span>
       </button>
       <span class="text-emerald-400 font-bold flex items-center gap-1">
@@ -819,6 +819,46 @@
   </main>
 
   <script>
+    // =========================================================================
+    // GIGW 3.0 TEXT RESIZER & HIGH-CONTRAST ACCESSIBILITY ENGINE
+    // =========================================================================
+    let currentFontSizeMultiplier = 1.0;
+    
+    function changeFontSize(delta) {
+      if (delta === 0) {
+        currentFontSizeMultiplier = 1.0;
+      } else {
+        currentFontSizeMultiplier = Math.max(0.75, Math.min(1.45, currentFontSizeMultiplier + delta * 0.15));
+      }
+      
+      // Scale document root percentage so all rem, text-*, and layout units scale smoothly
+      document.documentElement.style.fontSize = `${currentFontSizeMultiplier * 100}%`;
+      
+      // Update visual indicator on active button
+      const btnDec = document.getElementById("btn-font-dec");
+      const btnReset = document.getElementById("btn-font-reset");
+      const btnInc = document.getElementById("btn-font-inc");
+      
+      if (btnDec) btnDec.className = currentFontSizeMultiplier < 0.95 ? "text-amber-300 font-black px-1 underline" : "hover:text-amber-300 px-1 font-bold";
+      if (btnReset) btnReset.className = (currentFontSizeMultiplier >= 0.95 && currentFontSizeMultiplier <= 1.05) ? "text-amber-300 font-black px-1 underline" : "hover:text-amber-300 px-1 font-bold";
+      if (btnInc) btnInc.className = currentFontSizeMultiplier > 1.05 ? "text-amber-300 font-black px-1 underline" : "hover:text-amber-300 px-1 font-bold";
+    }
+
+    let isHighContrast = false;
+    function toggleHighContrast() {
+      isHighContrast = !isHighContrast;
+      document.body.classList.toggle("high-contrast-mode", isHighContrast);
+      
+      const btn = document.getElementById("btn-high-contrast");
+      if (btn) {
+        if (isHighContrast) {
+          btn.className = "bg-amber-400 text-slate-950 px-2.5 py-0.5 rounded border border-amber-300 font-black flex items-center gap-1 text-[10px]";
+        } else {
+          btn.className = "bg-[#07273D] hover:bg-amber-400 hover:text-slate-900 text-white px-2.5 py-0.5 rounded border border-white/20 transition flex items-center gap-1 text-[10px] font-bold";
+        }
+      }
+    }
+
     // --- SECURITY: IDLE TIMEOUT LOGIC ---
     let lastActivityTime = Date.now();
     let idleTimer = null;
