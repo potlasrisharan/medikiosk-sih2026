@@ -12,27 +12,25 @@ BACKEND_PID=$!
 
 sleep 2
 
-# 2. Start Doctor Portal on Port 3000
-echo "▶️  [2/3] Starting Doctor Consultation Portal on http://localhost:3000 ..."
-/opt/homebrew/bin/python3.14 -m http.server 3000 --directory doctor_portal/public &
-DOCTOR_PID=$!
-
-# 3. Start Flutter Kiosk Web on Port 8080
-echo "▶️  [3/3] Starting Patient Intake Kiosk on http://localhost:8080 ..."
-/opt/homebrew/bin/python3.14 -m http.server 8080 --directory kiosk_app/build/web &
-KIOSK_PID=$!
+# 2. Start Unified MediKiosk Web Suite on Port 3000
+echo "▶️  [2/2] Starting MediKiosk Unified Web Portals on http://localhost:3000 ..."
+/opt/homebrew/bin/python3.14 -m http.server 3000 --directory public &
+WEB_PID=$!
 
 echo ""
 echo "✨ ALL SERVICES ACTIVE & SYNCED:"
-echo "   1. 📱 Patient Kiosk UI:       http://localhost:8080"
-echo "   2. 🩺 Doctor Review Portal:    http://localhost:3000"
-echo "   3. ⚡ FastAPI Gateway & Docs: http://localhost:8000/docs"
+echo "   1. 📱 Patient Intake Kiosk:     http://localhost:3000"
+echo "   2. 🩺 Doctor Consultation:      http://localhost:3000/doctor"
+echo "   3. 🌿 AYUSH Dashavidha Hub:     http://localhost:3000/ayush"
+echo "   4. 🚨 Emergency Triage:         http://localhost:3000/triage"
+echo "   5. 📊 Admin & ABDM Console:     http://localhost:3000/admin"
+echo "   6. ⚡ FastAPI Gateway & Docs:   http://localhost:8000/docs"
 echo ""
 echo "Press Ctrl+C to stop all services."
 
 cleanup() {
     echo "Stopping all services..."
-    kill $BACKEND_PID $DOCTOR_PID $KIOSK_PID 2>/dev/null || true
+    kill $BACKEND_PID $WEB_PID 2>/dev/null || true
     exit 0
 }
 
