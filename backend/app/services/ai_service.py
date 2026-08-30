@@ -13,7 +13,6 @@ class SarvamAIService:
             "api-subscription-key": self.api_key,
             "Content-Type": "application/json"
         }
-        # Available speakers for bulbul:v3: kavitha, priya, aditya, rohan, rahul, etc.
         speaker = "kavitha" if language_code in ["te-IN", "ta-IN", "kn-IN"] else "priya"
         payload = {
             "inputs": [text],
@@ -59,6 +58,30 @@ class SarvamAIService:
                     return data.get("translated_text")
         except Exception as e:
             print("Error calling Sarvam Translation:", e)
+        return None
+
+    async def generate_clinical_completion(self, user_prompt: str, system_prompt: str = "You are an expert physician clinical scribe.") -> Optional[str]:
+        headers = {
+            "api-subscription-key": self.api_key,
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": "sarvam-105b",
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            "temperature": 0.2
+        }
+        try:
+            async with httpx.AsyncClient() as client:
+                res = await client.post(f"{self.base_url}/v1/chat/completions", headers=headers, json=payload, timeout=15.0)
+                if res.status_code == 200:
+                    data = res.json()
+                    return data["choices"][0]["message"]["content"]
+        except Exception as e:
+            print("Error calling Sarvam-105B LLM:", e)
         return None
 
     def extract_document_ocr(self, document_id: str, doc_type: str = "PRESCRIPTION") -> OCRResponse:

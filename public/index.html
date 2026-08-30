@@ -2985,14 +2985,13 @@
       goToScreen("screen-token");
     }
 
-    async function generateDynamicTokenAndRegister() {
+        async function generateDynamicTokenAndRegister() {
       // Show loading state on button
       const btn = document.getElementById("btn-confirm-token");
       const originalText = btn.innerText;
-      btn.innerText = "Evaluating Triage Priority...";
+      btn.innerText = "⚡ Sarvam-105B Evaluating Triage & Pharmacology...";
       btn.disabled = true;
 
-      // 1. Live AI Clinical Pharmacology, Translation & Triage Engine via Groq API
       let isEmergency = false;
       const symptomLower = (currentPatient.selectedSymptom || "").toLowerCase();
       const fallbackEmergency = symptomLower.includes("chest") || symptomLower.includes("ఛాతీ") || symptomLower.includes("सीने") || symptomLower.includes("bullet") || symptomLower.includes("బుల్లెట్") || symptomLower.includes("గుండె") || symptomLower.includes("heart") || symptomLower.includes("stroke") || symptomLower.includes("రక్తం");
@@ -3004,32 +3003,41 @@
       let aiSuggestions = [];
       let activePrescription = [];
 
+      // 1. Primary Inference: Sovereign Sarvam-105B Foundational Indic LLM
+      const SARVAM_KEY = "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS";
       try {
-        const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        const sarvamLlmRes = await fetch("https://api.sarvam.ai/v1/chat/completions", {
           method: "POST",
           headers: {
-            "Authorization": "Bearer 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",
+            "api-subscription-key": SARVAM_KEY,
+            "Authorization": `Bearer ${SARVAM_KEY}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "openai/gpt-oss-20b",
+            model: "sarvam-105b",
             messages: [
               {
                 role: "system",
-                content: "You are an expert physician clinical pharmacologist and triage specialist. Analyze the patient's symptoms (which may be in any Indian language or English). Return ONLY a JSON object with keys: 1. english_translation (accurate English translation), 2. is_emergency (boolean: true for chest pain, acute coronary syndrome, stroke, bullet wound, severe trauma, massive bleeding, acute respiratory failure, false otherwise), 3. clinical_assessment (1-sentence diagnostic summary), 4. planSummary (clinical management plan summary), 5. dashavidha (object with keys: prakriti, agni, koshtha, vikriti), 6. aiSuggestions (array of 2-4 drug objects with keys: name, dose, freq, dur, inst strictly tailored to this exact diagnosis), 7. activePrescription (array of 1-3 primary drug objects with keys: name, dose, freq, dur, inst tailored to this diagnosis)."
+                content: "You are an expert physician clinical pharmacologist and triage specialist. Analyze the patient's symptoms (which may be in any Indian language or English). Return ONLY a valid JSON object with keys: 1. english_translation (accurate English translation), 2. is_emergency (boolean: true for chest pain, acute coronary syndrome, stroke, bullet wound, severe trauma, massive bleeding, acute respiratory failure, false otherwise), 3. clinical_assessment (1-sentence diagnostic summary), 4. planSummary (clinical management plan summary), 5. dashavidha (object with keys: prakriti, agni, koshtha, vikriti), 6. aiSuggestions (array of 2-4 drug objects with keys: name, dose, freq, dur, inst strictly tailored to this exact diagnosis), 7. activePrescription (array of 1-3 primary drug objects with keys: name, dose, freq, dur, inst tailored to this diagnosis)."
               },
               {
                 role: "user",
                 content: "Patient Symptom: " + (currentPatient.selectedSymptom || "General consultation")
               }
             ],
-            response_format: { type: "json_object" }
+            temperature: 0.2
           })
         });
-        
-        if (groqRes.ok) {
-          const data = await groqRes.json();
-          const content = JSON.parse(data.choices[0].message.content);
+
+        if (sarvamLlmRes.ok) {
+          const sarvamData = await sarvamLlmRes.json();
+          let rawContent = sarvamData.choices[0].message.content.trim();
+          if (rawContent.startsWith("```json")) {
+            rawContent = rawContent.replace(/```json/gi, "").replace(/```/g, "").trim();
+          } else if (rawContent.startsWith("```")) {
+            rawContent = rawContent.replace(/```json/gi, "").replace(/```/g, "").trim();
+          }
+          const content = JSON.parse(rawContent);
           if (content.english_translation && content.english_translation.trim().length > 0) {
             englishSymptom = content.english_translation.trim();
           }
@@ -3039,10 +3047,49 @@
           if (content.dashavidha) dashavidha = content.dashavidha;
           if (Array.isArray(content.aiSuggestions) && content.aiSuggestions.length > 0) aiSuggestions = content.aiSuggestions;
           if (Array.isArray(content.activePrescription) && content.activePrescription.length > 0) activePrescription = content.activePrescription;
+          console.log("Sarvam-105B inference completed successfully!");
+        } else {
+          throw new Error("Sarvam-105B non-200 response");
         }
-      } catch (e) {
-        console.error("Groq dynamic prescription failed, using specific clinical category fallback", e);
-        isEmergency = fallbackEmergency;
+      } catch (sarvamErr) {
+        console.log("Sarvam-105B fallback to Groq Indic LLM:", sarvamErr);
+        // 2. Secondary Fallback: Groq Cloud AI
+        try {
+          const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              "Authorization": "Bearer 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",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              model: "openai/gpt-oss-20b",
+              messages: [
+                {
+                  role: "system",
+                  content: "You are an expert physician clinical pharmacologist. Return JSON with english_translation, is_emergency, clinical_assessment, planSummary, dashavidha, aiSuggestions, activePrescription."
+                },
+                {
+                  role: "user",
+                  content: "Patient Symptom: " + (currentPatient.selectedSymptom || "General consultation")
+                }
+              ],
+              response_format: { type: "json_object" }
+            })
+          });
+          if (groqRes.ok) {
+            const data = await groqRes.json();
+            const content = JSON.parse(data.choices[0].message.content);
+            if (content.english_translation) englishSymptom = content.english_translation.trim();
+            isEmergency = (content.is_emergency === true || content.is_emergency === "true") || fallbackEmergency;
+            clinicalAssessment = content.clinical_assessment || "";
+            planSummary = content.planSummary || "";
+            if (content.dashavidha) dashavidha = content.dashavidha;
+            if (Array.isArray(content.aiSuggestions)) aiSuggestions = content.aiSuggestions;
+            if (Array.isArray(content.activePrescription)) activePrescription = content.activePrescription;
+          }
+        } catch (e) {
+          isEmergency = fallbackEmergency;
+        }
       }
 
       // Disease-Specific Clinical Regimen Fallback if AI arrays were empty
