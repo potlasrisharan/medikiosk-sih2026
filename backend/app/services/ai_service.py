@@ -1,6 +1,6 @@
 import os
 import httpx
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from ..models.schemas import ExtractedMedication, ExtractedLabResult, OCRResponse
 
 class SarvamAIService:
@@ -13,8 +13,8 @@ class SarvamAIService:
             "api-subscription-key": self.api_key,
             "Content-Type": "application/json"
         }
-        # Speaker mapping
-        speaker = "anushka"
+        # Available speakers for bulbul:v3: kavitha, priya, aditya, rohan, rahul, etc.
+        speaker = "kavitha" if language_code in ["te-IN", "ta-IN", "kn-IN"] else "priya"
         payload = {
             "inputs": [text],
             "target_language_code": language_code,
@@ -24,16 +24,41 @@ class SarvamAIService:
             "loudness": 1.5,
             "speech_sample_rate": 8000,
             "enable_preprocessing": True,
-            "model": "bulbul:v2"
+            "model": "bulbul:v3"
         }
         try:
             async with httpx.AsyncClient() as client:
-                res = await client.post(f"{self.base_url}/text-to-speech", headers=headers, json=payload, timeout=10.0)
+                res = await client.post(f"{self.base_url}/text-to-speech", headers=headers, json=payload, timeout=12.0)
                 if res.status_code == 200:
                     data = res.json()
-                    return data.get("audios", [""])[0]
+                    audios = data.get("audios", [])
+                    if audios and len(audios) > 0:
+                        return audios[0]
         except Exception as e:
             print("Error calling Sarvam TTS:", e)
+        return None
+
+    async def translate_text(self, text: str, source_lang: str = "te-IN", target_lang: str = "en-IN") -> Optional[str]:
+        headers = {
+            "api-subscription-key": self.api_key,
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "input": text,
+            "source_language_code": source_lang,
+            "target_language_code": target_lang,
+            "speaker_gender": "Male",
+            "mode": "formal",
+            "model": "mayura:v1"
+        }
+        try:
+            async with httpx.AsyncClient() as client:
+                res = await client.post(f"{self.base_url}/translate", headers=headers, json=payload, timeout=10.0)
+                if res.status_code == 200:
+                    data = res.json()
+                    return data.get("translated_text")
+        except Exception as e:
+            print("Error calling Sarvam Translation:", e)
         return None
 
     def extract_document_ocr(self, document_id: str, doc_type: str = "PRESCRIPTION") -> OCRResponse:

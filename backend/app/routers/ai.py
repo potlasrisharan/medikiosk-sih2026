@@ -12,7 +12,18 @@ class TTSRequest(BaseModel):
 class TTSResponse(BaseModel):
     audio_base64: Optional[str] = None
     language_code: str
-    engine: str = "Sarvam Bulbul v2"
+    engine: str = "Sarvam Bulbul v3"
+
+class TranslateRequest(BaseModel):
+    text: str
+    source_language: str = "te-IN"
+    target_language: str = "en-IN"
+
+class TranslateResponse(BaseModel):
+    translated_text: Optional[str] = None
+    source_language: str
+    target_language: str
+    engine: str = "Sarvam Mayura v1"
 
 class ScribeRequest(BaseModel):
     symptoms: Optional[str] = None
@@ -28,6 +39,11 @@ class ScribeResponse(BaseModel):
 async def get_sarvam_tts(req: TTSRequest):
     audio = await ai_service.generate_speech(req.text, req.language_code)
     return TTSResponse(audio_base64=audio, language_code=req.language_code)
+
+@router.post("/translate", response_model=TranslateResponse)
+async def get_sarvam_translation(req: TranslateRequest):
+    translated = await ai_service.translate_text(req.text, req.source_language, req.target_language)
+    return TranslateResponse(translated_text=translated, source_language=req.source_language, target_language=req.target_language)
 
 @router.post("/scribe", response_model=ScribeResponse)
 async def get_clinical_scribe(req: ScribeRequest):
