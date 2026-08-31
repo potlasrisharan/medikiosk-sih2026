@@ -3323,6 +3323,180 @@
       document.getElementById("red-flag-banner")?.classList.add("hidden");
       goToScreen("screen-language");
     }
+
+    // =========================================================================
+    // DUAL-MODE SYMPTOM INTAKE: SPEAK (MIC) + TYPE (KEYBOARD)
+    // =========================================================================
+    let currentIntakeMode = 'voice';
+
+    function switchIntakeMode(mode) {
+      currentIntakeMode = mode;
+      const btnVoice = document.getElementById("tab-intake-voice");
+      const btnType = document.getElementById("tab-intake-type");
+      const panelVoice = document.getElementById("panel-intake-voice");
+      const panelType = document.getElementById("panel-intake-type");
+
+      if (mode === 'voice') {
+        if (btnVoice) btnVoice.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center gap-2 bg-[#223D79] text-white shadow-sm transition";
+        if (btnType) btnType.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 transition";
+        if (panelVoice) panelVoice.classList.remove("hidden");
+        if (panelType) panelType.classList.add("hidden");
+      } else {
+        if (btnType) btnType.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center gap-2 bg-[#223D79] text-white shadow-sm transition";
+        if (btnVoice) btnVoice.className = "flex-1 py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 transition";
+        if (panelVoice) panelVoice.classList.add("hidden");
+        if (panelType) panelType.classList.remove("hidden");
+        populateTypeChips();
+        const input = document.getElementById("typed-symptom-input");
+        if (input && currentPatient.selectedSymptom) {
+          input.value = currentPatient.selectedSymptom;
+        }
+      }
+    }
+
+    function populateTypeChips() {
+      const container = document.getElementById("type-quick-chips-container");
+      if (!container) return;
+      
+      const isTe = currentLanguage === 'te' || currentLanguage === 'te-IN';
+      const isHi = currentLanguage === 'hi' || currentLanguage === 'hi-IN';
+      const isTa = currentLanguage === 'ta' || currentLanguage === 'ta-IN';
+      const isKn = currentLanguage === 'kn' || currentLanguage === 'kn-IN';
+
+      let chips = [];
+      if (isTe) {
+        chips = [
+          { text: "🚨 తీవ్రమైన ఛాతీ నొప్పి (Chest Pain)", val: "నాకు గత 2 గంటలుగా విపరీతమైన ఛాతీ నొప్పి మరియు చెమటలు పడుతున్నాయి" },
+          { text: "🦴 మోకాళ్ళ నొప్పులు (Knee Pain)", val: "నాకు 6 నెలలుగా రెండు మోకాళ్ళలో విపరీతమైన నొప్పి మరియు కీళ్ళ నొప్పులు ఉన్నాయి" },
+          { text: "🌡️ ఎక్కువ జ్వరం & చలి (Fever)", val: "నాకు 3 రోజులుగా తీవ్రమైన జ్వరం, తలనొప్పి మరియు ఒళ్ళు నొప్పులు ఉన్నాయి" },
+          { text: "🌿 కడుపులో మంట & గ్యాస్ (Acidity)", val: "నా కడుపులో తీవ్రమైన మంట, గ్యాస్ మరియు అజీర్ణం ఉంది" },
+          { text: "🤕 తీవ్ర తలనొప్పి (Headache)", val: "నాకు నిన్నటి నుండి తీవ్రమైన తలనొప్పి మరియు కళ్ళు తిరుగుతున్నాయి" },
+          { text: "🫁 దగ్గు & శ్వాస సమస్య (Cough)", val: "నాకు తీవ్రమైన పొడి దగ్గు మరియు ఆయాసం ఉంది" }
+        ];
+      } else if (isHi) {
+        chips = [
+          { text: "🚨 सीने में तेज दर्द (Chest Pain)", val: "मुझे अचानक सीने में बहुत तेज दर्द और सांस फूलने की समस्या हो रही है" },
+          { text: "🦴 घुटनों में दर्द (Knee Pain)", val: "मुझे दोनों घुटनों में पिछले 6 महीनों से दर्द और अकड़न है" },
+          { text: "🌡️ तेज बुखार और ठंड (Fever)", val: "मुझे 3 दिनों से तेज बुखार, बदन दर्द और कंपकंपी है" },
+          { text: "🌿 पेट में जलन और गैस (Acidity)", val: "पेट में बहुत तेज जलन, गैस और खट्टी डकारें आ रही हैं" },
+          { text: "🤕 सिरदर्द और चक्कर (Headache)", val: "मुझे तेज सिरदर्द और चक्कर आ रहे हैं" },
+          { text: "🫁 खांसी और सांस की तकलीफ (Cough)", val: "मुझे लगातार सूखी खांसी और सांस लेने में दिक्कत है" }
+        ];
+      } else if (isTa) {
+        chips = [
+          { text: "🚨 நெஞ்சு வலி (Chest Pain)", val: "எனக்கு நெஞ்சில் கடுமையான வலி மற்றும் மூச்சுத் திணறல் உள்ளது" },
+          { text: "🦴 முழங்கால் வலி (Knee Pain)", val: "எனக்கு இரண்டு முழங்கால்களிலும் கடுமையான வலி உள்ளது" },
+          { text: "🌡️ காய்ச்சல் & நடுக்கம் (Fever)", val: "எனக்கு 3 நாட்களாக கடுமையான காய்ச்சல் மற்றும் தலைவலி உள்ளது" },
+          { text: "🌿 வயிற்று வலி & எரிச்சல் (Acidity)", val: "வயிற்றில் கடுமையான எரிச்சல் மற்றும் அஜீரணம் உள்ளது" }
+        ];
+      } else if (isKn) {
+        chips = [
+          { text: "🚨 ತೀವ್ರ ಎದೆ ನೋವು (Chest Pain)", val: "ನನಗೆ ತೀವ್ರ ಎದೆ ನೋವು ಮತ್ತು ಉಸಿರಾಟದ ತೊಂದರೆ ಇದೆ" },
+          { text: "🦴 ಮಂಡಿ ನೋವು (Knee Pain)", val: "ನನಗೆ 6 ತಿಂಗಳಿಂದ ಎರಡೂ ಮೊಣಕಾಲುಗಳಲ್ಲಿ ನೋವು ಇದೆ" },
+          { text: "🌡️ ತೀವ್ರ ಜ್ವರ (Fever)", val: "ನನಗೆ 3 ದಿನಗಳಿಂದ ತೀವ್ರ ಜ್ವರ ಮತ್ತು ಚಳಿ ಇದೆ" },
+          { text: "🌿 ಹೊಟ್ಟೆ ನೋವು (Acidity)", val: "ಹೊಟ್ಟೆಯಲ್ಲಿ ತೀವ್ರ ಉರಿ ಮತ್ತು ಗ್ಯಾಸ್ಟ್ರಿಕ್ ಇದೆ" }
+        ];
+      } else {
+        chips = [
+          { text: "🚨 Crushing Chest Pain (STAT ER)", val: "Acute crushing retrosternal chest pain with left arm radiation" },
+          { text: "🦴 Chronic Knee OA (Joint Pain)", val: "Bilateral knee joint pain with crepitus and stiffness for 6 months" },
+          { text: "🌡️ High Grade Fever & Chills", val: "High grade fever with severe shivering and body aches for 3 days" },
+          { text: "🌿 Severe Acid Peptic Disease", val: "Severe retrosternal epigastric burning with acid reflux and dyspepsia" },
+          { text: "🤕 Migraine & Dizziness", val: "Severe unilateral throbbing headache with photophobia" },
+          { text: "🫁 Bronchial Wheezing & Cough", val: "Persistent productive cough with nocturnal wheezing and dyspnea" }
+        ];
+      }
+
+      container.innerHTML = chips.map(c => `
+        <button onclick="appendTypedSymptom('${c.val.replace(/'/g, "\\'")}')" class="px-2.5 py-1.5 bg-slate-50 hover:bg-blue-50 text-slate-800 hover:text-blue-900 border border-slate-200 hover:border-blue-400 rounded-lg text-[11px] font-medium transition text-left">
+          ${c.text}
+        </button>
+      `).join("");
+    }
+
+    function appendTypedSymptom(val) {
+      const input = document.getElementById("typed-symptom-input");
+      if (input) {
+        if (input.value.trim().length > 0) {
+          input.value = input.value.trim() + ". " + val;
+        } else {
+          input.value = val;
+        }
+        handleTypedSymptomInput(input.value);
+        submitTypedSymptom();
+      }
+    }
+
+    function handleTypedSymptomInput(text) {
+      currentPatient.selectedSymptom = text;
+      const transEl = document.getElementById("transcription-text");
+      if (transEl) {
+        transEl.innerText = text.length > 0 ? `"${text}"` : '""';
+      }
+    }
+
+    async function submitTypedSymptom() {
+      const input = document.getElementById("typed-symptom-input");
+      const text = input ? input.value.trim() : (currentPatient.selectedSymptom || "");
+      if (!text) return;
+
+      currentPatient.selectedSymptom = text;
+      const transEl = document.getElementById("transcription-text");
+      if (transEl) transEl.innerText = `"${text}"`;
+
+      // Trigger Sarvam Mayura Translation
+      const spinner = document.getElementById("trans-loading-spinner");
+      if (spinner) spinner.classList.remove("hidden");
+
+      let srcLang = "te-IN";
+      if (currentLanguage.startsWith("hi")) srcLang = "hi-IN";
+      else if (currentLanguage.startsWith("ta")) srcLang = "ta-IN";
+      else if (currentLanguage.startsWith("kn")) srcLang = "kn-IN";
+      else if (currentLanguage.startsWith("mr")) srcLang = "mr-IN";
+      else if (currentLanguage.startsWith("bn")) srcLang = "bn-IN";
+      else if (currentLanguage.startsWith("gu")) srcLang = "gu-IN";
+      else if (currentLanguage.startsWith("en")) srcLang = "en-IN";
+
+      if (srcLang === "en-IN") {
+        currentPatient.englishTranslation = text;
+        const targetEl = document.getElementById("translation-text");
+        if (targetEl) targetEl.innerText = text;
+        if (spinner) spinner.classList.add("hidden");
+        return;
+      }
+
+      try {
+        const SARVAM_KEY = "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS";
+        const res = await fetch("https://api.sarvam.ai/translate", {
+          method: "POST",
+          headers: {
+            "api-subscription-key": SARVAM_KEY,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            input: text,
+            source_language_code: srcLang,
+            target_language_code: "en-IN",
+            speaker_gender: "Male",
+            mode: "formal",
+            model: "mayura:v1"
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.translated_text) {
+            currentPatient.englishTranslation = data.translated_text;
+            const targetEl = document.getElementById("translation-text");
+            if (targetEl) targetEl.innerText = data.translated_text;
+          }
+        }
+      } catch (err) {
+        console.log("Translation error:", err);
+      } finally {
+        if (spinner) spinner.classList.add("hidden");
+      }
+    }
+
   </script>
   
 
