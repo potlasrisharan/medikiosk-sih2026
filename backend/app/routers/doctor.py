@@ -1,8 +1,9 @@
 from fastapi import APIRouter
-from typing import List
+from typing import List, Optional, Any, Dict
 from pydantic import BaseModel
 from ..models.schemas import EncounterQueueItem, SoapNote, Gender, TriagePriority, SystemType
 from ..services.fhir_service import fhir_service
+from ..services.abdm_service import abdm_service
 import datetime
 
 router = APIRouter(prefix="/doctor", tags=["Doctor Portal"])
@@ -83,6 +84,16 @@ class NewIntakePayload(BaseModel):
     symptoms: str
     language: str
 
+class ApproveEncounterPayload(BaseModel):
+    encounter_id: str
+    patient_id: Optional[str] = "pat-048291"
+    patient_name: str
+    abha_id: Optional[str] = "91-4829-1029-4821"
+    token_number: str
+    diagnosis: Optional[str] = "Sandhigata Vata (Knee Osteoarthritis)"
+    prescription: Optional[List[Dict[str, Any]]] = None
+    soap_note: Optional[Dict[str, Any]] = None
+
 @router.get("/queue", response_model=List[EncounterQueueItem])
 async def get_doctor_queue():
     return ENCOUNTERS_STORE
@@ -136,6 +147,31 @@ async def create_new_encounter(payload: NewIntakePayload):
         "token_number": token_str,
         "patient_name": payload.patient_name
     }
+
+@router.post("/encounter/approve")
+async def approve_and_push_encounter(payload: ApproveEncounterPayload):
+    # Update local memory status
+    for item in ENCOUNTERS_STORE:
+        if item.encounter_id == payload.encounter_id or item.token_number == payload.token_number:
+            item.status = "COMPLETED_APPROVED"
+            break
+            
+    # Push to government SQLite database & ABDM M2 Gateway
+    result = abdm_service.push_approved_encounter_to_ndhm(
+        encounter_id=payload.encounter_id,
+        patient_id=payload.patient_id or "pat-048291",
+        patient_name=payload.patient_name,
+        abha_id=payload.abha_id or "91-4829-1029-4821",
+        token_number=payload.token_number,
+        diagnosis=payload.diagnosis or "Clinical Consultation Approved",
+        prescription=payload.prescription,
+        soap=payload.soap_note
+    )
+    return result
+
+@router.get("/transactions")
+async def get_all_abdm_transactions():
+    return abdm_service.get_all_abdm_transactions()
 
 @router.get("/encounter/{encounter_id}/soap", response_model=SoapNote)
 async def get_soap_note(encounter_id: str):
