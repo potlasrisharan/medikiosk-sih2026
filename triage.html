@@ -218,13 +218,22 @@
       }
     }
 
-    function renderTriageQueue() {
-      const queue = getSharedQueue();
+    async function renderTriageQueue() {
       const container = document.getElementById("triage-cards-container");
       if (!container) return;
 
-      // Extract all emergency items
-      let emergencyItems = queue.filter(item => item.isEmergency === true || (item.tokenNumber && item.tokenNumber.includes("E-")) || (item.token && item.token.includes("E-")));
+      let emergencyItems = [];
+      try {
+        const { data, error } = await window.supabase
+          .from('encounters')
+          .select('*')
+          .eq('triage_priority', 'EMERGENCY_RED')
+          .order('created_at', { ascending: false });
+          
+        if (!error && data) {
+           emergencyItems = data.map(r => r.ui_data).filter(x => x);
+        }
+      } catch (e) {}
 
       // Combine with default seed if empty or not present
       DEFAULT_EMERGENCY_SEED.forEach(seed => {
@@ -358,7 +367,7 @@
       showNotif("✅ Patient Stabilized", `Patient ${token} marked as stabilized and transferred to Coronary Care Unit (CCU).`);
     }
 
-    function triggerSimulatedEmergency() {
+    async function triggerSimulatedEmergency() {
       let queue = getSharedQueue();
       const randToken = "#E-" + Math.floor(100 + Math.random() * 900);
       const newEmerg = {

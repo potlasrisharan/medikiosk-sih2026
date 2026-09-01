@@ -24,8 +24,6 @@
     @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
     body { font-family: "Plus Jakarta Sans", sans-serif; }
   </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-client.js"></script>
 </head>
 <body class="bg-[#f4f1ed] text-[#223D79] min-h-screen flex flex-col">
     <!-- Unified 5-Dashboard Suite Navigation -->
@@ -338,7 +336,15 @@
   <script>
     lucide.createIcons();
 
-     catch (err) {
+    async function fetchQueue() {
+      try {
+        const res = await fetch("/api/v1/doctor/queue");
+        if (res.ok) {
+          const queue = await res.json();
+          renderDynamicQueue(queue);
+          return;
+        }
+      } catch (err) {
         console.warn("Backend offline, using local state queue");
       }
     }
@@ -364,7 +370,14 @@
         </div>
       `).join("");
     }
-     catch (e) {
+    async function fetchQueue_old() {
+      try {
+        const res = await fetch("/api/v1/doctor/queue");
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById("queue-count").innerText = data.length;
+        }
+      } catch (e) {
         console.log("Using cached queue data");
       }
     }
@@ -544,22 +557,18 @@
     let currentSelectedEncId = "enc-0042";
 
         // Live Shared Queue Synchronizer between Patient Kiosk and Doctor Portal
-    async function initDoctorQueue() {
+    function initDoctorQueue() {
+      let customQueue = [];
       try {
-        const { data, error } = await window.supabase
-          .from('encounters')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (error) throw error;
-        
-        data.forEach(row => {
-          if (row.ui_data && row.ui_data.id) {
-             CLINICAL_PROFILES[row.ui_data.id] = row.ui_data;
-          }
-        });
-      } catch (e) {
-        console.error("Error fetching queue", e);
-      }
+        customQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
+      } catch (e) {}
+
+      // Merge custom encounters into CLINICAL_PROFILES
+      customQueue.forEach(item => {
+        if (item && item.id) {
+          CLINICAL_PROFILES[item.id] = item;
+        }
+      });
 
       // Render Queue List sorted by Priority (Emergency STAT first)
       const allEncIds = Object.keys(CLINICAL_PROFILES);
@@ -576,31 +585,32 @@
       if (countEl) countEl.innerText = allEncIds.length.toString();
 
       if (queueListEl) {
-        queueListEl.innerHTML = allEncIds.map((encId, idx) => {
+        queueListEl.innerHTML = allEncIds.map(encId => {
           const p = CLINICAL_PROFILES[encId];
           const isSelected = (encId === currentSelectedEncId);
           const borderClass = p.isEmergency 
-            ? (isSelected ? "border-2 border-rose-500 bg-rose-50" : "border border-rose-500/60 bg-white")
-            : (isSelected ? "border-2 border-blue-500/50 bg-blue-50" : "border-[#D9CDBA]/60 bg-white border shadow-sm/60");
+            ? (isSelected ? "border-2 border-rose-500 bg-rose-100" : "border border-rose-500/60 bg-rose-50")
+            : (isSelected ? "border-2 border-[#FFA530] bg-[#223D79] text-[#223D79]" : "border border-[#D9CDBA]/30 bg-white border border-[#D9CDBA]/80 shadow-sm");
 
           return `
-            <div id="queue-item-${encId}" onclick="selectEncounter('${encId}')" class="p-4 rounded-xl border ${borderClass} hover:border-blue-400/50 transition cursor-pointer space-y-2 group">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-black px-2.5 py-0.5 rounded bg-[#D9CDBA]/30 text-[#223D79] flex items-center gap-1.5">
+            <div id="queue-item-${encId}" onclick="selectEncounter('${encId}')" class="p-3.5 rounded-xl ${borderClass} hover:bg-[#223D79] text-white/80 cursor-pointer transition shadow-sm group">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xl font-black ${p.isEmergency ? "text-rose-400" : "text-[#FFA530]"} flex items-center gap-1.5">
                   ${p.isEmergency ? '<span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>' : ''}
                   ${p.tokenNumber}
                 </span>
-                <span class="text-xs ${p.isEmergency ? 'text-rose-600 bg-rose-100 px-2 py-0.5 rounded' : (p.hasPmjay ? 'text-emerald-700' : 'text-[#77797C]')} font-bold">
-                  ${p.isEmergency ? 'STAT EMERGENCY' : (p.hasPmjay ? 'PM-JAY Active' : 'General')}
+                <div class="flex gap-1.5">
+                  ${p.isEmergency ? '<span class="text-[10px] bg-rose-500/20 text-rose-300 font-black px-2 py-0.5 rounded border border-rose-500/40">🚨 STAT EMERGENCY</span>' : '<span class="text-[10px] bg-[#FFA530]/20 text-[#FFA530] font-bold px-2 py-0.5 rounded border border-[#FFA530]/30">PM-JAY</span>'}
+                </div>
+              </div>
+              <h3 class="font-bold text-[#223D79] text-sm">${p.patientName} (${p.age}${p.gender === "Male" ? "M" : "F"})</h3>
+              <p class="text-xs font-bold text-emerald-800 mt-0.5 line-clamp-1">🌐 ${p.englishTranslation || p.subjective}</p>
+              <p class="text-[11px] text-[#77797C] mt-0.5 line-clamp-1 italic">${p.nativeSpeech || ''}</p>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-[#77797C]">
+                <span>Intake: ${p.timestamp || "10:30 AM"}</span>
+                <span class="${p.isEmergency ? "text-rose-400 font-black" : "text-[#FFA530] font-bold"} flex items-center gap-1">
+                  ${p.isEmergency ? "STAT Bay 1 ➔" : "Review Ready ➔"}
                 </span>
-              </div>
-              <div>
-                <h4 class="font-bold text-sm text-[#223D79]">${p.patientName} (${p.age}${p.gender === 'Male' ? 'M' : 'F'})</h4>
-                <p class="text-xs text-[#77797C] line-clamp-1 mt-0.5">${p.englishTranslation || p.subjective || ''}</p>
-              </div>
-              <div class="flex items-center justify-between text-[11px] text-[#77797C] pt-1 border-t border-[#D9CDBA]/60">
-                <span>ALLOPATHIC</span>
-                <span>Just now</span>
               </div>
             </div>
           `;
@@ -621,7 +631,7 @@
     });
 
     // Run on load
-    document.addEventListener("DOMContentLoaded", () => { initDoctorQueue(); setInterval(initDoctorQueue, 3000); });
+    document.addEventListener("DOMContentLoaded", initDoctorQueue);
 
 
     function selectEncounter(encId) {
@@ -636,9 +646,9 @@
         if (!item) return;
         const p = CLINICAL_PROFILES[k];
         if (k === encId) {
-          item.className = "p-4 rounded-xl border-2 " + (p && p.isEmergency ? "border-rose-500 bg-rose-50" : "border-blue-500/50 bg-blue-50") + " cursor-pointer transition space-y-2 group";
+          item.className = "p-3.5 rounded-xl border-2 " + (p && p.isEmergency ? "border-rose-500 bg-rose-100" : "border-[#FFA530] bg-[#223D79] text-[#223D79]") + " cursor-pointer transition shadow-md group";
         } else {
-          item.className = "p-4 rounded-xl border " + (p && p.isEmergency ? "border-rose-500/60 bg-white" : "border-[#D9CDBA]/60 bg-white shadow-sm/60") + " hover:border-blue-400/50 cursor-pointer transition space-y-2 group";
+          item.className = "p-3.5 rounded-xl border " + (p && p.isEmergency ? "border-rose-500/50 bg-rose-50" : "border-[#D9CDBA]/30 bg-white border border-[#D9CDBA]/80 shadow-sm") + " hover:bg-[#223D79] text-white/60 cursor-pointer transition shadow-sm group";
         }
       });
 
