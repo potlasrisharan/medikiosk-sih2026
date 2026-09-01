@@ -62,7 +62,6 @@ class SarvamAIService:
 
     async def generate_clinical_completion(self, user_prompt: str, system_prompt: str = "You are an expert physician clinical scribe.") -> Optional[str]:
         headers = {
-            "api-subscription-key": self.api_key,
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }

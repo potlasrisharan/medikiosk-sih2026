@@ -34,7 +34,7 @@ class NRCeSFHIRService:
                     "resource": {
                         "resourceType": "Patient",
                         "id": patient_id,
-                        "name": [{"text": "Ramesh Chandra"}]
+                        "name": [{"text": soap_note.get("patient_name", patient_id)}]
                     }
                 }
             ]

@@ -26,11 +26,11 @@ class PatientProfile(BaseModel):
     patient_id: str
     abha_number: str
     abha_address: str
-    name: str
+    full_name: str
     gender: Gender
-    age: int
-    phone: str
-    address: str
+    year_of_birth: int
+    address: Dict[str, str] = {}
+    pmjay_eligible: bool = True
 
 class CoverageEligibilityCheckRequest(BaseModel):
     patient_id: str
@@ -46,7 +46,7 @@ class CoverageEligibilityResponse(BaseModel):
     message: str
 
 class ChatMessage(BaseModel):
-    role: str # "patient" or "system"
+    role: str  # "patient" or "system"
     content: str
     language: str = "hi-IN"
 
@@ -98,11 +98,14 @@ class OCRResponse(BaseModel):
     confidence_score: float = 0.94
 
 class SoapNote(BaseModel):
+    encounter_id: Optional[str] = None
     subjective: str
     objective: str
     assessment: str
     plan: str
+    critical_alerts: List[str] = []
     dashavidha_summary: Optional[Dict[str, str]] = None
+    dashavidha_matrix: Optional[Dict[str, str]] = None
     pmjay_status: str = "Active (₹5,00,000 Annual Coverage)"
     triage_priority: TriagePriority = TriagePriority.ROUTINE
 
@@ -117,4 +120,4 @@ class EncounterQueueItem(BaseModel):
     pmjay_eligible: bool
     system_type: SystemType
     created_at: str
-    status: str # "WAITING", "IN_CONSULTATION", "COMPLETED"
+    status: str  # "WAITING", "IN_CONSULTATION", "COMPLETED"

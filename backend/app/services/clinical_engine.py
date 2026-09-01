@@ -1,5 +1,8 @@
 import time
 import re
+import os
+import httpx
+import json
 from typing import Tuple, List, Dict, Any
 from ..models.schemas import RedFlagAlert, SystemType, TriagePriority
 
@@ -27,63 +30,10 @@ DASHVAIDHA_QUESTIONS = [
     "Aapko sardi ya garmi mein se kisme zyada pareshani hoti hai (Prakriti / Sheeta-Ushna)?"
 ]
 
-class ClinicalIntelligenceEngine:
-    def evaluate_red_flag(self, text: str) -> RedFlagAlert:
-        start_time = time.perf_counter()
-        normalized_text = text.lower()
-        matched = []
-        for pattern in RED_FLAG_PATTERNS:
-            if re.search(pattern, normalized_text):
-                matched.append(pattern)
-        
-        latency_ms = (time.perf_counter() - start_time) * 1000.0
-        
-        if matched:
-            return RedFlagAlert(
-                is_triggered=True,
-                trigger_symptoms=matched,
-                recommended_action="EMERGENCY_TRIAGE_ALERT",
-                latency_ms=round(latency_ms, 2)
-            )
-        return RedFlagAlert(
-            is_triggered=False,
-            trigger_symptoms=[],
-            recommended_action="PROCEED_WITH_INTAKE",
-            latency_ms=round(latency_ms, 2)
-        )
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "")
+SARVAM_LLM_URL = "https://api.sarvam.ai/v1/chat/completions"
 
-    def generate_next_prompt(self, current_input: str, step_index: int, system_type: SystemType) -> Tuple[str, List[str], bool]:
-        if system_type == SystemType.AYURVEDIC:
-            q_list = DASHVAIDHA_QUESTIONS
-        elif system_type == SystemType.ALLOPATHIC:
-            q_list = ALLOPATHIC_QUESTIONS
-        else:
-            q_list = ALLOPATHIC_QUESTIONS + DASHVAIDHA_QUESTIONS
-
-        if step_index < len(q_list):
-            next_q = q_list[step_index]
-            options = ["Haan, bilkul", "Nahi, aisi koi baat nahi", "Thoda bohot", "Pehle se behtar"]
-            return next_q, options, False
-        else:
-            return "Dhanyawad. Aapka complete clinical case record taiyyar ho gaya hai.", ["Review Summary"], True
-
-clinical_engine = ClinicalIntelligenceEngine()
-
-import os
-import httpx
-import json
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
-GROQ_MODEL = os.getenv("GROQ_MODEL", "groq/compound-mini")
-
-def call_groq_clinical_llm(patient_symptoms: str, language: str = "en-IN") -> Dict[str, Any]:
-    url = "https://api.groq.com/openai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    
-    system_prompt = """You are the MediKiosk Sovereign AI Clinical Scribe & Decision Support Engine (AIIA Standard).
+CLINICAL_SYSTEM_PROMPT = """You are the MediKiosk Sovereign AI Clinical Scribe & Decision Support Engine (AIIA Standard).
 Given the patient complaints, output ONLY a valid JSON object with these exact keys:
 {
   "subjective": "<Clinical English summary of history, onset, duration, aggravations>",
@@ -96,28 +46,82 @@ Given the patient complaints, output ONLY a valid JSON object with these exact k
   ]
 }"""
 
+
+class ClinicalIntelligenceEngine:
+    def evaluate_red_flag(self, text: str) -> RedFlagAlert:
+        start_time = time.perf_counter()
+        normalized_text = text.lower()
+        matched = [
+            pattern
+            for pattern in RED_FLAG_PATTERNS
+            if re.search(pattern, normalized_text)
+        ]
+        latency_ms = (time.perf_counter() - start_time) * 1000.0
+
+        if matched:
+            return RedFlagAlert(
+                is_triggered=True,
+                trigger_symptoms=matched,
+                recommended_action="EMERGENCY_TRIAGE_ALERT",
+                latency_ms=round(latency_ms, 2),
+            )
+        return RedFlagAlert(
+            is_triggered=False,
+            trigger_symptoms=[],
+            recommended_action="PROCEED_WITH_INTAKE",
+            latency_ms=round(latency_ms, 2),
+        )
+
+    def generate_next_prompt(
+        self, current_input: str, step_index: int, system_type: SystemType
+    ) -> Tuple[str, List[str], bool]:
+        if system_type == SystemType.AYURVEDIC:
+            q_list = DASHVAIDHA_QUESTIONS
+        elif system_type == SystemType.ALLOPATHIC:
+            q_list = ALLOPATHIC_QUESTIONS
+        else:
+            q_list = ALLOPATHIC_QUESTIONS + DASHVAIDHA_QUESTIONS
+
+        if step_index < len(q_list):
+            next_q = q_list[step_index]
+            options = ["Haan, bilkul", "Nahi, aisi koi baat nahi", "Thoda bohot", "Pehle se behtar"]
+            return next_q, options, False
+        return (
+            "Dhanyawad. Aapka complete clinical case record taiyyar ho gaya hai.",
+            ["Review Summary"],
+            True,
+        )
+
+
+clinical_engine = ClinicalIntelligenceEngine()
+
+
+def call_sarvam_clinical_llm(patient_symptoms: str, language: str = "en-IN") -> Dict[str, Any]:
+    headers = {
+        "api-subscription-key": SARVAM_API_KEY,
+        "Content-Type": "application/json",
+    }
     payload = {
-        "model": GROQ_MODEL,
+        "model": "sarvam-105b",
         "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"Patient symptoms (Language: {language}): {patient_symptoms}"}
+            {"role": "system", "content": CLINICAL_SYSTEM_PROMPT},
+            {"role": "user", "content": f"Patient symptoms (Language: {language}): {patient_symptoms}"},
         ],
         "temperature": 0.1,
-        "max_tokens": 400
+        "max_tokens": 500,
     }
 
     try:
-        res = httpx.post(url, headers=headers, json=payload, timeout=8.0)
+        res = httpx.post(SARVAM_LLM_URL, headers=headers, json=payload, timeout=10.0)
         if res.status_code == 200:
             content = res.json()["choices"][0]["message"]["content"]
-            # Extract JSON from response
             json_match = re.search(r"\{.*\}", content, re.DOTALL)
             if json_match:
                 return json.loads(json_match.group())
     except Exception as e:
-        print("Groq clinical inference fallback:", e)
+        print("Sarvam-105B clinical inference fallback:", e)
 
-    # Deterministic Clinical Knowledge Base Fallback
+    # Deterministic fallback
     return {
         "subjective": f"Patient reports {patient_symptoms}. Elicited via sovereign clinical gateway.",
         "assessment": "Sandhigata Vata (Osteoarthritis / ICD-10 M17.0 / NAMASTE AYU-SAN-01)",
@@ -126,6 +130,6 @@ Given the patient complaints, output ONLY a valid JSON object with these exact k
         "snomed_code": "239873007",
         "suggested_formulations": [
             {"name": "Tab. Yograj Guggulu", "dose": "2 Tabs", "frequency": "BD", "duration": "15 Days", "instructions": "After meals with warm water"},
-            {"name": "Kwath. Maharasnadi", "dose": "20 ml", "frequency": "BD", "duration": "15 Days", "instructions": "Before food with equal water"}
-        ]
+            {"name": "Kwath. Maharasnadi", "dose": "20 ml", "frequency": "BD", "duration": "15 Days", "instructions": "Before food with equal water"},
+        ],
     }
