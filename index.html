@@ -1460,6 +1460,7 @@
     let currentLanguage = localStorage.getItem("MEDIKIOSK_PREF_LANG") || "en-IN";
     let isVoiceActive = true;
     let currentAudioPlayer = null;
+    let currentTtsRequestId = 0;
     let availableVoices = [];
 
     function initVoices() {
@@ -2462,6 +2463,7 @@
     }
 
     function stopAllAudio() {
+      currentTtsRequestId++;
       if (currentAudioPlayer) {
         currentAudioPlayer.pause();
         currentAudioPlayer.currentTime = 0;
@@ -2496,17 +2498,21 @@
         return;
       }
 
+      const thisRequestId = currentTtsRequestId;
       fetch("/api/v1/ai/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: cleanText, language_code: currentLanguage })
       }).then(res => res.json()).then(data => {
+        if (thisRequestId !== currentTtsRequestId) return; // Stale request, audio was stopped/overridden
         if (data && data.audio_base64 && isVoiceActive) {
           currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
           currentAudioPlayer.play().catch(e => console.log("Audio play caught:", e));
         }
       }).catch(err => {
-        playBrowserSynthesis(cleanText);
+        if (thisRequestId === currentTtsRequestId) {
+            playBrowserSynthesis(cleanText);
+        }
       });
     }
 
