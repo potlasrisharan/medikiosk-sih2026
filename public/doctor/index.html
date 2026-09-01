@@ -714,39 +714,105 @@
       if (typeof lucide !== "undefined") lucide.createIcons();
     }
 
-    function renderAiSuggestionChips(suggestions) {
+        function renderAiSuggestionChips(suggestions) {
       const container = document.getElementById("ai-drug-chips-container");
       if (!container || !suggestions) return;
 
-      container.innerHTML = suggestions.map((s, idx) => `
-        <button onclick="addSuggestedMedicine(${idx})" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-white text-[#FFA530] border border-[#FFA530]/40 text-xs font-bold py-1 px-2.5 rounded-lg transition shadow-sm flex items-center gap-1">
-          <span>+ ${s.name}</span>
-          <span class="text-[10px] opacity-75 font-normal">(${s.freq})</span>
-        </button>
-      `).join("");
+      container.innerHTML = suggestions.map((s, idx) => {
+        const isAdded = activeMedications.some(m => m.name.toLowerCase() === s.name.toLowerCase());
+        if (isAdded) {
+          return `
+            <button onclick="toggleSuggestedMedicine(${idx})" class="bg-emerald-50 hover:bg-red-50 text-emerald-800 hover:text-red-700 border border-emerald-300 hover:border-red-300 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow-sm flex items-center gap-1.5" title="Click to remove from prescription">
+              <span class="text-emerald-600 font-black">✓ Added:</span>
+              <span>${s.name}</span>
+              <span class="text-[10px] text-slate-500 font-normal">(${s.freq})</span>
+              <span class="text-[10px] text-red-500 font-bold ml-1">✕</span>
+            </button>
+          `;
+        } else {
+          return `
+            <button onclick="toggleSuggestedMedicine(${idx})" class="bg-[#223D79] hover:bg-[#FFA530] text-[#FFA530] hover:text-[#223D79] border border-[#FFA530]/40 text-xs font-bold py-1.5 px-3 rounded-lg transition shadow-sm flex items-center gap-1.5" title="Click to add to prescription">
+              <span class="font-black text-sm">+</span>
+              <span>${s.name}</span>
+              <span class="text-[10px] opacity-80 font-normal">(${s.freq})</span>
+            </button>
+          `;
+        }
+      }).join("");
+
+      if (typeof lucide !== "undefined") lucide.createIcons();
     }
 
-    function addSuggestedMedicine(idx) {
+    function toggleSuggestedMedicine(idx) {
       const data = CLINICAL_PROFILES[currentSelectedEncId];
       if (!data || !data.aiSuggestions || !data.aiSuggestions[idx]) return;
       const s = data.aiSuggestions[idx];
-      activeMedications.push({
-        name: s.name,
-        dose: s.dose,
-        freq: s.freq,
-        dur: s.dur,
-        inst: s.inst
-      });
+
+      const existingIndex = activeMedications.findIndex(m => m.name.toLowerCase() === s.name.toLowerCase());
+      if (existingIndex !== -1) {
+        // Remove it (1-click toggle remove)
+        activeMedications.splice(existingIndex, 1);
+      } else {
+        // Add it (1-click add)
+        activeMedications.push({
+          name: s.name,
+          dose: s.dose,
+          freq: s.freq,
+          dur: s.dur,
+          inst: s.inst
+        });
+      }
+
       renderPrescriptionTable();
+      renderAiSuggestionChips(data.aiSuggestions || []);
+    }
+
+    function removeMedicine(idx) {
+      if (idx >= 0 && idx < activeMedications.length) {
+        activeMedications.splice(idx, 1);
+        renderPrescriptionTable();
+        const data = CLINICAL_PROFILES[currentSelectedEncId];
+        if (data && data.aiSuggestions) {
+          renderAiSuggestionChips(data.aiSuggestions);
+        }
+      }
     }
 
 
-    // Interactive Prescription Pad State Engine
-    let activeMedications = [
-      { id: 1, name: "Tab. Yograj Guggulu", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
-      { id: 2, name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD (Twice daily)", dur: "15 Days", inst: "Before food with equal water" },
-      { id: 3, name: "Ext. Janu Basti (Ksheerabala Taila)", dose: "1 Sitting", freq: "OD", dur: "7 Sittings", inst: "Panchakarma Therapy" }
-    ];
+
+    function addCustomMedicineFromInputs() {
+      const nameInput = document.getElementById("add-med-name");
+      const doseInput = document.getElementById("add-med-dose");
+      const freqInput = document.getElementById("add-med-freq");
+
+      const name = nameInput ? nameInput.value.trim() : "";
+      const dose = doseInput ? (doseInput.value.trim() || "1 Tab") : "1 Tab";
+      const freq = freqInput ? freqInput.value : "BD (Twice daily)";
+
+      if (!name) {
+        alert("⚠️ Please enter a medicine name");
+        return;
+      }
+
+      activeMedications.push({
+        name: name,
+        dose: dose,
+        freq: freq,
+        dur: "15 Days",
+        inst: "As advised by physician"
+      });
+
+      if (nameInput) nameInput.value = "";
+      if (doseInput) doseInput.value = "";
+      renderPrescriptionTable();
+      const data = CLINICAL_PROFILES[currentSelectedEncId];
+      if (data && data.aiSuggestions) {
+        renderAiSuggestionChips(data.aiSuggestions);
+      }
+    }
+
+
+
 
         function addCustomMedicineFromInputs() {
       const nameInput = document.getElementById("add-med-name");
@@ -834,29 +900,30 @@
       }, 400);
     }
 
-    function renderPrescriptionTable() {
+        function renderPrescriptionTable() {
       const tbody = document.getElementById("prescription-table-body");
       if (!tbody) return;
 
       if (!activeMedications || activeMedications.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-[#77797C] text-xs italic">No formulations added. Tap "+ Medicine" chips above or type a custom prescription.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500 text-xs italic bg-slate-50 rounded-lg">No formulations added yet. Tap <strong>"+ Medicine"</strong> chips above or enter a custom prescription below.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = activeMedications.map((m, idx) => `
-        <tr class="hover:bg-[#f8fafc] border border-[#D9CDBA]/60 transition">
-          <td class="p-2.5 font-bold text-[#223D79]">${m.name}</td>
-          <td class="p-2.5 text-[#77797C] font-mono">${m.dose}</td>
-          <td class="p-2.5">
+        <tr class="hover:bg-slate-50 border-b border-slate-100 transition">
+          <td class="p-3 font-bold text-[#223D79] text-xs">${m.name}</td>
+          <td class="p-3 text-slate-600 font-mono text-xs">${m.dose}</td>
+          <td class="p-3">
             <span class="bg-[#223D79] text-[#FFA530] font-bold px-2 py-0.5 rounded text-[10px] border border-[#FFA530]/40">
               ${m.freq}
             </span>
           </td>
-          <td class="p-2.5 text-[#77797C]">${m.dur}</td>
-          <td class="p-2.5 text-[#77797C] text-[11px]">${m.inst}</td>
-          <td class="p-2.5 text-center">
-            <button onclick="removeMedicine(${idx})" class="text-rose-400 hover:text-rose-300 p-1 hover:bg-rose-50 rounded transition" title="Delete formulation">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          <td class="p-3 text-slate-600 text-xs">${m.dur}</td>
+          <td class="p-3 text-slate-600 text-[11px]">${m.inst}</td>
+          <td class="p-3 text-center">
+            <button onclick="removeMedicine(${idx})" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-700 hover:text-red-900 border border-red-200 hover:border-red-300 rounded-lg text-xs font-bold transition flex items-center gap-1 mx-auto shadow-sm" title="1-Click Remove Medicine">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5 text-red-600"></i>
+              <span>Remove</span>
             </button>
           </td>
         </tr>
