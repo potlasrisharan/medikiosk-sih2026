@@ -1,12 +1,216 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediKiosk — Emergency Triage & Red-Flag Station</title>
+  <title>MediKiosk — Emergency Casualty & Red-Flag Triage Station</title>
   <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Public Sans', sans-serif; }
+    @keyframes pulse-red {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.85; transform: scale(1.02); }
+    }
+    .animate-stat-red {
+      animation: pulse-red 1.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col antialiased">
+
+  <!-- Top Tricolor Accent -->
+  <div class="h-1.5 w-full bg-gradient-to-r from-[#FF9933] via-white to-[#138808]"></div>
+
+  <!-- Unified Navigation Bar -->
+  <nav class="bg-[#111827] text-[#D9CDBA] border-b-2 border-red-500 text-xs px-6 py-2.5 flex flex-wrap items-center justify-between sticky top-0 z-50 shadow-md">
+    <div class="flex items-center space-x-3">
+      <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+      <span class="font-extrabold text-white tracking-wide uppercase text-[11px]">MediKiosk Suite (PS 26047)</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 mt-1 sm:mt-0">
+      <a href="/" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-slate-800 border border-slate-700 transition">📱 Patient Kiosk</a>
+      <a href="/doctor" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-slate-800 border border-slate-700 transition">🩺 Doctor Portal</a>
+      <a href="/triage" class="bg-red-600 text-white font-black shadow px-3 py-1 rounded-md">🚨 Emergency Triage</a>
+      <a href="/ayush" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-slate-800 border border-slate-700 transition">🌿 AYUSH Dashavidha</a>
+      <a href="/admin" class="text-[#D9CDBA] hover:text-white font-semibold px-3 py-1 rounded-md hover:bg-slate-800 border border-slate-700 transition">📊 Admin & ABDM Hub</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="bg-slate-950 border-b border-red-900/60 px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+    <div class="flex items-center space-x-3.5">
+      <div class="w-11 h-11 rounded-xl bg-red-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-red-600/30 border border-red-400">
+        🚨
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="font-black text-white text-base sm:text-lg tracking-tight flex items-center gap-2">
+            <span>Emergency Casualty & STAT Red-Flag Triage Console</span>
+          </h1>
+          <span class="text-[10px] bg-red-950 text-red-400 border border-red-600/60 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider animate-pulse">
+            Sub-150ms AI Interceptor Active
+          </span>
+        </div>
+        <p class="text-xs text-slate-400 mt-0.5 flex items-center gap-2">
+          <span>Real-time monitoring across all OPD waiting halls & entrance kiosks</span>
+          <span class="text-slate-600">•</span>
+          <span class="text-emerald-400 font-bold text-[11px]">Zero-Click Fast-Track Routing</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 bg-red-950/60 border border-red-800/80 px-3.5 py-1.5 rounded-xl shadow-inner">
+        <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+        <span class="text-slate-300 text-xs font-semibold">Active Emergencies:</span>
+        <span id="active-emergency-count" class="font-black text-red-400 text-xs">1 STAT Alert</span>
+      </div>
+      <button onclick="triggerSimulatedEmergency()" class="px-3.5 py-1.5 bg-red-600/30 hover:bg-red-600 text-red-200 hover:text-white rounded-xl text-xs font-bold border border-red-500/50 flex items-center gap-1.5 transition">
+        <i data-lucide="siren" class="w-3.5 h-3.5"></i> Simulate ER Alert
+      </button>
+    </div>
+  </header>
+
+  <!-- Notification Toast Modal -->
+  <div id="triage-notif" class="fixed top-20 right-6 z-50 bg-slate-900 border-2 border-red-500 text-white p-4 rounded-2xl shadow-2xl flex items-start gap-3 max-w-md hidden transition-all">
+    <div class="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center flex-shrink-0 font-bold">
+      <i data-lucide="bell-ring" class="w-5 h-5"></i>
+    </div>
+    <div class="flex-1">
+      <h4 id="triage-msg-title" class="font-black text-xs text-red-300">🚨 Alert Dispatched</h4>
+      <p id="triage-msg-desc" class="text-xs text-slate-300 mt-0.5">Crash Cart team dispatched to Resuscitation Bay 1.</p>
+    </div>
+    <button onclick="document.getElementById('triage-notif').classList.add('hidden')" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+  </div>
+
+  <!-- Main Grid Layout -->
+  <main class="flex-1 p-4 sm:p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Left Column: Active Red-Flag Alerts (8 Cols) -->
+    <div class="lg:col-span-8 space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-2">
+          <i data-lucide="flame" class="w-4 h-4 text-red-500"></i>
+          <span>Live Critical Priority Feed</span>
+        </h2>
+        <span class="text-[11px] text-slate-400 font-mono">Auto-Refreshes on Kiosk Event</span>
+      </div>
+
+      <!-- Triage Cards Dynamic Container -->
+      <div id="triage-cards-container" class="space-y-4">
+        <!-- Dynamically rendered critical patient cards -->
+      </div>
+    </div>
+
+    <!-- Right Column: Casualty Readiness & Telemetry (4 Cols) -->
+    <div class="lg:col-span-4 space-y-4">
+
+      <!-- Resuscitation Bays Status -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <h3 class="font-bold text-xs text-slate-200 flex items-center gap-2">
+            <i data-lucide="bed" class="w-4 h-4 text-emerald-400"></i>
+            <span>Resuscitation Bays (Casualty)</span>
+          </h3>
+          <span class="text-[10px] text-emerald-400 font-mono bg-emerald-950 border border-emerald-800 px-2 py-0.5 rounded">2 of 3 Available</span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div class="p-2.5 bg-red-950/40 border border-red-800/80 rounded-xl flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+              <span class="font-bold text-red-200">Bay 1 (ICU Resus)</span>
+            </div>
+            <span class="text-[10px] bg-red-600 text-white font-black px-2 py-0.5 rounded">OCCUPIED (#E-012)</span>
+          </div>
+          <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span class="font-semibold text-slate-300">Bay 2 (Cardiac Care)</span>
+            </div>
+            <span class="text-[10px] text-emerald-400 font-bold">READY / VACANT</span>
+          </div>
+          <div class="p-2.5 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span class="font-semibold text-slate-300">Bay 3 (Trauma Resus)</span>
+            </div>
+            <span class="text-[10px] text-emerald-400 font-bold">READY / VACANT</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rapid Response Equipment Readiness -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-lg">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <h3 class="font-bold text-xs text-slate-200 flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+            <span>Rapid Response Readiness</span>
+          </h3>
+          <span class="text-[10px] text-amber-400 font-bold">100% Operational</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 font-bold block uppercase">Crash Cart A</span>
+            <span class="text-emerald-400 font-bold mt-0.5 block">Defib Ready ⚡</span>
+          </div>
+          <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 font-bold block uppercase">12-Lead ECG Cart</span>
+            <span class="text-emerald-400 font-bold mt-0.5 block">Standby Mode 📟</span>
+          </div>
+          <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 font-bold block uppercase">Suction & O2</span>
+            <span class="text-emerald-400 font-bold mt-0.5 block">Pressurized 💨</span>
+          </div>
+          <div class="p-2.5 bg-slate-900 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 font-bold block uppercase">STAT Blood Bank</span>
+            <span class="text-emerald-400 font-bold mt-0.5 block">O-Neg Synced 🩸</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clinical AI Triage Rules Box -->
+      <div class="bg-gradient-to-br from-red-950 to-slate-950 border border-red-900/60 rounded-2xl p-4 space-y-2 text-xs shadow-lg">
+        <span class="text-[11px] font-black text-red-300 uppercase tracking-wider flex items-center gap-1.5">
+          <i data-lucide="shield-alert" class="w-4 h-4 text-red-400"></i> Auto-Triage Trigger Protocol
+        </span>
+        <ul class="space-y-1 text-slate-300 text-[11px] list-disc pl-4">
+          <li><strong>Cardiac:</strong> Crushing chest pain, left arm radiation, diaphoresis (>40Y) ➔ Priority 1 STAT.</li>
+          <li><strong>Neurology:</strong> Sudden facial droop, unilateral hemiplegia, aphasia (FAST score) ➔ STAT Stroke.</li>
+          <li><strong>Respiratory:</strong> SpO2 <90%, stridor, acute severe respiratory distress ➔ Oxygen bay handover.</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
     lucide.createIcons();
+
+    // Default Seed Emergency Patients
+    const DEFAULT_EMERGENCY_SEED = [
+      {
+        id: "enc-e012",
+        tokenNumber: "#E-012",
+        patientName: "Mohan Das",
+        age: 61,
+        gender: "Male",
+        avatar: "MD",
+        location: "Kiosk #1 (Ground Floor OPD)",
+        abhaId: "91-7712-4019-3382",
+        hasPmjay: true,
+        isEmergency: true,
+        nativeLang: "తెలుగు (Telugu)",
+        nativeSpeech: '"నాకు గత 30 నిమిషాలుగా ఛాతీలో విపరీతమైన నొప్పి వస్తోంది, ఎడమ చెయ్యి లాగుతోంది మరియు చెమటలు పడుతున్నాయి."',
+        englishTranslation: "ACUTE CHEST PAIN: Severe retrosternal crushing pain radiating to left arm with cold diaphoresis for 30 minutes (Suspected STEMI / Acute Coronary Syndrome).",
+        timestamp: "Just Now",
+        vitals: "BP: 160/100 mmHg • HR: 108 bpm • SpO2: 94%",
+        triageCode: "P1_STAT_CARDIAC"
+      }
+    ];
 
     function getSharedQueue() {
       try {
@@ -22,85 +226,185 @@
       const container = document.getElementById("triage-cards-container");
       if (!container) return;
 
-      const emergencyItems = queue.filter(item => item.isEmergency === true || (item.tokenNumber && item.tokenNumber.includes("E-")));
-      
-      const countBadge = document.querySelector("section span.animate-pulse");
+      // Extract all emergency items
+      let emergencyItems = queue.filter(item => item.isEmergency === true || (item.tokenNumber && item.tokenNumber.includes("E-")) || (item.token && item.token.includes("E-")));
+
+      // Combine with default seed if empty or not present
+      DEFAULT_EMERGENCY_SEED.forEach(seed => {
+        if (!emergencyItems.some(e => e.tokenNumber === seed.tokenNumber || e.token === seed.tokenNumber)) {
+          emergencyItems.push(seed);
+        }
+      });
+
+      const countBadge = document.getElementById("active-emergency-count");
       if (countBadge) {
-        countBadge.innerText = `${emergencyItems.length} Critical Alert${emergencyItems.length !== 1 ? 's' : ''}`;
+        countBadge.innerText = `${emergencyItems.length} STAT Alert${emergencyItems.length !== 1 ? 's' : ''}`;
       }
 
       if (emergencyItems.length === 0) {
         container.innerHTML = `
-          <div class="p-8 rounded-xl bg-emerald-50 border border-emerald-300 text-center space-y-2">
-            <i data-lucide="shield-check" class="w-10 h-10 text-emerald-600 mx-auto"></i>
-            <h3 class="font-bold text-emerald-900 text-base">All Kiosks Normal • No Active Red-Flags</h3>
-            <p class="text-xs text-emerald-700">Sub-150ms interceptor is monitoring all hospital entrance points.</p>
+          <div class="p-8 rounded-2xl bg-slate-950 border border-slate-800 text-center space-y-2.5 shadow-md">
+            <div class="w-12 h-12 rounded-full bg-emerald-950 border border-emerald-600 text-emerald-400 flex items-center justify-center mx-auto">
+              <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-bold text-emerald-300 text-sm sm:text-base">All Kiosks Normal • No Active Red-Flags</h3>
+            <p class="text-xs text-slate-400 max-w-md mx-auto">Sub-150ms background interceptor is actively monitoring all patient speech and touch intakes.</p>
           </div>
         `;
-        lucide.createIcons();
+        if (typeof lucide !== "undefined") lucide.createIcons();
         return;
       }
 
-      container.innerHTML = emergencyItems.map((item, idx) => `
-        <div class="p-5 rounded-xl bg-red-950/40 border-2 border-red-500 space-y-3 shadow-lg">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <span class="text-3xl font-black text-red-400">${item.tokenNumber || '#E-012'}</span>
-              <div>
-                <h3 class="font-bold text-white text-base">${item.patientName || 'EMERGENCY PATIENT'} (${item.age || 45}${item.gender === 'Male' ? 'M' : (item.gender === 'Female' ? 'F' : '')})</h3>
-                <p class="text-xs text-slate-400">${item.location || 'Kiosk #1'} • Time: <span class="font-bold text-emerald-400">${item.timestamp || 'Just now'}</span></p>
+      container.innerHTML = emergencyItems.map(item => {
+        const token = item.tokenNumber || item.token || '#E-012';
+        const name = item.patientName || item.name || 'Emergency Patient';
+        const age = item.age || 61;
+        const gender = item.gender || 'Male';
+        const speech = item.nativeSpeech || item.selectedSymptom || '"నాకు ఛాతీలో తీవ్ర నొప్పిగా ఉంది"';
+        const translation = item.englishTranslation || item.subjective || "Acute crushing chest pain radiating to left arm with diaphoresis (Cardiac Red-Flag).";
+        const vitals = item.vitals || "BP: 158/98 mmHg • HR: 104 bpm • SpO2: 95%";
+        const abha = item.abhaId || item.abha || "91-7712-4019-3382";
+
+        return `
+          <div class="p-5 rounded-2xl bg-gradient-to-br from-red-950/80 to-slate-950 border-2 border-red-500 space-y-3.5 shadow-2xl shadow-red-950/50 animate-stat-red">
+            
+            <!-- Card Header -->
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-red-900/60 pb-3">
+              <div class="flex items-center space-x-3.5">
+                <span class="text-3xl font-black text-red-400 font-mono tracking-tight">${token}</span>
+                <div>
+                  <h3 class="font-black text-white text-base sm:text-lg flex items-center gap-2">
+                    <span>${name} (${age}/${gender[0]})</span>
+                    <span class="text-[10px] bg-red-600 text-white font-black px-2 py-0.5 rounded uppercase tracking-wider">
+                      STAT RED
+                    </span>
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-0.5 font-mono">ABHA: ${abha} • Ground Floor Kiosk #1</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="bg-red-600 text-white font-black text-[11px] px-3 py-1 rounded-full shadow animate-pulse">
+                  PRIORITY 1 - RESUSCITATION
+                </span>
               </div>
             </div>
-            <span class="bg-red-600 text-white font-black text-xs px-3 py-1 rounded-full animate-pulse">PRIORITY 1 - STAT RED</span>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1">
-            <div class="bg-black/30 p-2.5 rounded-lg border border-red-900/50">
-              <span class="text-slate-400 block text-[10px] uppercase font-bold">Spoken Symptoms (Native Input)</span>
-              <p class="font-semibold text-red-200 mt-0.5">${item.nativeSpeech || '"' + item.subjective + '"'}</p>
-            </div>
-            <div class="bg-black/30 p-2.5 rounded-lg border border-red-900/50">
-              <span class="text-slate-400 block text-[10px] uppercase font-bold">AI Clinical Translation & Triage</span>
-              <p class="font-semibold text-white mt-0.5">${item.englishTranslation || item.subjective}</p>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-red-900/40">
-            <div class="flex items-center space-x-2 text-xs">
-              <span class="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
-              <span class="text-red-300 font-bold">Auto-Notified: ER Duty Resuscitation Bay 1</span>
-            </div>
-            <div class="flex space-x-2">
-              <button onclick="dispatchCrashCart('${item.tokenNumber}')" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-lg">
-                <i data-lucide="bell-ring" class="w-3.5 h-3.5"></i> Dispatch Crash Cart
-              </button>
-              <button onclick="routeToBed('${item.tokenNumber}')" class="bg-white/10 hover:bg-white/20 text-[#D9CDBA] font-bold text-xs px-3 py-2 rounded-lg border border-[#D9CDBA]/30 transition">
-                Route to Bed 1
-              </button>
-            </div>
-          </div>
-        </div>
-      `).join("");
 
-      lucide.createIcons();
+            <!-- Symptoms & AI Translation Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+              <div class="bg-black/50 p-3 rounded-xl border border-red-900/60 space-y-1">
+                <span class="text-red-400 block text-[10px] uppercase font-black tracking-wider flex items-center gap-1.5">
+                  <i data-lucide="mic" class="w-3.5 h-3.5 text-red-400"></i> Spoken Patient Input (Native Dialect)
+                </span>
+                <p class="font-medium text-red-100 text-xs italic leading-relaxed">${speech}</p>
+              </div>
+
+              <div class="bg-black/50 p-3 rounded-xl border border-red-900/60 space-y-1">
+                <span class="text-emerald-400 block text-[10px] uppercase font-black tracking-wider flex items-center gap-1.5">
+                  <i data-lucide="cpu" class="w-3.5 h-3.5 text-emerald-400"></i> AI Clinical Translation & Triage
+                </span>
+                <p class="font-bold text-white text-xs leading-relaxed">${translation}</p>
+              </div>
+            </div>
+
+            <!-- Vitals & Automated Notifications Bar -->
+            <div class="p-2.5 bg-red-950/40 rounded-xl border border-red-900/40 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="text-red-300 font-bold">Vitals Baseline:</span>
+                <span class="font-mono text-white">${vitals}</span>
+              </div>
+              <div class="flex items-center gap-2 text-emerald-400 font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>Auto-Notified: Casualty Duty Officer & Resus Bay 1</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <div class="flex flex-wrap gap-2">
+                <button onclick="dispatchCrashCart('${token}')" class="bg-red-600 hover:bg-red-700 text-white font-black text-xs px-4 py-2 rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-red-600/30">
+                  <i data-lucide="bell-ring" class="w-3.5 h-3.5"></i> Dispatch Crash Cart
+                </button>
+                <button onclick="routeToBed('${token}', 1)" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 shadow">
+                  <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i> Route to Bed 1
+                </button>
+                <button onclick="orderStatECG('${token}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-xl border border-slate-700 transition flex items-center gap-1.5">
+                  <i data-lucide="activity" class="w-3.5 h-3.5"></i> STAT 12-Lead ECG
+                </button>
+              </div>
+
+              <button onclick="markStabilized('${token}')" class="text-slate-400 hover:text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-800 hover:border-slate-600 transition">
+                ✓ Mark Stabilized
+              </button>
+            </div>
+
+          </div>
+        `;
+      }).join("");
+
+      if (typeof lucide !== "undefined") lucide.createIcons();
     }
 
     function dispatchCrashCart(token) {
-      showNotif("🚨 Crash Cart Dispatched!", `Emergency Response Team & Nurse En-Route to ${token || 'Kiosk'}.`);
+      showNotif("🚨 Crash Cart Dispatched!", `Emergency Response Team & Nurse En-Route to ${token}. Defibrillator pre-charged.`);
     }
 
-    function routeToBed(token) {
-      showNotif("🏥 Route Assigned", `Patient ${token || ''} routed to Emergency Resuscitation Bed 1.`);
+    function routeToBed(token, bedNum) {
+      showNotif("🏥 Bay Handover Assigned", `Patient ${token} routed to Emergency Resuscitation Bed ${bedNum}. Stretcher team notified.`);
+    }
+
+    function orderStatECG(token) {
+      showNotif("📟 STAT ECG Dispatched", `Portable 12-Lead ECG technician routed to ${token} for immediate acquisition.`);
+    }
+
+    function markStabilized(token) {
+      showNotif("✅ Patient Stabilized", `Patient ${token} marked as stabilized and transferred to Coronary Care Unit (CCU).`);
+    }
+
+    function triggerSimulatedEmergency() {
+      let queue = getSharedQueue();
+      const randToken = "#E-" + Math.floor(100 + Math.random() * 900);
+      const newEmerg = {
+        id: "enc-" + Math.random().toString(36).substring(2, 8),
+        tokenNumber: randToken,
+        token: randToken,
+        patientName: "Sanjay Kumar",
+        age: 58,
+        gender: "Male",
+        avatar: "SK",
+        location: "Kiosk #2 (Main Entrance)",
+        abhaId: "91-4433-2211-8899",
+        hasPmjay: true,
+        isEmergency: true,
+        nativeLang: "हिन्दी (Hindi)",
+        nativeSpeech: '"अचानक बहुत तेज सांस फूल रही है और सीने में भारीपन लग रहा है"',
+        englishTranslation: "ACUTE DYSPNEA & CHEST HEAVINESS: Severe respiratory distress, orthopnea, SpO2 88% on room air (Acute Left Ventricular Failure).",
+        timestamp: "Just Now",
+        vitals: "BP: 175/105 mmHg • HR: 116 bpm • SpO2: 88%",
+        triageCode: "P1_STAT_RESPIRATORY"
+      };
+
+      queue.unshift(newEmerg);
+      localStorage.setItem("MEDIKIOSK_SHARED_QUEUE", JSON.stringify(queue));
+      renderTriageQueue();
+      showNotif("🚨 New STAT Emergency Ingested!", `Patient ${newEmerg.patientName} (${randToken}) intercepted at Kiosk #2.`);
+      window.dispatchEvent(new Event('storage'));
     }
 
     function showNotif(title, desc) {
-      document.getElementById("triage-msg-title").innerText = title;
-      document.getElementById("triage-msg-desc").innerText = desc;
-      const n = document.getElementById("triage-notif");
-      n.classList.remove("hidden");
-      setTimeout(() => n.classList.add("hidden"), 4000);
-      lucide.createIcons();
+      const modal = document.getElementById("triage-notif");
+      const titleEl = document.getElementById("triage-msg-title");
+      const descEl = document.getElementById("triage-msg-desc");
+      if (titleEl) titleEl.innerText = title;
+      if (descEl) descEl.innerText = desc;
+      if (modal) {
+        modal.classList.remove("hidden");
+        setTimeout(() => modal.classList.add("hidden"), 5000);
+      }
+      if (typeof lucide !== "undefined") lucide.createIcons();
     }
 
-    // Auto-sync with Kiosk in real-time
+    // Storage Event Listener for Cross-Tab Sync
     window.addEventListener("storage", function(e) {
       if (e.key === "MEDIKIOSK_SHARED_QUEUE") {
         renderTriageQueue();
@@ -108,6 +412,8 @@
     });
 
     document.addEventListener("DOMContentLoaded", renderTriageQueue);
+    // In case DOM is already loaded
+    renderTriageQueue();
   </script>
 </body>
 </html>
