@@ -3050,22 +3050,34 @@
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       
-      // 3. Push to queue
-      await window.supabase.from('encounters').insert([{
-         id: newEncounter.id,
-         token_number: newEncounter.tokenNumber,
-         patient_id: newEncounter.abhaId || "pat-unknown",
-         patient_name: newEncounter.patientName,
-         age: newEncounter.age,
-         gender: newEncounter.gender.toUpperCase(),
-         chief_complaint: newEncounter.englishTranslation || newEncounter.subjective,
-         triage_priority: newEncounter.isEmergency ? 'EMERGENCY_RED' : 'ROUTINE',
-         pmjay_eligible: newEncounter.hasPmjay || false,
-         system_type: 'ALLOPATHIC',
-         status: newEncounter.isEmergency ? 'EMERGENCY_TRIAGE' : 'WAITING',
-         language: newEncounter.nativeLang,
-         ui_data: newEncounter
-      }]);
+      // 3. Push to queue (Dual Storage: LocalStorage + Supabase Cloud)
+      try {
+        let q = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
+        q.unshift(newEncounter);
+        localStorage.setItem("MEDIKIOSK_SHARED_QUEUE", JSON.stringify(q));
+      } catch (e) {}
+
+      try {
+        if (window.supabase) {
+          await window.supabase.from('encounters').insert([{
+             id: newEncounter.id,
+             token_number: newEncounter.tokenNumber,
+             patient_id: "pat-unknown",
+             patient_name: newEncounter.patientName,
+             age: newEncounter.age,
+             gender: newEncounter.gender.toUpperCase(),
+             chief_complaint: newEncounter.englishTranslation || newEncounter.subjective,
+             triage_priority: 'EMERGENCY_RED',
+             pmjay_eligible: false,
+             system_type: 'ALLOPATHIC',
+             status: 'EMERGENCY_TRIAGE',
+             language: newEncounter.nativeLang,
+             ui_data: newEncounter
+          }]);
+        }
+      } catch (err) {
+        console.warn("Supabase background sync notice:", err);
+      }
 
       // 4. Update Token Screen to Red-Flag Mode
       const tokenDisplay = document.querySelector("#screen-token .text-6xl");
@@ -3318,21 +3330,34 @@
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
-      await window.supabase.from('encounters').insert([{
-         id: newEncounter.id,
-         token_number: newEncounter.tokenNumber,
-         patient_id: newEncounter.abhaId || "pat-unknown",
-         patient_name: newEncounter.patientName,
-         age: newEncounter.age,
-         gender: (newEncounter.gender || "Unknown").toUpperCase(),
-         chief_complaint: newEncounter.englishTranslation || newEncounter.subjective,
-         triage_priority: newEncounter.isEmergency ? 'EMERGENCY_RED' : 'ROUTINE',
-         pmjay_eligible: newEncounter.hasPmjay || false,
-         system_type: 'ALLOPATHIC',
-         status: newEncounter.isEmergency ? 'EMERGENCY_TRIAGE' : 'WAITING',
-         language: newEncounter.nativeLang,
-         ui_data: newEncounter
-      }]);
+      // Push to queue (Dual Storage: LocalStorage + Supabase Cloud)
+      try {
+        let q = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
+        q.unshift(newEncounter);
+        localStorage.setItem("MEDIKIOSK_SHARED_QUEUE", JSON.stringify(q));
+      } catch (e) {}
+
+      try {
+        if (window.supabase) {
+          await window.supabase.from('encounters').insert([{
+             id: newEncounter.id,
+             token_number: newEncounter.tokenNumber,
+             patient_id: "pat-unknown",
+             patient_name: newEncounter.patientName,
+             age: newEncounter.age,
+             gender: (newEncounter.gender || "Unknown").toUpperCase(),
+             chief_complaint: newEncounter.englishTranslation || newEncounter.subjective,
+             triage_priority: newEncounter.isEmergency ? 'EMERGENCY_RED' : 'ROUTINE',
+             pmjay_eligible: newEncounter.hasPmjay || false,
+             system_type: 'ALLOPATHIC',
+             status: newEncounter.isEmergency ? 'EMERGENCY_TRIAGE' : 'WAITING',
+             language: newEncounter.nativeLang,
+             ui_data: newEncounter
+          }]);
+        }
+      } catch (err) {
+        console.warn("Supabase background sync notice:", err);
+      }
 
       // Reset button
       if (btn) { btn.innerText = originalText; btn.disabled = false; }
