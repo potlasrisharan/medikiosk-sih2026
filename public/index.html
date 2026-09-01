@@ -599,7 +599,7 @@
           <span id="lbl-ai-status" class="text-xs font-bold text-[#223D79] tracking-wide uppercase">AI Scribe & Triage Ready</span>
         </div>
         <h3 id="ai-question" class="text-xl md:text-2xl font-bold text-slate-900">
-          "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి, మైక్ నొక్కి మాట్లాడండి లేదా టైప్ చేయండి."
+          "Where does it hurt? Touch the body area below, speak via microphone, or type below."
         </h3>
         <p id="ai-question-sub" class="text-xs text-slate-600">Where does it hurt? Touch body area, speak via microphone, or type below</p>
       </div>
@@ -611,7 +611,7 @@
           <svg class="w-10 h-10 text-[#223D79] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
-          <span id="sym-knee-title" class="font-bold text-slate-900 text-sm">మోకాళ్ళ / కీళ్ళ నొప్పులు</span>
+          <span id="sym-knee-title" class="font-bold text-slate-900 text-sm">Knee & Joint Pain</span>
         </button>
 
         <!-- Chest Pain (Triggers Red Flag) -->
@@ -619,8 +619,7 @@
           <svg class="w-10 h-10 text-red-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
           </svg>
-          <span id="sym-chest-title" class="font-bold text-slate-900 text-sm">ఛాతీలో తీవ్ర నొప్పి</span>
-          <span class="text-[11px] text-red-600 font-semibold">Chest Pain (Emergency)</span>
+          <span id="sym-chest-title" class="font-bold text-slate-900 text-sm">Severe Chest Pain (Emergency)</span>
         </button>
 
         <!-- Fever / Thermometer -->
@@ -628,7 +627,7 @@
           <svg class="w-10 h-10 text-[#FFA530] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
           </svg>
-          <span id="sym-fever-title" class="font-bold text-slate-900 text-sm">తీవ్ర జ్వరం / చలి</span>
+          <span id="sym-fever-title" class="font-bold text-slate-900 text-sm">High Fever & Chills</span>
         </button>
 
         <!-- Stomach / Digestion -->
@@ -636,7 +635,7 @@
           <svg class="w-10 h-10 text-emerald-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
-          <span id="sym-stomach-title" class="font-bold text-slate-900 text-sm">కడుపు నొప్పి / అజీర్ణం</span>
+          <span id="sym-stomach-title" class="font-bold text-slate-900 text-sm">Stomach Pain & Acidity</span>
         </button>
       </div>
 
@@ -647,11 +646,11 @@
         <div class="flex items-center justify-center p-1 bg-slate-100 rounded-xl max-w-md mx-auto border border-slate-200">
           <button id="tab-intake-voice" onclick="switchIntakeMode('voice')" class="flex-1 py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center gap-2 bg-[#223D79] text-white shadow-sm transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path></svg>
-            <span id="lbl-tab-voice">🎙️ Speak (వాయిస్)</span>
+            <span id="lbl-tab-voice">🎙️ Speak</span>
           </button>
           <button id="tab-intake-type" onclick="switchIntakeMode('type')" class="flex-1 py-2.5 px-4 rounded-lg font-bold text-xs sm:text-sm flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-            <span id="lbl-tab-type">⌨️ Type (రాయండి)</span>
+            <span id="lbl-tab-type">⌨️ Type</span>
           </button>
         </div>
 
@@ -662,22 +661,22 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z"></path>
             </svg>
           </button>
-          <p id="mic-label" class="font-bold text-slate-900 text-sm">Tap Microphone to Speak • మాట్లాడటానికి మైక్ నొక్కండి</p>
+          <p id="mic-label" class="font-bold text-slate-900 text-sm">Tap Microphone to Speak</p>
         </div>
 
         <!-- MODE 2: Type Symptoms Panel (Direct Keyboard & Quick Chips) -->
         <div id="panel-intake-type" class="hidden space-y-3 max-w-2xl mx-auto text-left">
           <div class="space-y-1">
             <div class="flex items-center justify-between">
-              <label id="lbl-type-prompt" class="font-bold text-xs text-slate-800">మీ సమస్యలను వివరించండి • Describe your symptoms in any language:</label>
+              <label id="lbl-type-prompt" class="font-bold text-xs text-slate-800">Describe your symptoms in your own words:</label>
               <span class="text-[10px] bg-blue-50 text-blue-800 font-bold px-2 py-0.5 rounded border border-blue-200">Telugu / Hindi / English Supported</span>
             </div>
-            <textarea id="typed-symptom-input" rows="3" oninput="handleTypedSymptomInput(this.value)" placeholder="ఉదా: నాకు గత 3 రోజులుగా తీవ్రమైన తలనొప్పి, గొంతు నొప్పి మరియు జ్వరం ఉంది..." class="w-full p-3 text-sm text-slate-900 border-2 border-slate-300 rounded-xl focus:border-[#223D79] focus:ring-2 focus:ring-[#223D79]/20 focus:outline-none transition font-medium"></textarea>
+            <textarea id="typed-symptom-input" rows="3" oninput="handleTypedSymptomInput(this.value)" placeholder="e.g., I have had severe headache, sore throat, and high fever for 3 days..." class="w-full p-3 text-sm text-slate-900 border-2 border-slate-300 rounded-xl focus:border-[#223D79] focus:ring-2 focus:ring-[#223D79]/20 focus:outline-none transition font-medium"></textarea>
           </div>
 
           <!-- Quick 1-Tap Symptom Suggestion Chips for Typing -->
           <div class="space-y-1.5">
-            <span id="lbl-quick-chips" class="text-[11px] font-bold text-slate-600 block">⚡ Quick 1-Tap Add Symptoms (త్వరిత ఎంపికలు):</span>
+            <span id="lbl-quick-chips" class="text-[11px] font-bold text-slate-600 block">⚡ Quick 1-Tap Add Symptoms:</span>
             <div id="type-quick-chips-container" class="flex flex-wrap gap-1.5 text-xs">
               <!-- Dynamically populated based on active language -->
             </div>
@@ -685,7 +684,7 @@
 
           <div class="flex justify-end pt-1">
             <button onclick="submitTypedSymptom()" class="px-5 py-2.5 bg-[#223D79] hover:bg-[#1a2f5e] text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
-              <span>⚡ Translate & Analyze (అనువాదం & విశ్లేషణ)</span>
+              <span id="btn-type-submit-txt">⚡ Translate & Analyze ➔</span>
             </button>
           </div>
         </div>
@@ -717,7 +716,7 @@
             <span id="btn-voice-back-txt">Back</span>
           </button>
           <button onclick="goToScreen('screen-scan')" id="btn-next-scan" class="bg-slate-900 hover:bg-[#1a2f5e] text-white border border-[#D9CDBA]/30 text-white font-bold py-3 px-6 rounded-xl text-sm transition">
-            ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔ Next: Scan Rx
+            Next: Scan Paper Prescriptions ➔
           </button>
         </div>
       </div>
@@ -982,7 +981,7 @@
     startIdleMonitor();
 
     // Complete Multilingual Dictionary with Native Scripts and Spoken Prompts
-    const I18N = {
+        const I18N = {
       "en-IN": {
         langName: "English",
         welcomeVoice: "English selected. Please choose how you want to identify yourself.",
@@ -1006,14 +1005,20 @@
         btnVerifyAadh: "Verify Aadhaar e-KYC",
         pmjayTitle: "Ayushman Bharat PM-JAY Active",
         pmjayDesc: "₹5,00,000 Annual Coverage • Cashless OPD Approved",
-        continueVoiceBtn: "Continue to Voice Symptom Intake ➔",
+        continueVoiceBtn: "Continue to Symptom Intake ➔",
         headerBack: "Back",
-        aiQuestion: "Where does it hurt? Touch the body area below or speak into the microphone.",
-        aiQuestionSub: "Select symptom or tap microphone to speak",
+        aiQuestion: "Where does it hurt? Touch the body area below, speak via microphone, or type below.",
+        aiQuestionSub: "Select symptom, tap microphone to speak, or type symptoms",
         aiVoicePrompt: "Where does it hurt? Please touch the body area on the screen or press the microphone to speak.",
+        tabVoice: "🎙️ Speak",
+        tabType: "⌨️ Type",
+        typePrompt: "Describe your symptoms in your own words:",
+        typePlaceholder: "e.g., I have had severe headache, sore throat, and high fever for the last 3 days...",
+        quickChipsLabel: "⚡ Quick 1-Tap Add Symptoms:",
+        typeTranslateBtn: "⚡ Translate & Analyze ➔",
         kneeTitle: "Knee & Joint Pain",
         kneeVoice: "Bilateral knee joint pain recorded.",
-        chestTitle: "Severe Chest Pain",
+        chestTitle: "Severe Chest Pain (Emergency)",
         chestVoice: "Warning! Acute chest pain detected. Priority emergency triage alert triggered. Please proceed to Room 1 immediately.",
         feverTitle: "High Fever & Chills",
         feverVoice: "High fever and chills recorded.",
@@ -1033,374 +1038,423 @@
         tokenVoice: "Your intake is complete. Your token number is 42. Please proceed to OPD Consultation Room 4.",
         nextPatBtn: "Start Next Patient Intake",
         transcriptionHint: "I have had pain in both knees for 6 months",
-        listenBtn: "Listen"
+        listenBtn: "Listen",
+        skipBtnText: "Skip / No Documents ➔"
       },
       "te-IN": {
         langName: "తెలుగు",
         welcomeVoice: "తెలుగు భాష ఎంచుకోబడింది. దయచేసి మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారో ఎంచుకోండి.",
-        identifyTitle: "మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారు?",
-        identifySub: "క్రింది పద్ధతుల్లో ఒకదానిపై నొక్కండి",
-        optQrTitle: "QR స్కాన్ చేయండి",
-        optQrSub: "కెమెరా ముందు ఉంచండి",
-        optMobTitle: "మొబైల్ నంబర్",
-        optMobSub: "10 అంకెల ఫోన్ నంబర్",
-        optAbhaTitle: "ఆభా (ABHA) కార్డ్",
-        optAbhaSub: "14 అంకెల ఆభా సంఖ్య",
-        optAadhTitle: "ఆధార్ కార్డ్",
-        optAadhSub: "12 అంకెల ఆధార్ సంఖ్య",
-        optRegTitle: "కొత్త పేషెంట్?",
-        optRegSub: "నమోదు & ఆభా సృష్టి",
-        btnSelect: "ఎంచుకోండి",
-        btnSelected: "✓ ఎంచుకోబడింది",
-        btnOpenCam: "కెమెరా ప్రారంభించి స్కాన్ చేయండి",
-        btnVerifyMob: "ఓటీపీ ధృవీకరించి రికార్డులు పొందండి",
-        btnFetchAbha: "ఆభా రికార్డ్ పొందండి",
-        btnVerifyAadh: "ఆధార్ బయోమెట్రిక్ / ఓటీపీ",
-        pmjayTitle: "ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్",
-        pmjayDesc: "₹5,00,000 వార్షిక కవరేజ్ • 100% ఉచిత క్యాష్‌లెస్‌ చికిత్స",
-        continueVoiceBtn: "లక్షణాలు చెప్పడానికి కొనసాగించండి ➔",
-        headerBack: "Back",
-        aiQuestion: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
-        aiQuestionSub: "నొప్పి ఉన్న భాగాన్ని తాకండి లేదా మాట్లాడండి",
+        identifyTitle: "మీ వివరాలు ఎలా ఇవ్వాలనుకుంటున్నారు? (Identity Verification)",
+        identifySub: "క్రింది పద్ధతుల్లో ఒకదానిపై నొక్కండి (Touch any option below)",
+        optQrTitle: "QR స్కాన్ చేయండి (Scan ABHA QR)",
+        optQrSub: "కెమెరా ముందు ఉంచండి (Point QR at camera)",
+        optMobTitle: "మొబైల్ నంబర్ (Mobile Number)",
+        optMobSub: "10 అంకెల ఫోన్ నంబర్ (10-Digit Phone OTP)",
+        optAbhaTitle: "ఆభా కార్డ్ (14-Digit ABHA ID)",
+        optAbhaSub: "14 అంకెల ఆభా సంఖ్య (91-XXXX-XXXX-XXXX)",
+        optAadhTitle: "ఆధార్ కార్డ్ (Aadhaar Card)",
+        optAadhSub: "12 అంకెల ఆధార్ సంఖ్య (12-Digit UIDAI)",
+        optRegTitle: "కొత్త పేషెంట్? (New Patient?)",
+        optRegSub: "నమోదు & ఆభా సృష్టి (Register & Create ABHA)",
+        btnSelect: "ఎంచుకోండి (Select)",
+        btnSelected: "✓ ఎంచుకోబడింది (Selected)",
+        btnOpenCam: "కెమెరా ప్రారంభించి స్కాన్ చేయండి (Open Camera to Scan)",
+        btnVerifyMob: "ఓటీపీ ధృవీకరించి రికార్డులు పొందండి (Verify Mobile OTP)",
+        btnFetchAbha: "ఆభా రికార్డ్ పొందండి (Fetch ABHA Profile)",
+        btnVerifyAadh: "ఆధార్ బయోమెట్రిక్ / ఓటీపీ (Verify Aadhaar e-KYC)",
+        pmjayTitle: "ఆయుష్మాన్ భారత్ PM-JAY యాక్టివ్ (PM-JAY Active)",
+        pmjayDesc: "₹5,00,000 వార్షిక కవరేజ్ • 100% ఉచిత క్యాష్‌లెస్‌ చికిత్స (Cashless Approved)",
+        continueVoiceBtn: "లక్షణాలు చెప్పడానికి కొనసాగించండి (Continue to Symptoms) ➔",
+        headerBack: "వెనుకకు (Back)",
+        aiQuestion: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి, మాట్లాడండి లేదా రాయండి.",
+        aiQuestionSub: "నొప్పి ఉన్న భాగాన్ని తాకండి లేదా మైక్ నొక్కి మాట్లాడండి (Where does it hurt?)",
         aiVoicePrompt: "మీకు ఎక్కడ నొప్పిగా ఉంది? బొమ్మను తాకండి లేదా మైక్ నొక్కి మాట్లాడండి.",
-        kneeTitle: "మోకాళ్ళ / కీళ్ళ నొప్పులు",
+        tabVoice: "🎙️ మాట్లాడండి (Speak)",
+        tabType: "⌨️ రాయండి (Type)",
+        typePrompt: "మీ సమస్యలను వివరించండి (Describe your symptoms in Telugu/English):",
+        typePlaceholder: "ఉదా: నాకు గత 3 రోజులుగా తీవ్రమైన తలనొప్పి, గొంతు నొప్పి మరియు జ్వరం ఉంది...",
+        quickChipsLabel: "⚡ త్వరిత ఎంపికలు (Quick 1-Tap Add Symptoms):",
+        typeTranslateBtn: "⚡ అనువదించండి & విశ్లేషించండి (Translate & Analyze) ➔",
+        kneeTitle: "మోకాళ్ళ / కీళ్ళ నొప్పులు (Knee & Joint Pain)",
         kneeVoice: "మోకాళ్ళ నొప్పులు నమోదు చేయబడ్డాయి.",
-        chestTitle: "ఛాతీలో తీవ్ర నొప్పి",
+        chestTitle: "ఛాతీలో తీవ్ర నొప్పి (Severe Chest Pain - Emergency)",
         chestVoice: "జాగ్రత్త. ఛాతీ నొప్పి అత్యవసర లక్షణంగా గుర్తించబడింది. వెంటనే రూమ్ 1 కి వెళ్ళండి.",
-        feverTitle: "తీవ్ర జ్వరం / చలి",
+        feverTitle: "తీవ్ర జ్వరం / చలి (High Fever & Chills)",
         feverVoice: "తీవ్ర జ్వరం మరియు చలి లక్షణాలు నమోదు చేయబడ్డాయి.",
-        stomachTitle: "కడుపు నొప్పి / అజీర్ణం",
+        stomachTitle: "కడుపు నొప్పి / అజీర్ణం (Stomach Pain & Acidity)",
         stomachVoice: "కడుపు నొప్పి మరియు అజీర్ణం నమోదు చేయబడ్డాయి.",
-        micLabel: "మైక్రోఫోన్ నొక్కి మాట్లాడండి",
-        nextScanBtn: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి ➔",
-        scanRxTitle: "పాత ప్రిస్క్రిప్షన్ పేపర్‌ను కెమెరా కింద ఉంచండి",
-        scanRxSub: "Sarvam Vision 3B చేతివ్రాతను డిజిటైజ్ చేస్తుంది",
-        scanRxAct: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి",
+        micLabel: "మాట్లాడటానికి మైక్ నొక్కండి (Tap Mic to Speak)",
+        nextScanBtn: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి (Next: Scan Rx) ➔",
+        scanRxTitle: "పాత ప్రిస్క్రిప్షన్ పేపర్‌ను కెమెరా కింద ఉంచండి (Place Prescription)",
+        scanRxSub: "Sarvam Vision 3B చేతివ్రాతను డిజిటైజ్ చేస్తుంది (AI Digitization)",
+        scanRxAct: "ప్రిస్క్రిప్షన్ స్కాన్ చేయండి (Capture & Digitize)",
         ocrSuccessVoice: "ప్రిస్క్రిప్షన్ రికార్డ్ విజయవంతంగా నమోదు చేయబడింది.",
-        ocrHead: "గుర్తించబడిన మందుల వివరాలు",
-        confirmTokenBtn: "ధృవీకరించి టోకెన్ పొందండి ➔",
-        tokenDone: "కేస్ నమోదు పూర్తయింది",
-        tokenSub: "మీ ఓపీడీ టోకెన్ సంఖ్య",
-        tokenMsg: "మీ వివరాలు డాక్టర్ గారి స్క్రీన్ కు పంపబడ్డాయి.",
+        ocrHead: "గుర్తించబడిన మందుల వివరాలు (Extracted Clinical Entities)",
+        confirmTokenBtn: "ధృవీకరించి టోకెన్ పొందండి (Confirm & Generate Token) ➔",
+        tokenDone: "కేస్ నమోదు పూర్తయింది (Clinical Intake Complete)",
+        tokenSub: "మీ ఓపీడీ టోకెన్ సంఖ్య (YOUR OPD TOKEN NUMBER)",
+        tokenMsg: "మీ వివరాలు డాక్టర్ గారి స్క్రీన్ కు పంపబడ్డాయి (Sent directly to Doctor).",
         tokenVoice: "మీ నమోదు పూర్తయింది. మీ టోకెన్ సంఖ్య 42. దయచేసి రూమ్ నంబర్ 4 వద్ద వేచి ఉండండి.",
-        nextPatBtn: "మరో పేషెంట్ ప్రారంభించండి",
-        transcriptionHint: "I have had pain in both knees for 6 months",
-        listenBtn: "వినండి"
+        nextPatBtn: "మరో పేషెంట్ ప్రారంభించండి (Start Next Patient)",
+        transcriptionHint: "నాకు 6 నెలలుగా రెండు మోకాళ్ళలో నొప్పిగా ఉంది",
+        listenBtn: "వినండి (Listen)",
+        skipBtnText: "పత్రాలు లేవు ➔ స్కిప్ చేయండి (Skip / No Documents ➔)"
       },
       "hi-IN": {
         langName: "हिन्दी",
         welcomeVoice: "हिन्दी भाषा चुनी गई है। कृपया अपनी पहचान का तरीका चुनें।",
-        identifyTitle: "आप अपनी पहचान कैसे सत्यापित करना चाहते हैं?",
-        identifySub: "नीचे दिए गए विकल्पों में से एक चुनें",
-        optQrTitle: "QR कोड स्कैन करें",
-        optQrSub: "कैमरे के सामने रखें",
-        optMobTitle: "मोबाइल नंबर",
-        optMobSub: "10-अंकीय फोन नंबर",
-        optAbhaTitle: "14-अंकीय ABHA ID",
-        optAbhaSub: "91-XXXX-XXXX-XXXX",
-        optAadhTitle: "आधार कार्ड",
-        optAadhSub: "12-अंकीय आधार संख्या",
-        optRegTitle: "नया मरीज?",
-        optRegSub: "पंजीकरण और ABHA बनाएं",
-        btnSelect: "चुनें",
-        btnSelected: "✓ चुना गया",
-        btnOpenCam: "कैमरा खोलकर QR स्कैन करें",
-        btnVerifyMob: "मोबाइल OTP सत्यापित करें",
-        btnFetchAbha: "ABHA प्रोफाइल प्राप्त करें",
-        btnVerifyAadh: "आधार e-KYC सत्यापित करें",
-        pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय",
-        pmjayDesc: "₹5,00,000 वार्षिक कवरेज • 100% कैशलेस इलाज",
-        continueVoiceBtn: "आवाज से लक्षण बताने के लिए आगे बढ़ें ➔",
-        headerBack: "पीछे • Back",
-        aiQuestion: "आपको कहाँ दर्द या तकलीफ है? नीचे दिए गए हिस्से को छुएं या माइक दबाकर बोलें।",
-        aiQuestionSub: "लक्षण चुनें या बोलने के लिए माइक दबाएं",
-        aiVoicePrompt: "आपको कहाँ दर्द या तकलीफ है? नीचे दिए गए हिस्से को छुएं या माइक दबाकर बोलें।",
-        kneeTitle: "घुटनों व जोड़ों का दर्द",
+        identifyTitle: "आप अपनी पहचान कैसे सत्यापित करना चाहते हैं? (Identity Verification)",
+        identifySub: "नीचे दिए गए विकल्पों में से एक चुनें (Touch any option below)",
+        optQrTitle: "QR कोड स्कैन करें (Scan ABHA QR)",
+        optQrSub: "कैमरे के सामने रखें (Point QR at camera)",
+        optMobTitle: "मोबाइल नंबर (Mobile Number)",
+        optMobSub: "10-अंकीय फोन नंबर (10-Digit Phone OTP)",
+        optAbhaTitle: "आभा कार्ड (14-Digit ABHA ID)",
+        optAbhaSub: "14-अंकीय आभा संख्या (91-XXXX-XXXX-XXXX)",
+        optAadhTitle: "आधार कार्ड (Aadhaar Card)",
+        optAadhSub: "12-अंकीय आधार संख्या (12-Digit UIDAI)",
+        optRegTitle: "नया मरीज? (New Patient?)",
+        optRegSub: "पंजीकरण और आभा बनाएं (Register & Create ABHA)",
+        btnSelect: "चुनें (Select)",
+        btnSelected: "✓ चुना गया (Selected)",
+        btnOpenCam: "कैमरा खोलकर स्कैन करें (Open Camera to Scan)",
+        btnVerifyMob: "मोबाइल OTP सत्यापित करें (Verify Mobile OTP)",
+        btnFetchAbha: "ABHA प्रोफाइल प्राप्त करें (Fetch ABHA Profile)",
+        btnVerifyAadh: "आधार e-KYC सत्यापित करें (Verify Aadhaar e-KYC)",
+        pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय (PM-JAY Active)",
+        pmjayDesc: "₹5,00,000 वार्षिक मुफ्त इलाज (Cashless OPD Approved)",
+        continueVoiceBtn: "लक्षण बताने के लिए आगे बढ़ें (Continue to Symptoms) ➔",
+        headerBack: "पीछे (Back)",
+        aiQuestion: "आपको कहाँ दर्द या तकलीफ है? नीचे दिए गए हिस्से को छुएं या बोलें।",
+        aiQuestionSub: "लक्षण चुनें या बोलने के लिए माइक दबाएं (Where does it hurt?)",
+        aiVoicePrompt: "आपको कहाँ दर्द या तकलीफ है? नीचे दिए गए हिस्से को छुएं या बोलें।",
+        tabVoice: "🎙️ बोलें (Speak)",
+        tabType: "⌨️ टाइप करें (Type)",
+        typePrompt: "अपनी समस्याओं का विवरण दें (Describe symptoms in Hindi/English):",
+        typePlaceholder: "उदा: मुझे पिछले 3 दिनों से तेज सिरदर्द, गले में दर्द और बुखार है...",
+        quickChipsLabel: "⚡ त्वरित विकल्प (Quick 1-Tap Add Symptoms):",
+        typeTranslateBtn: "⚡ अनुवाद और विश्लेषण (Translate & Analyze) ➔",
+        kneeTitle: "घुटनों व जोड़ों का दर्द (Knee & Joint Pain)",
         kneeVoice: "घुटनों का दर्द दर्ज कर लिया गया है।",
-        chestTitle: "सीने में तेज दर्द",
+        chestTitle: "सीने में तेज दर्द (Severe Chest Pain - Emergency)",
         chestVoice: "चेतावनी! सीने में तेज दर्द आपातकालीन लक्षण है। तुरंत कमरा 1 में जाएं।",
-        feverTitle: "तेज बुखार व ठंड लगना",
+        feverTitle: "तेज बुखार व ठंड (High Fever & Chills)",
         feverVoice: "तेज बुखार दर्ज कर लिया गया है।",
-        stomachTitle: "पेट दर्द व गैस/एसिडिटी",
+        stomachTitle: "पेट दर्द व गैस (Stomach Pain & Acidity)",
         stomachVoice: "पेट दर्द दर्ज कर लिया गया है।",
-        micLabel: "माइक दबाकर बोलें",
-        nextScanBtn: "पर्चा स्कैन करें ➔",
-        scanRxTitle: "पुराना पर्चा स्कैनर के नीचे रखें",
-        scanRxSub: "सर्वम विज़न 3B लिखावट को डिजिटाइज़ करता है",
-        scanRxAct: "पर्चा स्कैन करें",
+        micLabel: "बोलने के लिए माइक दबाएं (Tap Mic to Speak)",
+        nextScanBtn: "पर्चा स्कैन करें (Next: Scan Rx) ➔",
+        scanRxTitle: "पुराना पर्चा स्कैनर के नीचे रखें (Place Prescription)",
+        scanRxSub: "सर्वम विज़न 3B लिखावट को डिजिटाइज़ करता है (AI Digitization)",
+        scanRxAct: "पर्चा स्कैन करें (Capture & Digitize)",
         ocrSuccessVoice: "दवाइयों का पर्चा सफलतापूर्वक स्कैन हो गया है।",
-        ocrHead: "निकाली गई दवाइयों की सूची",
-        confirmTokenBtn: "पुष्टि करें और टोकन लें ➔",
-        tokenDone: "पंजीकरण पूर्ण हुआ",
-        tokenSub: "आपका ओपीडी टोकन नंबर",
-        tokenMsg: "आपका विवरण डॉक्टर की स्क्रीन पर भेज दिया गया है।",
+        ocrHead: "निकाली गई दवाइयों की सूची (Extracted Clinical Entities)",
+        confirmTokenBtn: "पुष्टि करें और टोकन लें (Confirm & Generate Token) ➔",
+        tokenDone: "पंजीकरण पूर्ण हुआ (Clinical Intake Complete)",
+        tokenSub: "आपका ओपीडी टोकन नंबर (YOUR OPD TOKEN NUMBER)",
+        tokenMsg: "आपका विवरण डॉक्टर की स्क्रीन पर भेज दिया गया है (Sent directly to Doctor).",
         tokenVoice: "आपका पंजीकरण पूरा हो गया है। आपका टोकन नंबर 42 है। कृपया कक्ष 4 में जाएं।",
-        nextPatBtn: "अगला मरीज शुरू करें",
+        nextPatBtn: "अगला मरीज शुरू करें (Start Next Patient)",
         transcriptionHint: "मुझे 6 महीने से दोनों घुटनों में दर्द है",
-        listenBtn: "सुनें"
+        listenBtn: "सुनें (Listen)",
+        skipBtnText: "पर्चे नहीं हैं ➔ आगे बढ़ें (Skip / No Documents ➔)"
       },
       "ta-IN": {
         langName: "தமிழ்",
         welcomeVoice: "தமிழ் தேர்ந்தெடுக்கப்பட்டது. உங்கள் விவரங்களை எவ்வாறு சரிபார்க்க விரும்புகிறீர்கள் என்பதைத் தேர்ந்தெடுக்கவும்.",
-        identifyTitle: "உங்கள் அடையாளத்தை எவ்வாறு சரிபார்க்க விரும்புகிறீர்கள்?",
-        identifySub: "கீழே உள்ள ஏதேனும் ஒரு விருப்பத்தைத் தொடவும்",
-        optQrTitle: "QR குறியீட்டை ஸ்கேன் செய்க",
-        optQrSub: "கேமரா முன் காட்டவும்",
-        optMobTitle: "கைபேசி எண் (Mobile)",
-        optMobSub: "10-இலக்க தொலைபேசி எண்",
-        optAbhaTitle: "14-இலக்க ABHA அட்டை",
-        optAbhaSub: "91-XXXX-XXXX-XXXX",
-        optAadhTitle: "ஆதார் அட்டை (Aadhaar)",
-        optAadhSub: "12-இலக்க ஆதார் எண்",
-        optRegTitle: "புதிய நோயாளி?",
-        optRegSub: "பதிவு & ABHA உருவாக்கம்",
-        btnSelect: "தேர்ந்தெடு",
-        btnSelected: "✓ தேர்ந்தெடுக்கப்பட்டது",
-        btnOpenCam: "கேமராவைத் திறந்து ஸ்கேன் செய்க",
-        btnVerifyMob: "OTP சரிபார்த்து பதிவுகளைப் பெறுக",
-        btnFetchAbha: "ABHA சுயவிவரத்தைப் பெறுக",
-        btnVerifyAadh: "ஆதார் e-KYC சரிபார்க்கவும்",
-        pmjayTitle: "ஆயுஷ்மான் பாரத் PM-JAY செயலில் உள்ளது",
-        pmjayDesc: "₹5,00,000 இலவச மருத்துவக் காப்பீடு • ரொக்கமில்லா சிகிச்சை",
-        continueVoiceBtn: "அறிகுறிகளைக் கூற தொடரவும் ➔",
-        headerBack: "பின்னே • Back",
+        identifyTitle: "உங்கள் அடையாளத்தை எவ்வாறு சரிபார்க்க விரும்புகிறீர்கள்? (Identity Verification)",
+        identifySub: "கீழே உள்ள ஏதேனும் ஒரு விருப்பத்தைத் தொடவும் (Touch any option below)",
+        optQrTitle: "QR குறியீட்டை ஸ்கேன் செய்க (Scan ABHA QR)",
+        optQrSub: "கேமரா முன் காட்டவும் (Point QR at camera)",
+        optMobTitle: "கைபேசி எண் (Mobile Number)",
+        optMobSub: "10-இலக்க தொலைபேசி எண் (10-Digit Phone OTP)",
+        optAbhaTitle: "14-இலக்க ABHA அட்டை (14-Digit ABHA ID)",
+        optAbhaSub: "91-XXXX-XXXX-XXXX (ABHA Number)",
+        optAadhTitle: "ஆதார் அட்டை (Aadhaar Card)",
+        optAadhSub: "12-இலக்க ஆதார் எண் (12-Digit UIDAI)",
+        optRegTitle: "புதிய நோயாளி? (New Patient?)",
+        optRegSub: "பதிவு & ABHA உருவாக்கம் (Register & Create ABHA)",
+        btnSelect: "தேர்ந்தெடு (Select)",
+        btnSelected: "✓ தேர்ந்தெடுக்கப்பட்டது (Selected)",
+        btnOpenCam: "கேமராவைத் திறந்து ஸ்கேன் செய்க (Open Camera to Scan)",
+        btnVerifyMob: "OTP சரிபார்த்து பதிவுகளைப் பெறுக (Verify Mobile OTP)",
+        btnFetchAbha: "ABHA சுயவிவரத்தைப் பெறுக (Fetch ABHA Profile)",
+        btnVerifyAadh: "ஆதார் e-KYC சரிபார்க்கவும் (Verify Aadhaar e-KYC)",
+        pmjayTitle: "ஆயுஷ்மான் பாரத் PM-JAY செயலில் உள்ளது (PM-JAY Active)",
+        pmjayDesc: "₹5,00,000 இலவச மருத்துவக் காப்பீடு • ரொக்கமில்லா சிகிச்சை (Cashless Approved)",
+        continueVoiceBtn: "அறிகுறிகளைக் கூற தொடரவும் (Continue to Symptoms) ➔",
+        headerBack: "பின்னே (Back)",
         aiQuestion: "உங்களுக்கு எங்கு வலிக்கிறது? கீழே உள்ள பகுதியைத் தொடவும் அல்லது மைக்கில் பேசவும்.",
-        aiQuestionSub: "அறிகுறியைத் தேர்ந்தெடுக்கவும் அல்லது பேசவும்",
+        aiQuestionSub: "அறிகுறியைத் தேர்ந்தெடுக்கவும் அல்லது பேசவும் (Where does it hurt?)",
         aiVoicePrompt: "உங்களுக்கு எங்கு வலிக்கிறது? கீழே உள்ள பகுதியைத் தொடவும் அல்லது மைக்கில் பேசவும்.",
-        kneeTitle: "முழங்கால் மற்றும் மூட்டு வலி",
+        tabVoice: "🎙️ பேசுங்கள் (Speak)",
+        tabType: "⌨️ தட்டச்சு செய்க (Type)",
+        typePrompt: "உங்கள் அறிகுறிகளை விவரிக்கவும் (Describe symptoms in Tamil/English):",
+        typePlaceholder: "உதா: எனக்கு 3 நாட்களாக கடுமையான தலைவலி, தொண்டை வலி மற்றும் காய்ச்சல் உள்ளது...",
+        quickChipsLabel: "⚡ விரைவு தேர்வு (Quick 1-Tap Add Symptoms):",
+        typeTranslateBtn: "⚡ மொழிபெயர்க்க & பகுப்பாய்வு (Translate & Analyze) ➔",
+        kneeTitle: "முழங்கால் மற்றும் மூட்டு வலி (Knee & Joint Pain)",
         kneeVoice: "மூட்டு வலி பதிவு செய்யப்பட்டது.",
-        chestTitle: "கடுமையான மார்பு வலி",
+        chestTitle: "கடுமையான மார்பு வலி (Severe Chest Pain - Emergency)",
         chestVoice: "எச்சரிக்கை! கடுமையான மார்பு வலி கண்டறியப்பட்டது. அவசர அறை 1 க்கு உடனடியாக செல்லவும்.",
-        feverTitle: "அதிக காய்ச்சல் & குளிர்",
+        feverTitle: "அதிக காய்ச்சல் & குளிர் (High Fever & Chills)",
         feverVoice: "காய்ச்சல் அறிகுறி பதிவு செய்யப்பட்டது.",
-        stomachTitle: "வயிற்று வலி & அஜீரணம்",
+        stomachTitle: "வயிற்று வலி & அஜீரணம் (Stomach Pain & Acidity)",
         stomachVoice: "வயிற்று வலி பதிவு செய்யப்பட்டது.",
-        micLabel: "பேச மைக்கை அழுத்தவும்",
-        nextScanBtn: "மருந்து சீட்டை ஸ்கேன் செய்க ➔",
-        scanRxTitle: "பழைய மருந்து சீட்டை ஸ்கேனரில் வைக்கவும்",
-        scanRxSub: "Sarvam Vision 3B கையெழுத்தை டிஜிட்டல் மயமாக்குகிறது",
-        scanRxAct: "மருந்து சீட்டை ஸ்கேன் செய்க",
+        micLabel: "பேச மைக்கை அழுத்தவும் (Tap Mic to Speak)",
+        nextScanBtn: "மருந்து சீட்டை ஸ்கேன் செய்க (Next: Scan Rx) ➔",
+        scanRxTitle: "பழைய மருந்து சீட்டை ஸ்கேனரில் வைக்கவும் (Place Prescription)",
+        scanRxSub: "Sarvam Vision 3B கையெழுத்தை டிஜிட்டல் மயமாக்குகிறது (AI Digitization)",
+        scanRxAct: "மருந்து சீட்டை ஸ்கேன் செய்க (Capture & Digitize)",
         ocrSuccessVoice: "மருந்து சீட்டு வெற்றிகரமாக பதிவு செய்யப்பட்டது.",
-        ocrHead: "கண்டறியப்பட்ட மருந்துகள்",
-        confirmTokenBtn: "டோக்கனைப் பெறுக ➔",
-        tokenDone: "பதிவு முடிந்தது",
-        tokenSub: "உங்கள் OPD டோக்கன் எண்",
-        tokenMsg: "உங்கள் விவரங்கள் மருத்துவருக்கு அனுப்பப்பட்டன.",
+        ocrHead: "கண்டறியப்பட்ட மருந்துகள் (Extracted Clinical Entities)",
+        confirmTokenBtn: "டோக்கனைப் பெறுக (Confirm & Generate Token) ➔",
+        tokenDone: "பதிவு முடிந்தது (Clinical Intake Complete)",
+        tokenSub: "உங்கள் OPD டோக்கன் எண் (YOUR OPD TOKEN NUMBER)",
+        tokenMsg: "உங்கள் விவரங்கள் மருத்துவருக்கு அனுப்பப்பட்டன (Sent directly to Doctor).",
         tokenVoice: "உங்கள் பதிவு முடிந்தது. உங்கள் டோக்கன் எண் 42. அறை 4 க்கு செல்லவும்.",
-        nextPatBtn: "அடுத்த நோயாளி",
+        nextPatBtn: "அடுத்த நோயாளி (Start Next Patient)",
         transcriptionHint: "எனக்கு 6 மாதங்களாக இரு முழங்கால்களிலும் வலி உள்ளது",
-        listenBtn: "கேளுங்கள்"
+        listenBtn: "கேளுங்கள் (Listen)",
+        skipBtnText: "மருந்து சீட்டு இல்லை ➔ தொடரவும் (Skip / No Documents ➔)"
       },
       "kn-IN": {
         langName: "ಕನ್ನಡ",
         welcomeVoice: "ಕನ್ನಡ ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ. ದಯವಿಟ್ಟು ನಿಮ್ಮ ಗುರುತಿನ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
-        identifyTitle: "ನಿಮ್ಮ ಗುರುತನ್ನು ಹೇಗೆ ಪರಿಶೀಲಿಸಲು ಬಯಸುತ್ತೀರಿ?",
-        identifySub: "ಕೆಳಗಿನ ಆಯ್ಕೆಗಳಲ್ಲಿ ಒಂದನ್ನು ಸ್ಪರ್ಶಿಸಿ",
-        optQrTitle: "QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
-        optQrSub: "ಕ್ಯಾಮೆರಾ ಮುಂದೆ ಇರಿಸಿ",
-        optMobTitle: "ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
-        optMobSub: "10-ಅಂಕಿಯ ಫೋನ್ ಸಂಖ್ಯೆ",
-        optAbhaTitle: "14-ಅಂಕಿಯ ABHA ಕಾರ್ಡ್",
-        optAbhaSub: "91-XXXX-XXXX-XXXX",
-        optAadhTitle: "ಆಧಾರ್ ಕಾರ್ಡ್",
-        optAadhSub: "12-ಅಂಕಿಯ ಆಧಾರ್ ಸಂಖ್ಯೆ",
-        optRegTitle: "ಹೊಸ ರೋಗಿ?",
-        optRegSub: "ನೋಂದಣಿ & ABHA ರಚಿಸಿ",
-        btnSelect: "ಆಯ್ಕೆಮಾಡಿ",
-        btnSelected: "✓ ಆಯ್ಕೆಯಾಗಿದೆ",
-        btnOpenCam: "ಕ್ಯಾಮೆರಾ ತೆರೆದು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
-        btnVerifyMob: "OTP ಪರಿಶೀಲಿಸಿ ದಾಖಲೆಗಳನ್ನು ಪಡೆಯಿರಿ",
-        btnFetchAbha: "ABHA ಪ್ರೊಫೈಲ್ ಪಡೆಯಿರಿ",
-        btnVerifyAadh: "ಆಧಾರ್ e-KYC ಪರಿಶೀಲಿಸಿ",
-        pmjayTitle: "ಆಯುಷ್ಮಾನ್ ಭಾರತ್ PM-JAY ಸಕ್ರಿಯವಾಗಿದೆ",
-        pmjayDesc: "₹5,00,000 ವಾರ್ಷಿಕ ನಗದು ರಹಿತ ಚಿಕಿತ್ಸೆ",
-        continueVoiceBtn: "ಲಕ್ಷಣಗಳನ್ನು ಹೇಳಲು ಮುಂದುವರಿಯಿರಿ ➔",
-        headerBack: "ಹಿಂದಕ್ಕೆ • Back",
+        identifyTitle: "ನಿಮ್ಮ ಗುರುತನ್ನು ಹೇಗೆ ಪರಿಶೀಲಿಸಲು ಬಯಸುತ್ತೀರಿ? (Identity Verification)",
+        identifySub: "ಕೆಳಗಿನ ಆಯ್ಕೆಗಳಲ್ಲಿ ಒಂದನ್ನು ಸ್ಪರ್ಶಿಸಿ (Touch any option below)",
+        optQrTitle: "QR ಸ್ಕ್ಯಾನ್ ಮಾಡಿ (Scan ABHA QR)",
+        optQrSub: "ಕ್ಯಾಮೆರಾ ಮುಂದೆ ಇರಿಸಿ (Point QR at camera)",
+        optMobTitle: "ಮೊಬೈಲ್ ಸಂಖ್ಯೆ (Mobile Number)",
+        optMobSub: "10-ಅಂಕಿಯ ಫೋನ್ ಸಂಖ್ಯೆ (10-Digit Phone OTP)",
+        optAbhaTitle: "14-ಅಂಕಿಯ ABHA ಕಾರ್ಡ್ (14-Digit ABHA ID)",
+        optAbhaSub: "91-XXXX-XXXX-XXXX (ABHA Number)",
+        optAadhTitle: "ಆಧಾರ್ ಕಾರ್ಡ್ (Aadhaar Card)",
+        optAadhSub: "12-ಅಂಕಿಯ ಆಧಾರ್ ಸಂಖ್ಯೆ (12-Digit UIDAI)",
+        optRegTitle: "ಹೊಸ ರೋಗಿ? (New Patient?)",
+        optRegSub: "ನೋಂದಣಿ & ABHA ರಚಿಸಿ (Register & Create ABHA)",
+        btnSelect: "ಆಯ್ಕೆಮಾಡಿ (Select)",
+        btnSelected: "✓ ಆಯ್ಕೆಯಾಗಿದೆ (Selected)",
+        btnOpenCam: "ಕ್ಯಾಮೆರಾ ತೆರೆದು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ (Open Camera to Scan)",
+        btnVerifyMob: "OTP ಪರಿಶೀಲಿಸಿ ದಾಖಲೆಗಳನ್ನು ಪಡೆಯಿರಿ (Verify Mobile OTP)",
+        btnFetchAbha: "ABHA ಪ್ರೊಫೈಲ್ ಪಡೆಯಿರಿ (Fetch ABHA Profile)",
+        btnVerifyAadh: "ಆಧಾರ್ e-KYC ಪರಿಶೀಲಿಸಿ (Verify Aadhaar e-KYC)",
+        pmjayTitle: "ಆಯುಷ್ಮಾನ್ ಭಾರತ್ PM-JAY ಸಕ್ರಿಯವಾಗಿದೆ (PM-JAY Active)",
+        pmjayDesc: "₹5,00,000 ವಾರ್ಷಿಕ ನಗದು ರಹಿತ ಚಿಕಿತ್ಸೆ (Cashless Approved)",
+        continueVoiceBtn: "ಲಕ್ಷಣಗಳನ್ನು ಹೇಳಲು ಮುಂದುವರಿಯಿರಿ (Continue to Symptoms) ➔",
+        headerBack: "ಹಿಂದಕ್ಕೆ (Back)",
         aiQuestion: "ನಿಮಗೆ ಎಲ್ಲಿ ನೋವಾಗುತ್ತಿದೆ? ಕೆಳಗಿನ ಭಾಗವನ್ನು ಸ್ಪರ್ಶಿಸಿ ಅಥವಾ ಮೈಕ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ.",
-        aiQuestionSub: "ಲಕ್ಷಣವನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಮೈಕ್ ಒತ್ತಿ ಮಾತನಾಡಿ",
+        aiQuestionSub: "ಲಕ್ಷಣವನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಮೈಕ್ ಒತ್ತಿ ಮಾತನಾಡಿ (Where does it hurt?)",
         aiVoicePrompt: "ನಿಮಗೆ ಎಲ್ಲಿ ನೋವಾಗುತ್ತಿದೆ? ಕೆಳಗಿನ ಭಾಗವನ್ನು ಸ್ಪರ್ಶಿಸಿ ಅಥವಾ ಮೈಕ್‌ನಲ್ಲಿ ಮಾತನಾಡಿ.",
-        kneeTitle: "ಮಂಡಿ & ಕೀಲು ನೋವು",
+        tabVoice: "🎙️ ಮಾತನಾಡಿ (Speak)",
+        tabType: "⌨️ ಟೈಪ್ ಮಾಡಿ (Type)",
+        typePrompt: "ನಿಮ್ಮ ಲಕ್ಷಣಗಳನ್ನು ವಿವರಿಸಿ (Describe symptoms in Kannada/English):",
+        typePlaceholder: "ಉದಾ: ನನಗೆ 3 ದಿನಗಳಿಂದ ತೀವ್ರ ತಲೆನೋವು, ಗಂಟಲು ನೋವು ಮತ್ತು ಜ್ವರವಿದೆ...",
+        quickChipsLabel: "⚡ ತ್ವರಿತ ಆಯ್ಕೆಗಳು (Quick 1-Tap Add Symptoms):",
+        typeTranslateBtn: "⚡ ಅನುವಾದ ಮತ್ತು ವಿಶ್ಲೇಷಣೆ (Translate & Analyze) ➔",
+        kneeTitle: "ಮಂಡಿ & ಕೀಲು ನೋವು (Knee & Joint Pain)",
         kneeVoice: "ಮಂಡಿ ನೋವು ದಾಖಲಾಗಿದೆ.",
-        chestTitle: "ತೀವ್ರ ಎದೆ ನೋವು",
+        chestTitle: "ತೀವ್ರ ಎದೆ ನೋವು (Severe Chest Pain - Emergency)",
         chestVoice: "ಎಚ್ಚರಿಕೆ! ಎದೆ ನೋವು ತುರ್ತು ಲಕ್ಷಣವಾಗಿದೆ. ತಕ್ಷಣ ಕೊಠಡಿ 1 ಕ್ಕೆ ತೆರಳಿ.",
-        feverTitle: "ತೀವ್ರ ಜ್ವರ & ಚಳಿ",
+        feverTitle: "ತೀವ್ರ ಜ್ವರ & ಚಳಿ (High Fever & Chills)",
         feverVoice: "ಜ್ವರ ದಾಖಲಾಗಿದೆ.",
-        stomachTitle: "ಹೊಟ್ಟೆ ನೋವು & ಗ್ಯಾಸ್ಟ್ರಿಕ್",
+        stomachTitle: "ಹೊಟ್ಟೆ ನೋವು & ಗ್ಯಾಸ್ಟ್ರಿಕ್ (Stomach Pain & Acidity)",
         stomachVoice: "ಹೊಟ್ಟೆ ನೋವು ದಾಖಲಾಗಿದೆ.",
-        micLabel: "ಮಾತನಾಡಲು ಮೈಕ್ ಒತ್ತಿ",
-        nextScanBtn: "ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ➔",
-        scanRxTitle: "ಹಳೆಯ ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಕಾಗದವನ್ನು ಇರಿಸಿ",
-        scanRxSub: "Sarvam Vision 3B ಕೈಬರಹವನ್ನು ಡಿಜಿಟೈಜ್ ಮಾಡುತ್ತದೆ",
-        scanRxAct: "ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
+        micLabel: "ಮಾತನಾಡಲು ಮೈಕ್ ಒತ್ತಿ (Tap Mic to Speak)",
+        nextScanBtn: "ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ (Next: Scan Rx) ➔",
+        scanRxTitle: "ಹಳೆಯ ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಕಾಗದವನ್ನು ಇರಿಸಿ (Place Prescription)",
+        scanRxSub: "Sarvam Vision 3B ಕೈಬರಹವನ್ನು ಡಿಜಿಟೈಜ್ ಮಾಡುತ್ತದೆ (AI Digitization)",
+        scanRxAct: "ಪ್ರಿಸ್ಕ್ರಿಪ್ಷನ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ (Capture & Digitize)",
         ocrSuccessVoice: "ಔಷಧಿ ವಿವರಗಳು ದಾಖಲಾಗಿವೆ.",
-        ocrHead: "ಗುರುತಿಸಲಾದ ಔಷಧಿಗಳು",
-        confirmTokenBtn: "ಟೋಕನ್ ಪಡೆಯಿರಿ ➔",
-        tokenDone: "ನೋಂದಣಿ ಪೂರ್ಣಗೊಂಡಿದೆ",
-        tokenSub: "ನಿಮ್ಮ OPD ಟೋಕನ್ ಸಂಖ್ಯೆ",
-        tokenMsg: "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ವೈದ್ಯರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.",
+        ocrHead: "ಗುರುತಿಸಲಾದ ಔಷಧಿಗಳು (Extracted Clinical Entities)",
+        confirmTokenBtn: "ಟೋಕನ್ ಪಡೆಯಿರಿ (Confirm & Generate Token) ➔",
+        tokenDone: "ನೋಂದಣಿ ಪೂರ್ಣಗೊಂಡಿದೆ (Clinical Intake Complete)",
+        tokenSub: "ನಿಮ್ಮ OPD ಟೋಕನ್ ಸಂಖ್ಯೆ (YOUR OPD TOKEN NUMBER)",
+        tokenMsg: "ನಿಮ್ಮ ವಿವರಗಳನ್ನು ವೈದ್ಯರಿಗೆ ಕಳುಹಿಸಲಾಗಿದೆ (Sent directly to Doctor).",
         tokenVoice: "ನೋಂದಣಿ ಮುಗಿದಿದೆ. ನಿಮ್ಮ ಟೋಕನ್ ಸಂಖ್ಯೆ 42. ಕೊಠಡಿ 4 ಕ್ಕೆ ತೆರಳಿ.",
-        nextPatBtn: "ಮುಂದಿನ ರೋಗಿ",
+        nextPatBtn: "ಮುಂದಿನ ರೋಗಿ (Start Next Patient)",
         transcriptionHint: "ನನಗೆ 6 ತಿಂಗಳಿಂದ ಎರಡೂ ಮೊಣಕಾಲುಗಳಲ್ಲಿ ನೋವು ಇದೆ",
-        listenBtn: "ಕೇಳಿ"
+        listenBtn: "ಕೇಳಿ (Listen)",
+        skipBtnText: "ದಾಖಲೆಗಳಿಲ್ಲ ➔ ಮುಂದುವರಿಯಿರಿ (Skip / No Documents ➔)"
       },
       "mr-IN": {
         langName: "मराठी",
         welcomeVoice: "मराठी भाषा निवडली आहे. कृपया आपली ओळख पद्धत निवडा.",
-        identifyTitle: "आपण आपली ओळख कशी सत्यापित करू इच्छिता?",
-        identifySub: "खालील पर्यायांपैकी एक निवडा",
-        optQrTitle: "QR कोड स्कॅन करा",
-        optQrSub: "कॅमेऱ्यासमोर ठेवा",
-        optMobTitle: "मोबाईल नंबर",
-        optMobSub: "10-अंकी फोन नंबर",
-        optAbhaTitle: "14-अंकी ABHA कार्ड",
-        optAbhaSub: "91-XXXX-XXXX-XXXX",
-        optAadhTitle: "आधार कार्ड",
-        optAadhSub: "12-अंकी आधार क्रमांक",
-        optRegTitle: "नवीन रुग्ण?",
-        optRegSub: "नोंदणी आणि ABHA तयार करा",
-        btnSelect: "निवडा",
-        btnSelected: "✓ निवडले",
-        btnOpenCam: "कॅमेरा उघडून QR स्कॅन करा",
-        btnVerifyMob: "OTP सत्यापित करा",
-        btnFetchAbha: "ABHA प्रोफाइल मिळवा",
-        btnVerifyAadh: "आधार e-KYC सत्यापित करा",
-        pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय",
-        pmjayDesc: "₹5,00,000 मोफत कॅशलेस उपचार",
-        continueVoiceBtn: "लक्षणे सांगण्यासाठी पुढे जा ➔",
-        headerBack: "मागे • Back",
+        identifyTitle: "आपण आपली ओळख कशी सत्यापित करू इच्छिता? (Identity Verification)",
+        identifySub: "खालील पर्यायांपैकी एक निवडा (Touch any option below)",
+        optQrTitle: "QR कोड स्कॅन करा (Scan ABHA QR)",
+        optQrSub: "कॅमेऱ्यासमोर ठेवा (Point QR at camera)",
+        optMobTitle: "मोबाईल नंबर (Mobile Number)",
+        optMobSub: "10-अंकी फोन नंबर (10-Digit Phone OTP)",
+        optAbhaTitle: "14-अंकी ABHA कार्ड (14-Digit ABHA ID)",
+        optAbhaSub: "91-XXXX-XXXX-XXXX (ABHA Number)",
+        optAadhTitle: "आधार कार्ड (Aadhaar Card)",
+        optAadhSub: "12-अंकी आधार क्रमांक (12-Digit UIDAI)",
+        optRegTitle: "नवीन रुग्ण? (New Patient?)",
+        optRegSub: "नोंदणी आणि ABHA तयार करा (Register & Create ABHA)",
+        btnSelect: "निवडा (Select)",
+        btnSelected: "✓ निवडले (Selected)",
+        btnOpenCam: "कॅमेरा उघडून QR स्कॅन करा (Open Camera to Scan)",
+        btnVerifyMob: "OTP सत्यापित करा (Verify Mobile OTP)",
+        btnFetchAbha: "ABHA प्रोफाइल मिळवा (Fetch ABHA Profile)",
+        btnVerifyAadh: "आधार e-KYC सत्यापित करा (Verify Aadhaar e-KYC)",
+        pmjayTitle: "आयुष्मान भारत PM-JAY सक्रिय (PM-JAY Active)",
+        pmjayDesc: "₹5,00,000 मोफत कॅशलेस उपचार (Cashless Approved)",
+        continueVoiceBtn: "लक्षणे सांगण्यासाठी पुढे जा (Continue to Symptoms) ➔",
+        headerBack: "मागे (Back)",
         aiQuestion: "आपल्याला कुठे त्रास किंवा वेदना होत आहे? खालील भागाला स्पर्श करा किंवा माईकमध्ये बोला.",
-        aiQuestionSub: "लक्षण निवडा किंवा बोलण्यासाठी माईक दाबा",
+        aiQuestionSub: "लक्षण निवडा किंवा बोलण्यासाठी माईक दाबा (Where does it hurt?)",
         aiVoicePrompt: "आपल्याला कुठे त्रास किंवा वेदना होत आहे? खालील भागाला स्पर्श करा किंवा माईकमध्ये बोला.",
-        kneeTitle: "गुडघे व सांधेदुखी",
+        tabVoice: "🎙️ बोला (Speak)",
+        tabType: "⌨️ टाईप करा (Type)",
+        typePrompt: "आपली लक्षणे सांगा (Describe symptoms in Marathi/English):",
+        typePlaceholder: "उदा: मला ३ दिवसांपासून तीव्र डोकेदुखी, घसादुखी आणि ताप आहे...",
+        quickChipsLabel: "⚡ जलद पर्याय (Quick 1-Tap Add Symptoms):",
+        typeTranslateBtn: "⚡ भाषांतर आणि विश्लेषण (Translate & Analyze) ➔",
+        kneeTitle: "गुडघे व सांधेदुखी (Knee & Joint Pain)",
         kneeVoice: "गुडघेदुखी नोंदवली गेली आहे.",
-        chestTitle: "छातीत तीव्र वेदना",
+        chestTitle: "छातीत तीव्र वेदना (Severe Chest Pain - Emergency)",
         chestVoice: "सावधान! छातीत तीव्र वेदना ही आणीबाणी आहे. ताबडतोब रूम 1 मध्ये जा.",
-        feverTitle: "तीव्र ताप व थंडी",
+        feverTitle: "तीव्र ताप व थंडी (High Fever & Chills)",
         feverVoice: "ताप नोंदवला गेला आहे.",
-        stomachTitle: "पोटदुखी व ॲसिडिटी",
+        stomachTitle: "पोटदुखी व ॲसिडिटी (Stomach Pain & Acidity)",
         stomachVoice: "पोटदुखी नोंदवली गेली आहे.",
-        micLabel: "बोलण्यासाठी माईक दाबा",
-        nextScanBtn: "प्रिस्क्रिप्शन स्कॅन करा ➔",
-        scanRxTitle: "जुने प्रिस्क्रिप्शन स्कॅनरखाली ठेवा",
-        scanRxSub: "Sarvam Vision 3B हस्ताक्षर डिजिटाईज करतो",
-        scanRxAct: "प्रिस्क्रिप्शन स्कॅन करा",
+        micLabel: "बोलण्यासाठी माईक दाबा (Tap Mic to Speak)",
+        nextScanBtn: "प्रिस्क्रिप्शन स्कॅन करा (Next: Scan Rx) ➔",
+        scanRxTitle: "जुने प्रिस्क्रिप्शन स्कॅनरखाली ठेवा (Place Prescription)",
+        scanRxSub: "Sarvam Vision 3B हस्ताक्षर डिजिटाईज करतो (AI Digitization)",
+        scanRxAct: "प्रिस्क्रिप्शन स्कॅन करा (Capture & Digitize)",
         ocrSuccessVoice: "प्रिस्क्रिप्शन यशस्वीरित्या स्कॅन झाले.",
-        ocrHead: "काढलेली औषधांची यादी",
-        confirmTokenBtn: "टोकन मिळवा ➔",
-        tokenDone: "नोंदणी पूर्ण झाली",
-        tokenSub: "आपला ओपीडी टोकन क्रमांक",
-        tokenMsg: "आपले तपशील डॉक्टरांना पाठवले आहेत.",
+        ocrHead: "काढलेली औषधांची यादी (Extracted Clinical Entities)",
+        confirmTokenBtn: "टोकन मिळवा (Confirm & Generate Token) ➔",
+        tokenDone: "नोंदणी पूर्ण झाली (Clinical Intake Complete)",
+        tokenSub: "आपला ओपीडी टोकन क्रमांक (YOUR OPD TOKEN NUMBER)",
+        tokenMsg: "आपले तपशील डॉक्टरांना पाठवले आहेत (Sent directly to Doctor).",
         tokenVoice: "आपली नोंदणी पूर्ण झाली. टोकन नंबर 42. कृपया रूम 4 मध्ये जा.",
-        nextPatBtn: "पुढील रुग्ण",
+        nextPatBtn: "पुढील रुग्ण (Start Next Patient)",
         transcriptionHint: "मला ६ महिन्यांपासून दोन्ही गुडघ्यांत वेदना होत आहेत",
-        listenBtn: "ऐका"
+        listenBtn: "ऐका (Listen)",
+        skipBtnText: "कागदपत्रे नाहीत ➔ पुढे जा (Skip / No Documents ➔)"
       },
       "bn-IN": {
         langName: "বাংলা",
         welcomeVoice: "বাংলা ভাষা নির্বাচিত হয়েছে। অনুগ্রহ করে আপনার পরিচয় যাচাই পদ্ধতি নির্বাচন করুন।",
-        identifyTitle: "আপনি কীভাবে আপনার পরিচয় যাচাই করতে চান?",
-        identifySub: "নীচের বিকল্পগুলির একটি স্পর্শ করুন",
-        optQrTitle: "QR কোড স্ক্যান করুন",
-        optQrSub: "ক্যামেরার সামনে রাখুন",
-        optMobTitle: "মোবাইল নম্বর",
-        optMobSub: "১০-সংখ্যার ফোন নম্বর",
-        optAbhaTitle: "১৪-সংখ্যার ABHA আইডি",
-        optAbhaSub: "91-XXXX-XXXX-XXXX",
-        optAadhTitle: "আধার কার্ড",
-        optAadhSub: "১২-সংখ্যার আধার নম্বর",
-        optRegTitle: "নতুন রোগী?",
-        optRegSub: "নিবন্ধন ও ABHA তৈরি করুন",
-        btnSelect: "নির্বাচন করুন",
-        btnSelected: "✓ নির্বাচিত",
-        btnOpenCam: "ক্যামেরা খুলে QR স্ক্যান করুন",
-        btnVerifyMob: "OTP যাচাই করুন",
-        btnFetchAbha: "ABHA প্রোফাইল পান",
-        btnVerifyAadh: "আধার e-KYC যাচাই করুন",
-        pmjayTitle: "আয়ুষ্মান ভারত PM-JAY সক্রিয়",
-        pmjayDesc: "₹৫,০০,০০০ বার্ষিক ক্যাশলেস চিকিৎসা",
-        continueVoiceBtn: "লক্ষণ জানাতে এগিয়ে যান ➔",
-        headerBack: "পেছনে • Back",
+        identifyTitle: "আপনি কীভাবে আপনার পরিচয় যাচাই করতে চান? (Identity Verification)",
+        identifySub: "নীচের বিকল্পগুলির একটি স্পর্শ করুন (Touch any option below)",
+        optQrTitle: "QR কোড স্ক্যান করুন (Scan ABHA QR)",
+        optQrSub: "ক্যামেরার সামনে রাখুন (Point QR at camera)",
+        optMobTitle: "মোবাইল নম্বর (Mobile Number)",
+        optMobSub: "১০-সংখ্যার ফোন নম্বর (10-Digit Phone OTP)",
+        optAbhaTitle: "১৪-সংখ্যার ABHA আইডি (14-Digit ABHA ID)",
+        optAbhaSub: "91-XXXX-XXXX-XXXX (ABHA Number)",
+        optAadhTitle: "আধার কার্ড (Aadhaar Card)",
+        optAadhSub: "১২-সংখ্যার আধার নম্বর (12-Digit UIDAI)",
+        optRegTitle: "নতুন রোগী? (New Patient?)",
+        optRegSub: "নিবন্ধন ও ABHA তৈরি করুন (Register & Create ABHA)",
+        btnSelect: "নির্বাচন করুন (Select)",
+        btnSelected: "✓ নির্বাচিত (Selected)",
+        btnOpenCam: "ক্যামেরা খুলে QR স্ক্যান করুন (Open Camera to Scan)",
+        btnVerifyMob: "OTP যাচাই করুন (Verify Mobile OTP)",
+        btnFetchAbha: "ABHA প্রোফাইল পান (Fetch ABHA Profile)",
+        btnVerifyAadh: "আধার e-KYC যাচাই করুন (Verify Aadhaar e-KYC)",
+        pmjayTitle: "আয়ুষ্মান ভারত PM-JAY সক্রিয় (PM-JAY Active)",
+        pmjayDesc: "₹৫,০০,০০০ বার্ষিক ক্যাশলেস চিকিৎসা (Cashless Approved)",
+        continueVoiceBtn: "লক্ষণ জানাতে এগিয়ে যান (Continue to Symptoms) ➔",
+        headerBack: "পেছনে (Back)",
         aiQuestion: "আপনার কোথায় ব্যথা বা সমস্যা হচ্ছে? নীচের অংশে স্পর্শ করুন বা মাইকে বলুন।",
-        aiQuestionSub: "লক্ষণ নির্বাচন করুন বা মাইক টিপে বলুন",
+        aiQuestionSub: "লক্ষণ নির্বাচন করুন বা মাইক টিপে বলুন (Where does it hurt?)",
         aiVoicePrompt: "আপনার কোথায় ব্যথা বা সমস্যা হচ্ছে? নীচের অংশে স্পর্শ করুন বা মাইকে বলুন।",
-        kneeTitle: "হাঁটু ও জয়েন্টে ব্যথা",
+        tabVoice: "🎙️ বলুন (Speak)",
+        tabType: "⌨️ টাইপ করুন (Type)",
+        typePrompt: "আপনার লক্ষণগুলি বর্ণনা করুন (Describe symptoms in Bengali/English):",
+        typePlaceholder: "উদা: আমার ৩ দিন ধরে তীব্র মাথাব্যথা, গলা ব্যথা এবং জ্বর রয়েছে...",
+        quickChipsLabel: "⚡ দ্রুত বিকল্প (Quick 1-Tap Add Symptoms):",
+        typeTranslateBtn: "⚡ অনুবাদ ও বিশ্লেষণ (Translate & Analyze) ➔",
+        kneeTitle: "হাঁটু ও জয়েন্টে ব্যথা (Knee & Joint Pain)",
         kneeVoice: "হাঁটুর ব্যথা নথিভুক্ত করা হয়েছে।",
-        chestTitle: "বুকে তীব্র ব্যথা",
+        chestTitle: "বুকে তীব্র ব্যথা (Severe Chest Pain - Emergency)",
         chestVoice: "সতর্কতা! বুকে তীব্র ব্যথা জরুরি লক্ষণ। অবিলম্বে রুম ১-এ যান।",
-        feverTitle: "তীব্র জ্বর ও কাঁপুনি",
+        feverTitle: "তীব্র জ্বর ও কাঁপুনি (High Fever & Chills)",
         feverVoice: "জ্বর নথিভুক্ত করা হয়েছে।",
-        stomachTitle: "পেট ব্যথা ও এসিডিটি",
+        stomachTitle: "পেট ব্যথা ও এসিডিটি (Stomach Pain & Acidity)",
         stomachVoice: "পেট ব্যথা নথিভুক্ত করা হয়েছে।",
-        micLabel: "বলতে মাইক টিপুন",
-        nextScanBtn: "প্রেসক্রিপশন স্ক্যান করুন ➔",
-        scanRxTitle: "পুরোনো প্রেসক্রিপশন স্ক্যানারের নিচে রাখুন",
-        scanRxSub: "Sarvam Vision 3B হাতের লেখা ডিজিটাইজ করে",
-        scanRxAct: "প্রেসক্রিপশন স্ক্যান করুন",
+        micLabel: "বলতে মাইক টিপুন (Tap Mic to Speak)",
+        nextScanBtn: "প্রেসক্রিপশন স্ক্যান করুন (Next: Scan Rx) ➔",
+        scanRxTitle: "পুরোনো প্রেসক্রিপশন স্ক্যানারের নিচে রাখুন (Place Prescription)",
+        scanRxSub: "Sarvam Vision 3B হাতের লেখা ডিজিটাইজ করে (AI Digitization)",
+        scanRxAct: "প্রেসক্রিপশন স্ক্যান করুন (Capture & Digitize)",
         ocrSuccessVoice: "ওষুধের তালিকা নথিভুক্ত হয়েছে।",
-        ocrHead: "শনাক্তকৃত ওষুধসমূহ",
-        confirmTokenBtn: "টোকেন নিন ➔",
-        tokenDone: "নিবন্ধন সম্পন্ন হয়েছে",
-        tokenSub: "আপনার ওপিডি টোকেন নম্বর",
-        tokenMsg: "আপনার তথ্য ডাক্তারের কাছে পাঠানো হয়েছে।",
+        ocrHead: "শনাক্তকৃত ওষুধসমূহ (Extracted Clinical Entities)",
+        confirmTokenBtn: "টোকেন নিন (Confirm & Generate Token) ➔",
+        tokenDone: "নিবন্ধন সম্পন্ন হয়েছে (Clinical Intake Complete)",
+        tokenSub: "আপনার ওপিডি টোকেন নম্বর (YOUR OPD TOKEN NUMBER)",
+        tokenMsg: "আপনার তথ্য ডাক্তারের কাছে পাঠানো হয়েছে (Sent directly to Doctor).",
         tokenVoice: "নিবন্ধন সম্পন্ন হয়েছে। আপনার টোকেন নম্বর 42। রুম ৪-এ যান।",
-        nextPatBtn: "পরবর্তী রোগী",
+        nextPatBtn: "পরবর্তী রোগী (Start Next Patient)",
         transcriptionHint: "আমার 6 মাস ধরে দুই হাঁটুতে ব্যথা",
-        listenBtn: "শুনুন"
+        listenBtn: "শুনুন (Listen)",
+        skipBtnText: "প্রেসক্রিপশন নেই ➔ এগিয়ে যান (Skip / No Documents ➔)"
       },
       "gu-IN": {
         langName: "ગુજરાતી",
         welcomeVoice: "ગુજરાતી ભાષા પસંદ કરવામાં આવી છે. કૃપા કરીને ઓળખ પદ્ધતિ પસંદ કરો.",
-        identifyTitle: "તમે તમારી ઓળખ કેવી રીતે ચકાસવા માંગો છો?",
-        identifySub: "નીચેના વિકલ્પોમાંથી એક પસંદ કરો",
-        optQrTitle: "QR કોડ સ્કેન કરો",
-        optQrSub: "કેમેરા સામે રાખો",
-        optMobTitle: "મોબાઇલ નંબર",
-        optMobSub: "10-આંકડાનો ફોન નંબર",
-        optAbhaTitle: "14-આંકડાનું ABHA કાર્ડ",
-        optAbhaSub: "91-XXXX-XXXX-XXXX",
-        optAadhTitle: "આધાર કાર્ડ",
-        optAadhSub: "12-આંકડાનો આધાર નંબર",
-        optRegTitle: "નવા દર્દી?",
-        optRegSub: "નોંધણી અને ABHA બનાવો",
-        btnSelect: "પસંદ કરો",
-        btnSelected: "✓ પસંદ કરેલ",
-        btnOpenCam: "કેમેરા ખોલીને QR સ્કેન કરો",
-        btnVerifyMob: "OTP ચકાસો",
-        btnFetchAbha: "ABHA પ્રોફાઇલ મેળવો",
-        btnVerifyAadh: "આધાર e-KYC ચકાસો",
-        pmjayTitle: "આયુષ્માન ભારત PM-JAY સક્રિય",
-        pmjayDesc: "₹5,00,000 મફત કેશલેસ સારવાર",
-        continueVoiceBtn: "લક્ષણો જણાવવા આગળ વધો ➔",
-        headerBack: "પાછળ • Back",
+        identifyTitle: "તમે તમારી ઓળખ કેવી રીતે ચકાસવા માંગો છો? (Identity Verification)",
+        identifySub: "નીચેના વિકલ્પોમાંથી એક પસંદ કરો (Touch any option below)",
+        optQrTitle: "QR કોડ સ્કેન કરો (Scan ABHA QR)",
+        optQrSub: "કેમેરા સામે રાખો (Point QR at camera)",
+        optMobTitle: "મોબાઇલ નંબર (Mobile Number)",
+        optMobSub: "10-આંકડાનો ફોન નંબર (10-Digit Phone OTP)",
+        optAbhaTitle: "14-આંકડાનું ABHA કાર્ડ (14-Digit ABHA ID)",
+        optAbhaSub: "91-XXXX-XXXX-XXXX (ABHA Number)",
+        optAadhTitle: "આધાર કાર્ડ (Aadhaar Card)",
+        optAadhSub: "12-આંકડાનો આધાર નંબર (12-Digit UIDAI)",
+        optRegTitle: "નવા દર્દી? (New Patient?)",
+        optRegSub: "નોંધણી અને ABHA બનાવો (Register & Create ABHA)",
+        btnSelect: "પસંદ કરો (Select)",
+        btnSelected: "✓ પસંદ કરેલ (Selected)",
+        btnOpenCam: "કેમેરા ખોલીને QR સ્કેન કરો (Open Camera to Scan)",
+        btnVerifyMob: "OTP ચકાસો (Verify Mobile OTP)",
+        btnFetchAbha: "ABHA પ્રોફાઇલ મેળવો (Fetch ABHA Profile)",
+        btnVerifyAadh: "આધાર e-KYC ચકાસો (Verify Aadhaar e-KYC)",
+        pmjayTitle: "આયુષ્માન ભારત PM-JAY સક્રિય (PM-JAY Active)",
+        pmjayDesc: "₹5,00,000 મફત કેશલેસ સારવાર (Cashless Approved)",
+        continueVoiceBtn: "લક્ષણો જણાવવા આગળ વધો (Continue to Symptoms) ➔",
+        headerBack: "પાછળ (Back)",
         aiQuestion: "તમને ક્યાં દુખાવો થાય છે? નીચેના ભાગને સ્પર્શ કરો અથવા માઇકમાં બોલો.",
-        aiQuestionSub: "લક્ષણ પસંદ કરો અથવા બોલવા માટે માઇક દબાવો",
+        aiQuestionSub: "લક્ષણ પસંદ કરો અથવા બોલવા માટે માઇક દબાવો (Where does it hurt?)",
         aiVoicePrompt: "તમને ક્યાં દુખાવો થાય છે? નીચેના ભાગને સ્પર્શ કરો અથવા માઇકમાં બોલો.",
-        kneeTitle: "ઘૂંટણ અને સાંધાનો દુખાવો",
+        tabVoice: "🎙️ બોલો (Speak)",
+        tabType: "⌨️ ટાઈપ કરો (Type)",
+        typePrompt: "તમારા લક્ષણો વર્ણવો (Describe symptoms in Gujarati/English):",
+        typePlaceholder: "દા.ત.: મને છેલ્લા 3 દિવસથી ગંભીર માથાનો દુખાવો, ગળામાં દુખાવો અને તાવ છે...",
+        quickChipsLabel: "⚡ ઝડપી વિકલ્પો (Quick 1-Tap Add Symptoms):",
+        typeTranslateBtn: "⚡ અનુવાદ અને વિશ્લેષણ (Translate & Analyze) ➔",
+        kneeTitle: "ઘૂંટણ અને સાંધાનો દુખાવો (Knee & Joint Pain)",
         kneeVoice: "ઘૂંટણનો દુખાવો નોંધાયેલ છે.",
-        chestTitle: "છાતીમાં તીવ્ર દુખાવો",
+        chestTitle: "છાતીમાં તીવ્ર દુખાવો (Severe Chest Pain - Emergency)",
         chestVoice: "ચેતવણી! છાતીમાં દુખાવો કટોકટીનું લક્ષણ છે. તરત જ રૂમ 1 માં જાઓ.",
-        feverTitle: "તીવ્ર તાવ અને ઠંડી",
+        feverTitle: "તીવ્ર તાવ અને ઠંડી (High Fever & Chills)",
         feverVoice: "તાવ નોંધાયેલ છે.",
-        stomachTitle: "પેટમાં દુખાવો અને એસિડિટી",
+        stomachTitle: "પેટમાં દુખાવો અને એસિડિટી (Stomach Pain & Acidity)",
         stomachVoice: "પેટનો દુખાવો નોંધાયેલ છે.",
-        micLabel: "બોલવા માટે માઇક દબાવો",
-        nextScanBtn: "પ્રિસ્ક્રિપ્શન સ્કેન કરો ➔",
-        scanRxTitle: "જૂનું પ્રિસ્ક્રિપ્શન સ્કેનર નીચે મૂકો",
-        scanRxSub: "Sarvam Vision 3B હસ્તલેખનને ડિજિટાઈઝ કરે છે",
-        scanRxAct: "પ્રિસ્ક્રિપ્શન સ્કેન કરો",
+        micLabel: "બોલવા માટે માઇક દબાવો (Tap Mic to Speak)",
+        nextScanBtn: "પ્રિસ્ક્રિપ્શન સ્કેન કરો (Next: Scan Rx) ➔",
+        scanRxTitle: "જૂનું પ્રિસ્ક્રિપ્શન સ્કેનર નીચે મૂકો (Place Prescription)",
+        scanRxSub: "Sarvam Vision 3B હસ્તલેખનને ડિજિટાઈઝ કરે છે (AI Digitization)",
+        scanRxAct: "પ્રિસ્ક્રિપ્શન સ્કેન કરો (Capture & Digitize)",
         ocrSuccessVoice: "દવાઓની વિગતો નોંધાઈ ગઈ છે.",
-        ocrHead: "શોધાયેલ દવાઓ",
-        confirmTokenBtn: "ટોકન મેળવો ➔",
-        tokenDone: "નોંધણી પૂર્ણ થઈ",
-        tokenSub: "તમારો OPD ટોકન નંબર",
-        tokenMsg: "તમારી વિગતો ડૉક્ટરને મોકલી દેવામાં આવી છે.",
+        ocrHead: "શોધાયેલ દવાઓ (Extracted Clinical Entities)",
+        confirmTokenBtn: "ટોકન મેળવો (Confirm & Generate Token) ➔",
+        tokenDone: "નોંધણી પૂર્ણ થઈ (Clinical Intake Complete)",
+        tokenSub: "તમારો OPD ટોકન નંબર (YOUR OPD TOKEN NUMBER)",
+        tokenMsg: "તમારી વિગતો ડૉક્ટરને મોકલી દેવામાં આવી છે (Sent directly to Doctor).",
         tokenVoice: "તમારી નોંધણી પૂર્ણ થઈ. તમારો ટોકન નંબર 42 છે. રૂમ 4 માં જાઓ.",
-        nextPatBtn: "આગળનો દર્દી",
+        nextPatBtn: "આગળનો દર્દી (Start Next Patient)",
         transcriptionHint: "મને 6 મહિનાથી બંને ઘૂંટણમાં દુખાવો છે",
-        listenBtn: "સાંભળો"
+        listenBtn: "સાંભળો (Listen)",
+        skipBtnText: "દસ્તાવેજો નથી ➔ આગળ વધો (Skip / No Documents ➔)"
       }
     };
-
     let currentLanguage = "en-IN";
     let isVoiceActive = true;
     let currentAudioPlayer = null;
@@ -1610,13 +1664,18 @@
       }
     }
 
-    function setLang(langCode) {
+        function setLang(langCode) {
       currentLanguage = langCode;
       const dict = I18N[langCode] || I18N["en-IN"];
       
       function setTxt(id, val) {
         const el = document.getElementById(id);
-        if (el && val) el.innerText = val;
+        if (el && val !== undefined) el.innerText = val;
+      }
+
+      function setAttr(id, attr, val) {
+        const el = document.getElementById(id);
+        if (el && val !== undefined) el.setAttribute(attr, val);
       }
 
       setTxt("lbl-identify-title", dict.identifyTitle);
@@ -1643,6 +1702,13 @@
       setTxt("ai-question-sub", dict.aiQuestionSub);
       setTxt("transcription-text", '"' + (dict.transcriptionHint || "Speak your symptoms clearly") + '"');
 
+      setTxt("lbl-tab-voice", dict.tabVoice || "🎙️ Speak");
+      setTxt("lbl-tab-type", dict.tabType || "⌨️ Type");
+      setTxt("lbl-type-prompt", dict.typePrompt || "Describe your symptoms in your own words:");
+      setAttr("typed-symptom-input", "placeholder", dict.typePlaceholder || "e.g., I have had severe headache, sore throat, and fever...");
+      setTxt("lbl-quick-chips", dict.quickChipsLabel || "⚡ Quick 1-Tap Add Symptoms:");
+      setTxt("btn-type-submit-txt", dict.typeTranslateBtn || "⚡ Translate & Analyze ➔");
+
       setTxt("sym-knee-title", dict.kneeTitle);
       setTxt("sym-chest-title", dict.chestTitle);
       setTxt("sym-fever-title", dict.feverTitle);
@@ -1653,20 +1719,22 @@
 
       setTxt("lbl-scan-rx-title", dict.scanRxTitle);
       setTxt("lbl-scan-rx-sub", dict.scanRxSub);
-      setTxt("btn-scan-rx-act", (dict.scanRxAct || "Open Camera & Digitize"));
+      setTxt("btn-scan-rx-act", (dict.scanRxAct || "Capture & Digitize Prescription"));
       setTxt("lbl-ocr-head", (dict.ocrHead || "Extracted Clinical Entities (96% Accuracy)"));
       setTxt("btn-confirm-token", (dict.confirmTokenBtn || "Confirm & Generate Token ➔"));
       
-      const skipBtnText = currentLanguage === "te-IN" ? "పత్రాలు లేవు ➔ స్కిప్ చేయండి" : (currentLanguage === "hi-IN" ? "पर्चे नहीं हैं ➔ आगे बढ़ें" : (currentLanguage === "ta-IN" ? "மருந்து சீட்டு இல்லை ➔ தொடரவும்" : (currentLanguage === "kn-IN" ? "ದಾಖಲೆಗಳಿಲ್ಲ ➔ ಮುಂದುವರಿಯಿರಿ" : (currentLanguage === "mr-IN" ? "कागदपत्रे नाहीत ➔ पुढे जा" : (currentLanguage === "bn-IN" ? "প্রেসক্রিপশন নেই ➔ এগিয়ে যান" : (currentLanguage === "gu-IN" ? "દસ્તાવેજો નથી ➔ આગળ વધો" : "Skip / No Documents ➔"))))));
-      setTxt("btn-skip-rx", skipBtnText);
+      setTxt("btn-skip-rx", dict.skipBtnText || "Skip / No Documents ➔");
       setTxt("lbl-token-done", dict.tokenDone);
       setTxt("lbl-token-sub", dict.tokenSub);
       setTxt("lbl-token-msg", dict.tokenMsg);
       setTxt("btn-next-pat", dict.nextPatBtn);
       setTxt("lbl-pmjay-title", dict.pmjayTitle);
       setTxt("lbl-pmjay-desc", dict.pmjayDesc);
+
+      // Refresh Type Chips
       if (typeof populateTypeChips === "function") populateTypeChips();
 
+      // Audio feedback
       speakAudio(dict.welcomeVoice);
       goToScreen("screen-identify");
     }
