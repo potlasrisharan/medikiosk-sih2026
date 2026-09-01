@@ -1013,7 +1013,7 @@
       if (queueItem) {
         queueItem.classList.remove("border-[#FFA530]", "border-rose-500", "border-[#D9CDBA]/30");
         queueItem.classList.add("border-emerald-500", "bg-emerald-50");
-        const statusEl = queueItem.querySelector(".text-[#FFA530], .text-rose-400, .text-slate-500");
+        const statusEl = queueItem.querySelector(".text-\\[\\#FFA530\\], .text-rose-400, .text-slate-500");
         if (statusEl) {
            statusEl.innerHTML = `<span class="text-emerald-600 font-bold">✅ Approved & Pushed</span>`;
         }
