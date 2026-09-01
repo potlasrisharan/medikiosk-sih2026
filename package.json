@@ -4,5 +4,9 @@
   "description": "MediKiosk Sovereign AI Multimodal Clinical Intake Suite",
   "scripts": {
     "build": "echo Build OK"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.109.0",
+    "dotenv": "^17.4.2"
   }
 }

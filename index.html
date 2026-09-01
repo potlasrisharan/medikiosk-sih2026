@@ -2028,7 +2028,7 @@
       const generatedPatId = `pat-${Math.floor(100000 + Math.random() * 900000)}`;
 
       try {
-        const res = await fetch("http://localhost:8000/api/v1/abdm/registration/create-abha", {
+        const res = await fetch("/api/v1/abdm/registration/create-abha", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -2338,7 +2338,7 @@
 
       // Try live FastAPI / Sarvam backend endpoint
       try {
-        const ocrRes = await fetch("http://localhost:8000/api/v1/documents/ocr", {
+        const ocrRes = await fetch("/api/v1/documents/ocr", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ encounter_id: "enc-0042", document_type: "PRESCRIPTION" })
@@ -2494,7 +2494,7 @@
         return;
       }
 
-      fetch("http://localhost:8000/api/v1/ai/tts", {
+      fetch("/api/v1/ai/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: cleanText, language_code: currentLanguage })
@@ -2590,7 +2590,7 @@
       
       // 2. Call Backend for Deep Clinical Translation
       try {
-        const translateReq = await fetch("http://localhost:8000/api/v1/ai/translate", {
+        const translateReq = await fetch("/api/v1/ai/translate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -3107,7 +3107,7 @@
 
             // 1. Primary Inference: Sovereign Sarvam-105B Foundational Indic LLM
       try {
-        const sarvamLlmRes = await fetch("http://localhost:8000/api/v1/ai/llm-proxy", {
+        const sarvamLlmRes = await fetch("/api/v1/ai/llm-proxy", {
           method: "POST",
           signal: (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(15000) : undefined,
           headers: {
@@ -3155,7 +3155,7 @@
         console.log("Sarvam-105B fallback engaged:", sarvamErr);
         // 2. Secondary Fallback: LLM Proxy (backend handles routing to Groq or Sarvam internally)
         try {
-          const groqRes = await fetch("http://localhost:8000/api/v1/ai/llm-proxy", {
+          const groqRes = await fetch("/api/v1/ai/llm-proxy", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -3521,7 +3521,7 @@
       }
 
       try {
-        const res = await fetch("http://localhost:8000/api/v1/ai/translate", {
+        const res = await fetch("/api/v1/ai/translate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
