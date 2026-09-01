@@ -338,50 +338,6 @@
   <script>
     lucide.createIcons();
 
-     catch (err) {
-        console.warn("Backend offline, using local state queue");
-      }
-    }
-
-    function renderDynamicQueue(queue) {
-      const container = document.getElementById("queue-container");
-      if (!container || !queue || queue.length === 0) return;
-
-      container.innerHTML = queue.map((p, idx) => `
-        <div onclick="selectEncounter('${p.encounter_id}')" class="p-4 rounded-xl border ${idx === 0 ? 'border-blue-500/50 bg-blue-950/20' : 'border-[#D9CDBA]/60 bg-white border border-[#D9CDBA]/80 shadow-sm/60'} hover:border-[#D9CDBA]/60 transition cursor-pointer space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black px-2.5 py-0.5 rounded bg-[#D9CDBA]/200/20 text-[#223D79]">${p.token_number}</span>
-            <span class="text-xs ${p.pmjay_eligible ? 'text-emerald-700' : 'text-[#77797C]'} font-bold">${p.pmjay_eligible ? 'PM-JAY Active' : 'General'}</span>
-          </div>
-          <div>
-            <h4 class="font-bold text-sm text-[#223D79]">${p.patient_name} (${p.age}${p.gender === 'MALE' ? 'M' : 'F'})</h4>
-            <p class="text-xs text-[#77797C] line-clamp-1 mt-0.5">${p.chief_complaint}</p>
-          </div>
-          <div class="flex items-center justify-between text-[11px] text-[#77797C] pt-1 border-t border-[#D9CDBA]/60/60">
-            <span>${p.system_type || 'AYURVEDIC'}</span>
-            <span>${p.created_at || 'Just now'}</span>
-          </div>
-        </div>
-      `).join("");
-    }
-     catch (e) {
-        console.log("Using cached queue data");
-      }
-    }
-
-    async function selectEncounter(id) {
-      try {
-        const res = await fetch(`/api/v1/doctor/encounter/${id}/soap`);
-        if (res.ok) {
-          const soap = await res.json();
-          document.getElementById("soap-s").innerText = soap.subjective;
-          document.getElementById("soap-o").innerText = soap.objective;
-          document.getElementById("soap-a").innerText = soap.assessment;
-          document.getElementById("soap-p").value = soap.plan;
-        }
-      } catch (e) {}
-    }
-
     async function showFhirModal() {
       try {
         const encId = typeof currentSelectedEncId !== 'undefined' ? currentSelectedEncId : 'enc-0042';
