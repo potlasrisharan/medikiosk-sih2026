@@ -2489,6 +2489,11 @@
         .replace(/\bOPD\b/gi, "OPD")
         .trim();
 
+      if (currentLanguage === "en-IN" || currentLanguage === "hi-IN") {
+        playBrowserSynthesis(cleanText);
+        return;
+      }
+
       fetch("http://localhost:8000/api/v1/ai/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
