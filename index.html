@@ -1886,7 +1886,6 @@
 
       // 2. Update the Right-Side Verified Patient Status Card
       applyVerifiedPatientUI();
-
       // 3. Ensure we are on Step 2 (Identity Screen)
       goToScreen("screen-identify");
 
@@ -2559,34 +2558,41 @@
 
     // Instant Translation Dictionary for Zero-Latency Local Fallback
     function getDeterministicTranslation(text) {
-      if (!text) return { translation: "General clinical consultation requested", isEmergency: false };
-      const lower = text.toLowerCase();
+      if (!text || text.trim().length === 0) return { translation: "Patient consultation requested", isEmergency: false };
+      const raw = text.trim();
+      const lower = raw.toLowerCase();
       
-      // 1. Emergency / Red-flags
-      if (lower.includes("ఛాతీ") || lower.includes("గుండె") || lower.includes("సీనే") || lower.includes("सीने") || lower.includes("chest") || lower.includes("heart") || lower.includes("bullet") || lower.includes("బుల్లెట్") || lower.includes("రక్తం") || lower.includes("खून")) {
-        return { translation: "Acute retrosternal crushing chest pain with cardiac distress (EMERGENCY STAT)", isEmergency: true };
+      // 1. Emergency detection
+      const isEmerg = lower.includes("ఛాతీ") || lower.includes("గుండె") || lower.includes("సీనే") || lower.includes("सीने") || lower.includes("chest") || lower.includes("heart") || lower.includes("bullet") || lower.includes("బుల్లెట్") || lower.includes("రక్తం") || lower.includes("खून") || lower.includes("stroke") || lower.includes("పక్షవాతం");
+      
+      // If already English, return directly
+      if (/^[a-zA-Z0-9\s.,'?!()-]+$/.test(raw)) {
+        return { translation: raw + (isEmerg ? " (EMERGENCY STAT)" : ""), isEmergency: isEmerg };
       }
-      // 2. Stomach / Acidity / Epigastric Pain (Checked BEFORE generic pain!)
-      if (lower.includes("కడుపు") || lower.includes("ఉదరం") || lower.includes("మంట") || lower.includes("అజీర్ణం") || lower.includes("గ్యాస్") || lower.includes("పేట్") || lower.includes("पेट") || lower.includes("जलन") || lower.includes("गैस") || lower.includes("stomach") || lower.includes("acidity") || lower.includes("gastric")) {
-        return { translation: "Severe epigastric burning pain, acid regurgitation (Amlapitta), and stomach discomfort for 3 weeks", isEmergency: false };
+
+      // Dynamic clean symptom mapping for non-English inputs
+      let parts = [];
+      if (lower.includes("ఛాతీ") || lower.includes("గుండె") || lower.includes("सीने") || lower.includes("chest") || lower.includes("heart")) parts.push("Chest pain / cardiac distress");
+      if (lower.includes("కడుపు") || lower.includes("ఉదరం") || lower.includes("పేట్") || lower.includes("पेट") || lower.includes("stomach") || lower.includes("belly")) parts.push("Abdominal pain / stomach discomfort");
+      if (lower.includes("మంట") || lower.includes("అజీర్ణం") || lower.includes("గ్యాస్") || lower.includes("जलन") || lower.includes("गैस") || lower.includes("acidity")) parts.push("Acid reflux / epigastric burning");
+      if (lower.includes("మోకాలు") || lower.includes("మోకాళ్ళ") || lower.includes("కీళ్ళు") || lower.includes("కీళ్ల") || lower.includes("घुटने") || lower.includes("जोड़ों") || lower.includes("knee") || lower.includes("joint")) parts.push("Knee / joint pain and stiffness");
+      if (lower.includes("జ్వరం") || lower.includes("బుఖార్") || lower.includes("बुखार") || lower.includes("fever")) parts.push("Fever and elevated temperature");
+      if (lower.includes("చలి") || lower.includes("ఠండ్") || lower.includes("ठंड") || lower.includes("chills")) parts.push("Chills and shivering");
+      if (lower.includes("తల") || lower.includes("తలపోటు") || lower.includes("సిర్") || lower.includes("सिर") || lower.includes("headache")) parts.push("Headache / cephalea");
+      if (lower.includes("దగ్గు") || lower.includes("ఖాసీ") || lower.includes("खांसी") || lower.includes("cough")) parts.push("Cough / respiratory irritation");
+      if (lower.includes("గొంతు") || lower.includes("గలా") || lower.includes("गला") || lower.includes("throat")) parts.push("Sore throat / pharyngeal discomfort");
+      if (lower.includes("కన్ను") || lower.includes("కళ్ళు") || lower.includes("ఆంఖ్") || lower.includes("आंख") || lower.includes("eye")) parts.push("Eye pain / visual irritation");
+      if (lower.includes("నడుము") || lower.includes("కమర్") || lower.includes("कमर") || lower.includes("back")) parts.push("Lower back pain / lumbar stiffness");
+      if (lower.includes("వాంతులు") || lower.includes("ఉల్టీ") || lower.includes("उल्टी") || lower.includes("vomit")) parts.push("Nausea and vomiting");
+      if (lower.includes("నొప్పి") || lower.includes("దర్ద్") || lower.includes("दर्द") || lower.includes("pain")) {
+        if (parts.length === 0) parts.push("Localized somatic pain");
       }
-      // 3. Knee / Joint pain
-      if (lower.includes("మోకాలు") || lower.includes("మోకాళ్ళ") || lower.includes("కీళ్ళు") || lower.includes("కీళ్ల") || lower.includes("సంధి") || lower.includes("घुटने") || lower.includes("घुटनों") || lower.includes("जोड़ों") || lower.includes("knee") || lower.includes("joint") || lower.includes("arthritis")) {
-        return { translation: "Bilateral knee joint pain, morning stiffness, and crepitus for 6 months (Sandhigata Vata)", isEmergency: false };
+
+      if (parts.length > 0) {
+        return { translation: parts.join(" • ") + (isEmerg ? " (EMERGENCY STAT)" : ""), isEmergency: isEmerg };
       }
-      // 4. Fever / Chills
-      if (lower.includes("జ్వరం") || lower.includes("చలి") || lower.includes("తాపం") || lower.includes("बुखार") || lower.includes("fever") || lower.includes("chills")) {
-        return { translation: "High-grade fever with chills, rigors, and generalized body aches for 4 days", isEmergency: false };
-      }
-      // 5. Headache / Body ache
-      if (lower.includes("తల") || lower.includes("తలపోటు") || lower.includes("సిర్") || lower.includes("सिर") || lower.includes("headache")) {
-        return { translation: "Persistent severe throbbing headache, photophobia, and generalized fatigue", isEmergency: false };
-      }
-      // 6. Generic pain fallback
-      if (lower.includes("నొప్పి") || lower.includes("दर्द") || lower.includes("pain")) {
-        return { translation: "Localized continuous somatic pain and physical discomfort", isEmergency: false };
-      }
-      return { translation: "Patient presenting with acute symptomatic discomfort for clinical assessment", isEmergency: false };
+
+      return { translation: "Patient reported: \"" + raw + "\"", isEmergency: isEmerg };
     }
 
     async function translateKioskSymptomLive(textToTranslate) {
@@ -2640,22 +2646,22 @@
       
       let msg = "";
       if (currentLanguage === "te-IN") {
-        msg = `నమోదు చేయబడింది: ${symptomText}. దయచేసి వివరాలను సరిచూసుకోండి.`;
+        msg = "మీరు చెప్పినది: " + symptomText + ". వివరాలు నమోదు చేయబడ్డాయి.";
       } else if (currentLanguage === "hi-IN") {
-        msg = `दर्ज किया गया: ${symptomText}. कृपया स्क्रीन पर पुष्टि करें।`;
+        msg = "आपने कहा: " + symptomText + ". विवरण दर्ज कर लिया गया है।";
       } else if (currentLanguage === "ta-IN") {
-        msg = `பதிவு செய்யப்பட்டது: ${symptomText}. தயவுசெய்து சரிபார்க்கவும்.`;
+        msg = "நீங்கள் கூறியது: " + symptomText + ". பதிவு செய்யப்பட்டது.";
       } else if (currentLanguage === "kn-IN") {
-        msg = `ದಾಖಲಿಸಲಾಗಿದೆ: ${symptomText}. ದಯವಿಟ್ಟು ಪರಿಶೀಲಿಸಿ.`;
+        msg = "ನೀವು ಹೇಳಿದ್ದು: " + symptomText + ". ದಾಖಲಿಸಲಾಗಿದೆ.";
       } else if (currentLanguage === "mr-IN") {
-        msg = `नोंदवले गेले आहे: ${symptomText}. कृपया तपासा.`;
+        msg = "तुम्ही सांगितले: " + symptomText + ". नोंदवले गेले आहे.";
       } else if (currentLanguage === "bn-IN") {
-        msg = `নথিভুক্ত করা হয়েছে: ${symptomText}. অনুগ্রহ করে যাচাই করুন।`;
+        msg = "আপনি বলেছেন: " + symptomText + ". নথিভুক্ত করা হয়েছে।";
       } else if (currentLanguage === "gu-IN") {
-        msg = `નોંધાયેલ છે: ${symptomText}. કૃપા કરીને ચકાસો.`;
+        msg = "તમે કહ્યું: " + symptomText + ". નોંધાયેલ છે.";
       } else {
         // English
-        msg = `Recorded: ${symptomText}. Please review on screen and tap Next.`;
+        msg = "You said: " + symptomText + ". Recorded successfully.";
       }
 
       speakAudio(msg);
@@ -2922,9 +2928,6 @@
     function toggleMicRecording() {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       
-      // If browser doesn't have Web Speech API or if in Brave (which disables Google STT servers)
-      const isBrave = (navigator.brave && navigator.brave.isBrave) || !SpeechRec || navigator.userAgent.includes("Brave");
-      
       if (!SpeechRec) {
         openVoiceModal();
         return;
@@ -2942,7 +2945,6 @@
         return;
       }
 
-      // Always create a fresh instance on start to avoid stale recognition state
       try {
         if (recognition) {
           try { recognition.abort(); } catch(e) {}
@@ -2956,11 +2958,20 @@
 
         recognition.onstart = function() {
           isRecording = true;
-          stopAllAudio(); // Silence any audio playback immediately
+          sessionFinalTranscript = "";
+          previousAccumulatedSpeech = "";
+          currentPatient.selectedSymptom = "";
+          stopAllAudio();
           document.getElementById("mic-btn")?.classList.add("pulse-mic", "bg-red-600");
           document.getElementById("mic-btn")?.classList.remove("bg-blue-700");
           const micLabel = document.getElementById("mic-label");
-          if (micLabel) micLabel.innerText = (currentLanguage === "en-IN") ? "🎙️ Listening... Speak your next symptom (Tap to Stop)" : "🎙️ Listening... (నొక్కండి ఆపడానికి • Tap to Stop)";
+          if (micLabel) micLabel.innerText = (currentLanguage === "en-IN") ? "🎙️ Listening... Speak now (Tap to Stop)" : "🎙️ వింటున్నాము... మాట్లాడండి (Tap to Stop)";
+          
+          const transEl = document.getElementById("transcription-text");
+          if (transEl) transEl.innerText = (currentLanguage === "en-IN") ? "\"Listening to your voice...\"" : "\"మీ మాటలు వింటున్నాము... దయచేసి చెప్పండి...\"";
+          
+          const engEl = document.getElementById("translation-text");
+          if (engEl) engEl.innerText = "Listening to what you say...";
         };
 
         recognition.onresult = function(event) {
@@ -2974,17 +2985,13 @@
           }
           const currentSpokenChunk = (sessionFinalTranscript + " " + interim).trim();
           if (currentSpokenChunk) {
-            let combinedSpeech = currentSpokenChunk;
-            if (previousAccumulatedSpeech && !currentSpokenChunk.startsWith(previousAccumulatedSpeech)) {
-              combinedSpeech = previousAccumulatedSpeech + " • " + currentSpokenChunk;
-            }
-            currentPatient.selectedSymptom = combinedSpeech;
-            document.getElementById("transcription-text").innerText = `"${combinedSpeech}"`;
+            currentPatient.selectedSymptom = currentSpokenChunk;
+            const transEl = document.getElementById("transcription-text");
+            if (transEl) transEl.innerText = "\"" + currentSpokenChunk + "\"";
             
-            // Provide live preliminary translation
-            const prelim = getDeterministicTranslation(combinedSpeech);
-            const transEl = document.getElementById("translation-text");
-            if (transEl) transEl.innerText = prelim.translation;
+            const prelim = getDeterministicTranslation(currentSpokenChunk);
+            const transEngEl = document.getElementById("translation-text");
+            if (transEngEl) transEngEl.innerText = prelim.translation;
           }
         };
 
@@ -2993,7 +3000,6 @@
           isRecording = false;
           document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
           document.getElementById("mic-btn")?.classList.add("bg-blue-700");
-          // Seamless fallback so the user is never stuck in Brave or on error
           openVoiceModal();
         };
 
@@ -3002,13 +3008,15 @@
           document.getElementById("mic-btn")?.classList.remove("pulse-mic", "bg-red-600");
           document.getElementById("mic-btn")?.classList.add("bg-blue-700");
           const micLabel = document.getElementById("mic-label");
-          const d_dict = I18N[currentLanguage] || I18N["en-IN"]; 
-          if (micLabel) micLabel.innerText = (currentLanguage === "en-IN") ? "🎙️ Tap Microphone to Add More Symptoms" : "🎙️ మైక్ నొక్కి మరిన్ని లక్షణాలు చెప్పండి";
+          if (micLabel) micLabel.innerText = (currentLanguage === "en-IN") ? "🎙️ Tap Microphone to Speak Again" : "🎙️ మైక్ నొక్కి మాట్లాడండి";
           
-          if (currentPatient.selectedSymptom && currentPatient.selectedSymptom.length > 1) {
-            previousAccumulatedSpeech = currentPatient.selectedSymptom;
-            await translateKioskSymptomLive(currentPatient.selectedSymptom);
-            speakSpokenConfirmation(currentPatient.selectedSymptom);
+          const finalSpoken = (currentPatient.selectedSymptom || sessionFinalTranscript || "").trim();
+          if (finalSpoken && finalSpoken.length > 0) {
+            currentPatient.selectedSymptom = finalSpoken;
+            const transEl = document.getElementById("transcription-text");
+            if (transEl) transEl.innerText = "\"" + finalSpoken + "\"";
+            await translateKioskSymptomLive(finalSpoken);
+            speakSpokenConfirmation(finalSpoken);
           }
         };
 

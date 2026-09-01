@@ -38,16 +38,22 @@ export default async function handler(req, res) {
   } catch (error) {
     // Clinical Fallback Translation
     const raw = (text || "").toLowerCase();
-    let eng = "General clinical consultation requested";
-    if (raw.includes("కడుపు") || raw.includes("మంట") || raw.includes("అజీర్ణం") || raw.includes("stomach") || raw.includes("acidity") || raw.includes("पेट")) {
-      eng = "Severe epigastric burning pain, acid regurgitation (Amlapitta), and stomach discomfort for 3 weeks";
-    } else if (raw.includes("ఛాతీ") || raw.includes("గుండె") || raw.includes("chest") || raw.includes("heart") || raw.includes("सीने")) {
-      eng = "Acute retrosternal crushing chest pain with cardiac distress (EMERGENCY STAT)";
-    } else if (raw.includes("మోకాళ్ళ") || raw.includes("కీళ్ళ") || raw.includes("knee") || raw.includes("joint") || raw.includes("घुटनों")) {
-      eng = "Bilateral knee joint pain, morning stiffness, and crepitus for 6 months (Sandhigata Vata)";
-    } else if (raw.includes("జ్వరం") || raw.includes("చలి") || raw.includes("fever") || raw.includes("बुखार")) {
-      eng = "High-grade fever with chills, rigors, and generalized body aches for 4 days";
+    let parts = [];
+    if (raw.includes("ఛాతీ") || raw.includes("గుండె") || raw.includes("सीने") || raw.includes("chest") || raw.includes("heart")) parts.push("Chest pain / cardiac distress (EMERGENCY STAT)");
+    if (raw.includes("కడుపు") || raw.includes("ఉదరం") || raw.includes("పేట్") || raw.includes("पेट") || raw.includes("stomach") || raw.includes("belly")) parts.push("Stomach / abdominal pain");
+    if (raw.includes("మంట") || raw.includes("అజీర్ణం") || raw.includes("గ్యాస్") || raw.includes("जलन") || raw.includes("गैस") || raw.includes("acidity")) parts.push("Acid reflux & epigastric burning");
+    if (raw.includes("మోకాలు") || raw.includes("మోకాళ్ళ") || raw.includes("కీళ్ళు") || raw.includes("కీళ్ల") || raw.includes("घुटने") || raw.includes("जोड़ों") || raw.includes("knee") || raw.includes("joint")) parts.push("Knee / joint pain and stiffness");
+    if (raw.includes("జ్వరం") || raw.includes("బుఖార్") || raw.includes("बुखार") || raw.includes("fever")) parts.push("Fever and elevated temperature");
+    if (raw.includes("చలి") || raw.includes("ఠండ్") || raw.includes("ठंड") || raw.includes("chills")) parts.push("Chills & rigors");
+    if (raw.includes("తల") || raw.includes("తలపోటు") || raw.includes("సిర్") || raw.includes("सिर") || raw.includes("headache")) parts.push("Severe headache");
+    if (raw.includes("దగ్గు") || raw.includes("ఖాసీ") || raw.includes("खांसी") || raw.includes("cough")) parts.push("Cough / throat irritation");
+    if (raw.includes("కన్ను") || raw.includes("కళ్ళు") || raw.includes("ఆంఖ్") || raw.includes("आंख") || raw.includes("eye")) parts.push("Eye pain / irritation");
+    if (raw.includes("నడుము") || raw.includes("కమర్") || raw.includes("कमर") || raw.includes("back")) parts.push("Back pain / lumbar stiffness");
+    if (raw.includes("నొప్పి") || raw.includes("దర్ద్") || raw.includes("दर्द") || raw.includes("pain")) {
+      if (parts.length === 0) parts.push("Localized physical pain");
     }
+
+    const eng = parts.length > 0 ? parts.join(" • ") : (text || "Clinical consultation requested");
 
     res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(200).json({ translated_text: eng, fallback: true });
