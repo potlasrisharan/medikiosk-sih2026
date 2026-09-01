@@ -24,6 +24,8 @@
     @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
     body { font-family: "Plus Jakarta Sans", sans-serif; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
 </head>
 <body class="bg-[#f4f1ed] text-[#223D79] min-h-screen flex flex-col">
     <!-- Unified 5-Dashboard Suite Navigation -->
@@ -336,55 +338,29 @@
   <script>
     lucide.createIcons();
 
-    async function fetchQueue() {
+    async async function fetchQueue() {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/doctor/queue");
-        if (res.ok) {
-          const queue = await res.json();
-          renderDynamicQueue(queue);
-          return;
-        }
-      } catch (err) {
-        console.warn("Backend offline, using local state queue");
-      }
-    }
-
-    function renderDynamicQueue(queue) {
-      const container = document.getElementById("queue-container");
-      if (!container || !queue || queue.length === 0) return;
-
-      container.innerHTML = queue.map((p, idx) => `
-        <div onclick="selectEncounter('${p.encounter_id}')" class="p-4 rounded-xl border ${idx === 0 ? 'border-blue-500/50 bg-blue-950/20' : 'border-[#D9CDBA]/60 bg-white border border-[#D9CDBA]/80 shadow-sm/60'} hover:border-[#D9CDBA]/60 transition cursor-pointer space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-black px-2.5 py-0.5 rounded bg-[#D9CDBA]/200/20 text-[#223D79]">${p.token_number}</span>
-            <span class="text-xs ${p.pmjay_eligible ? 'text-emerald-700' : 'text-[#77797C]'} font-bold">${p.pmjay_eligible ? 'PM-JAY Active' : 'General'}</span>
-          </div>
-          <div>
-            <h4 class="font-bold text-sm text-[#223D79]">${p.patient_name} (${p.age}${p.gender === 'MALE' ? 'M' : 'F'})</h4>
-            <p class="text-xs text-[#77797C] line-clamp-1 mt-0.5">${p.chief_complaint}</p>
-          </div>
-          <div class="flex items-center justify-between text-[11px] text-[#77797C] pt-1 border-t border-[#D9CDBA]/60/60">
-            <span>${p.system_type || 'AYURVEDIC'}</span>
-            <span>${p.created_at || 'Just now'}</span>
-          </div>
-        </div>
-      `).join("");
-    }
-    async function fetchQueue_old() {
-      try {
-        const res = await fetch("http://localhost:8000/api/v1/doctor/queue");
-        if (res.ok) {
-          const data = await res.json();
-          document.getElementById("queue-count").innerText = data.length;
-        }
+        const { data, error } = await window.supabase
+          .from('encounters')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        
+        data.forEach(row => {
+          if (row.ui_data && row.ui_data.encId) {
+             CLINICAL_PROFILES[row.ui_data.encId] = row.ui_data;
+          }
+        });
+        renderQueue();
       } catch (e) {
-        console.log("Using cached queue data");
+        console.error("Error fetching queue", e);
       }
+    }
     }
 
     async function selectEncounter(id) {
       try {
-        const res = await fetch(`http://localhost:8000/api/v1/doctor/encounter/${id}/soap`);
+        const res = await fetch(`/api/v1/doctor/encounter/${id}/soap`);
         if (res.ok) {
           const soap = await res.json();
           document.getElementById("soap-s").innerText = soap.subjective;
@@ -398,7 +374,7 @@
     async function showFhirModal() {
       try {
         const encId = typeof currentSelectedEncId !== 'undefined' ? currentSelectedEncId : 'enc-0042';
-        const res = await fetch(`http://localhost:8000/api/v1/doctor/encounter/${encId}/fhir`);
+        const res = await fetch(`/api/v1/doctor/encounter/${encId}/fhir`);
         if (res.ok) {
           const bundle = await res.json();
           document.getElementById("fhir-json").innerText = JSON.stringify(bundle, null, 2);
@@ -850,7 +826,7 @@
       if (soapPEl) soapPEl.value = "🇮🇳 Sarvam-105B Foundational Clinical LLM is synthesizing personalized Ayurvedic & modern clinical plan...";
 
       try {
-        const res = await fetch("http://localhost:8000/api/v1/ai/scribe", {
+        const res = await fetch("/api/v1/ai/scribe", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -942,7 +918,7 @@
 
       // 1. Push to FastAPI Backend (SQLite medikiosk.db)
       try {
-        await fetch("http://localhost:8000/api/v1/doctor/encounter/approve", {
+        await fetch("/api/v1/doctor/encounter/approve", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

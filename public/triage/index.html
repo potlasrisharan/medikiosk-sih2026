@@ -10,6 +10,8 @@
   <style>
     body { font-family: 'Public Sans', sans-serif; }
   </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
 
@@ -406,7 +408,7 @@
       }
     });
 
-    document.addEventListener("DOMContentLoaded", renderTriageQueue);
+    document.addEventListener("DOMContentLoaded", () => { renderTriageQueue(); setInterval(renderTriageQueue, 3000); });
     renderTriageQueue();
   </script>
 </body>

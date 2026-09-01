@@ -128,6 +128,8 @@
 
   </style>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased selection:bg-[#D9CDBA]/40">
   <!-- GIGW 3.0 National Indian Government Tricolor Bar -->
@@ -2028,7 +2030,7 @@
       const generatedPatId = `pat-${Math.floor(100000 + Math.random() * 900000)}`;
 
       try {
-        const res = await fetch("http://localhost:8000/api/v1/abdm/registration/create-abha", {
+        const res = await fetch("/api/v1/abdm/registration/create-abha", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -2338,7 +2340,7 @@
 
       // Try live FastAPI / Sarvam backend endpoint
       try {
-        const ocrRes = await fetch("http://localhost:8000/api/v1/documents/ocr", {
+        const ocrRes = await fetch("/api/v1/documents/ocr", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ encounter_id: "enc-0042", document_type: "PRESCRIPTION" })
@@ -2494,7 +2496,7 @@
         return;
       }
 
-      fetch("http://localhost:8000/api/v1/ai/tts", {
+      fetch("/api/v1/ai/tts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: cleanText, language_code: currentLanguage })
@@ -2590,7 +2592,7 @@
       
       // 2. Call Backend for Deep Clinical Translation
       try {
-        const translateReq = await fetch("http://localhost:8000/api/v1/ai/translate", {
+        const translateReq = await fetch("/api/v1/ai/translate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -3043,12 +3045,21 @@
       };
       
       // 3. Push to queue
-      let sharedQueue = [];
-      try {
-        sharedQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
-      } catch (e) {}
-      sharedQueue.unshift(newEncounter);
-      localStorage.setItem("MEDIKIOSK_SHARED_QUEUE", JSON.stringify(sharedQueue));
+      await window.supabase.from('encounters').insert([{
+         id: newEncounter.id,
+         token_number: newEncounter.tokenNumber,
+         patient_id: newEncounter.abhaId || "pat-unknown",
+         patient_name: newEncounter.patientName,
+         age: newEncounter.age,
+         gender: newEncounter.gender.toUpperCase(),
+         chief_complaint: newEncounter.englishTranslation || newEncounter.subjective,
+         triage_priority: newEncounter.isEmergency ? 'EMERGENCY_RED' : 'ROUTINE',
+         pmjay_eligible: newEncounter.hasPmjay || false,
+         system_type: 'ALLOPATHIC',
+         status: newEncounter.isEmergency ? 'EMERGENCY_TRIAGE' : 'WAITING',
+         language: newEncounter.nativeLang,
+         ui_data: newEncounter
+      }]);
 
       // 4. Update Token Screen to Red-Flag Mode
       const tokenDisplay = document.querySelector("#screen-token .text-6xl");
@@ -3107,7 +3118,7 @@
 
             // 1. Primary Inference: Sovereign Sarvam-105B Foundational Indic LLM
       try {
-        const sarvamLlmRes = await fetch("http://localhost:8000/api/v1/ai/llm-proxy", {
+        const sarvamLlmRes = await fetch("/api/v1/ai/llm-proxy", {
           method: "POST",
           signal: (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(15000) : undefined,
           headers: {
@@ -3155,7 +3166,7 @@
         console.log("Sarvam-105B fallback engaged:", sarvamErr);
         // 2. Secondary Fallback: LLM Proxy (backend handles routing to Groq or Sarvam internally)
         try {
-          const groqRes = await fetch("http://localhost:8000/api/v1/ai/llm-proxy", {
+          const groqRes = await fetch("/api/v1/ai/llm-proxy", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -3299,15 +3310,21 @@
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
-      // Push to shared localStorage queue for instant cross-tab sync with Doctor Portal
-      let sharedQueue = [];
-      try {
-        sharedQueue = JSON.parse(localStorage.getItem("MEDIKIOSK_SHARED_QUEUE") || "[]");
-      } catch (e) {}
-
-      // Add to front of queue
-      sharedQueue.unshift(newEncounter);
-      localStorage.setItem("MEDIKIOSK_SHARED_QUEUE", JSON.stringify(sharedQueue));
+      await window.supabase.from('encounters').insert([{
+         id: newEncounter.id,
+         token_number: newEncounter.tokenNumber,
+         patient_id: newEncounter.abhaId || "pat-unknown",
+         patient_name: newEncounter.patientName,
+         age: newEncounter.age,
+         gender: (newEncounter.gender || "Unknown").toUpperCase(),
+         chief_complaint: newEncounter.englishTranslation || newEncounter.subjective,
+         triage_priority: newEncounter.isEmergency ? 'EMERGENCY_RED' : 'ROUTINE',
+         pmjay_eligible: newEncounter.hasPmjay || false,
+         system_type: 'ALLOPATHIC',
+         status: newEncounter.isEmergency ? 'EMERGENCY_TRIAGE' : 'WAITING',
+         language: newEncounter.nativeLang,
+         ui_data: newEncounter
+      }]);
 
       // Reset button
       btn.innerText = originalText;
@@ -3521,7 +3538,7 @@
       }
 
       try {
-        const res = await fetch("http://localhost:8000/api/v1/ai/translate", {
+        const res = await fetch("/api/v1/ai/translate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
