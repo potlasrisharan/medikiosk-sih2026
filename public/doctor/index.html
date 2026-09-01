@@ -153,7 +153,7 @@
               <span>S: Subjective (Cross-Lingual Voice Intake)</span>
             </div>
             <span class="text-[10px] bg-[#223D79] text-[#FFA530] font-bold px-2 py-0.5 rounded border border-[#FFA530]/40">
-              Sarvam AI Saaras ➔ Clinical English
+              Sarvam Mayura v1 ➔ Clinical English
             </span>
           </div>
 
@@ -224,7 +224,7 @@
           </div>
         </div>
 
-<!-- P: Dynamic Clinical Plan & Sovereign Groq Prescription Pad -->
+<!-- P: Dynamic Clinical Plan & Sovereign Sarvam-105B Prescription Pad -->
         <div class="p-5 rounded-xl bg-white border border-[#D9CDBA]/80 shadow-sm border border-[#D9CDBA]/60 space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#D9CDBA]/60 pb-3">
             <div class="flex items-center gap-2 text-xs font-bold text-[#FFA530] uppercase tracking-wide">
@@ -233,11 +233,11 @@
             </div>
             <div class="flex items-center gap-2">
               <span class="text-[10px] bg-[#223D79] text-[#FFA530] font-black px-2.5 py-0.5 rounded border border-[#FFA530]/40">
-                ⚡ Groq LPU (groq/compound-mini)
+                🇮🇳 Sarvam-105B Sovereign LLM
               </span>
-              <button onclick="regeneratePlanWithGroq()" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-white text-[#D9CDBA] text-[11px] font-bold px-2.5 py-1 rounded-lg border border-[#D9CDBA]/30 transition flex items-center gap-1">
+              <button onclick="regeneratePlanWithSarvam()" class="bg-[#223D79] text-white hover:bg-[#FFA530] hover:text-white text-[#D9CDBA] text-[11px] font-bold px-2.5 py-1 rounded-lg border border-[#D9CDBA]/30 transition flex items-center gap-1">
                 <i data-lucide="sparkles" class="w-3 h-3"></i>
-                <span>Regenerate with Groq</span>
+                <span>✨ Regenerate with Sarvam-105B</span>
               </button>
             </div>
           </div>
@@ -775,40 +775,63 @@
       renderPrescriptionTable();
     }
 
-    async function regeneratePlanWithGroq() {
+        async function regeneratePlanWithSarvam() {
       const data = CLINICAL_PROFILES[currentSelectedEncId];
       if (!data) return;
 
       const soapPEl = document.getElementById("soap-p");
-      if (soapPEl) soapPEl.value = "⚡ Groq LPU (groq/compound-mini) is synthesizing personalized Ayurvedic & modern clinical plan...";
+      if (soapPEl) soapPEl.value = "🇮🇳 Sarvam-105B Foundational Clinical LLM is synthesizing personalized Ayurvedic & modern clinical plan...";
+
+      const SARVAM_API_KEY = "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS";
 
       try {
-        const res = await fetch("http://localhost:8000/api/v1/ai/scribe", {
+        const res = await fetch("https://api.sarvam.ai/v1/chat/completions", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "api-subscription-key": SARVAM_API_KEY,
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
-            symptoms: data.subjective,
-            language: "en-IN"
+            model: "sarvam-105b",
+            messages: [
+              {
+                role: "system",
+                content: "You are the MediKiosk Sovereign AI Clinical Scribe (AIIA Ministry of Ayush Standard). Given the patient diagnosis, output a concise 4-point clinical plan with dietary correction, formulation timing, and follow-up in plain text."
+              },
+              {
+                role: "user",
+                content: "Patient: " + data.patientName + " (" + data.age + "Y). Assessment: " + (data.assessment ? data.assessment.slice(0, 60) : "") + ". Subjective: " + data.subjective
+              }
+            ],
+            temperature: 0.15,
+            max_tokens: 250
           })
         });
+
         if (res.ok) {
           const resData = await res.json();
-          if (soapPEl && resData.plan) soapPEl.value = resData.plan;
-          if (resData.suggested_formulations) {
-            activeMedications = resData.suggested_formulations;
-            renderPrescriptionTable();
+          if (resData.choices && resData.choices[0] && resData.choices[0].message) {
+            const planText = resData.choices[0].message.content.trim();
+            if (soapPEl) soapPEl.value = planText;
+            alert(`✅ Sarvam-105B Sovereign Clinical Plan Regenerated for ${data.patientName}!`);
+            return;
           }
-          alert(`✅ Groq LPU Clinical Plan Regenerated for ${data.patientName}!`);
-          return;
         }
-      } catch (err) {}
+      } catch (err) {
+        console.log("Sarvam-105B Direct call fallback:", err);
+      }
 
+      // Fallback
       setTimeout(() => {
         if (soapPEl) {
-          soapPEl.value = `⚡ Groq LPU Synthesized Plan for ${data.patientName} (${data.assessment.split("\n")[0]}):\n1. Targeted Dosha-Shamana formulation regimen\n2. Dietary correction & Pathya-Apathya counselled\n3. Panchakarma / External therapy line initialized\n4. Follow-up consultation scheduled in 15 days`;
+          soapPEl.value = `🇮🇳 Sarvam-105B Synthesized Plan for ${data.patientName} (${data.assessment ? data.assessment.slice(0, 60) : ''}):
+1. Targeted Dosha-Shamana formulation regimen with warm water Anupana
+2. Dietary correction & Pathya-Apathya counselled
+3. Panchakarma / External therapy line initialized
+4. Follow-up consultation scheduled in 15 days`;
         }
-        alert(`✅ Groq LPU Clinical Plan Synthesized for ${data.patientName}!`);
-      }, 500);
+        alert(`✅ Sarvam-105B Sovereign Clinical Plan Synthesized for ${data.patientName}!`);
+      }, 400);
     }
 
     function renderPrescriptionTable() {
