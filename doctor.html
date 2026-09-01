@@ -397,7 +397,8 @@
 
     async function showFhirModal() {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/doctor/encounter/enc-0042/fhir");
+        const encId = typeof currentSelectedEncId !== 'undefined' ? currentSelectedEncId : 'enc-0042';
+        const res = await fetch(`http://localhost:8000/api/v1/doctor/encounter/${encId}/fhir`);
         if (res.ok) {
           const bundle = await res.json();
           document.getElementById("fhir-json").innerText = JSON.stringify(bundle, null, 2);
@@ -848,36 +849,22 @@
       const soapPEl = document.getElementById("soap-p");
       if (soapPEl) soapPEl.value = "🇮🇳 Sarvam-105B Foundational Clinical LLM is synthesizing personalized Ayurvedic & modern clinical plan...";
 
-      const SARVAM_API_KEY = "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS";
-
       try {
-        const res = await fetch("https://api.sarvam.ai/v1/chat/completions", {
+        const res = await fetch("http://localhost:8000/api/v1/ai/scribe", {
           method: "POST",
           headers: {
-            "api-subscription-key": SARVAM_API_KEY,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "sarvam-105b",
-            messages: [
-              {
-                role: "system",
-                content: "You are the MediKiosk Sovereign AI Clinical Scribe (AIIA Ministry of Ayush Standard). Given the patient diagnosis, output a concise 4-point clinical plan with dietary correction, formulation timing, and follow-up in plain text."
-              },
-              {
-                role: "user",
-                content: "Patient: " + data.patientName + " (" + data.age + "Y). Assessment: " + (data.assessment ? data.assessment.slice(0, 60) : "") + ". Subjective: " + data.subjective
-              }
-            ],
-            temperature: 0.15,
-            max_tokens: 250
+            symptoms: data.subjective,
+            patient_id: data.patient_id || ""
           })
         });
 
         if (res.ok) {
           const resData = await res.json();
-          if (resData.choices && resData.choices[0] && resData.choices[0].message) {
-            const planText = resData.choices[0].message.content.trim();
+          if (resData.plan) {
+            const planText = resData.plan;
             if (soapPEl) soapPEl.value = planText;
             alert(`✅ Sarvam-105B Sovereign Clinical Plan Regenerated for ${data.patientName}!`);
             return;

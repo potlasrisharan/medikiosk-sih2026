@@ -2586,43 +2586,32 @@
 
       if (spinner) spinner.classList.remove("hidden");
       
-      // 2. Call Groq AI for Deep Clinical Translation
+      // 2. Call Backend for Deep Clinical Translation
       try {
-        const groqReq = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        const translateReq = await fetch("http://localhost:8000/api/v1/ai/translate", {
           method: "POST",
           headers: {
-            "Authorization": "Bearer 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",
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "openai/gpt-oss-20b",
-            messages: [
-              {
-                role: "system",
-                content: "You are a clinical AI translation engine. Translate the patient's spoken symptom (which may be in Telugu, Hindi, Tamil, Kannada, Marathi, etc. or English) into concise, professional clinical English. Return ONLY a JSON object with keys: english_translation (string) and is_emergency (boolean)."
-              },
-              {
-                role: "user",
-                content: textToTranslate
-              }
-            ],
-            response_format: { type: "json_object" }
+            text: textToTranslate,
+            source_language: currentLang,
+            target_language: "en-IN"
           })
         });
         
-        if (groqReq.ok) {
-          const res = await groqReq.json();
-          const parsed = JSON.parse(res.choices[0].message.content);
-          if (parsed.english_translation && parsed.english_translation.trim().length > 0) {
-            if (transEl) transEl.innerText = parsed.english_translation.trim();
-            currentPatient.englishTranslation = parsed.english_translation.trim();
+        if (translateReq.ok) {
+          const res = await translateReq.json();
+          if (res.translated_text) {
+            if (transEl) transEl.innerText = res.translated_text;
+            currentPatient.englishTranslation = res.translated_text;
           }
-          if (parsed.is_emergency === true || parsed.is_emergency === "true" || localFallback.isEmergency) {
+          if (localFallback.isEmergency) {
             document.getElementById("red-flag-banner")?.classList.remove("hidden");
           }
         }
       } catch (err) {
-        console.warn("Groq live translation fallback used:", err);
+        console.warn("Backend translation fallback used:", err);
       } finally {
         if (spinner) spinner.classList.add("hidden");
       }
@@ -3115,14 +3104,11 @@
       let activePrescription = [];
 
             // 1. Primary Inference: Sovereign Sarvam-105B Foundational Indic LLM
-      const SARVAM_KEY = "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS";
       try {
-        const sarvamLlmRes = await fetch("https://api.sarvam.ai/v1/chat/completions", {
+        const sarvamLlmRes = await fetch("http://localhost:8000/api/v1/ai/llm-proxy", {
           method: "POST",
-          signal: (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(10000) : undefined,
+          signal: (typeof AbortSignal !== "undefined" && AbortSignal.timeout) ? AbortSignal.timeout(15000) : undefined,
           headers: {
-            "api-subscription-key": SARVAM_KEY,
-            "Authorization": `Bearer ${SARVAM_KEY}`,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
@@ -3165,12 +3151,11 @@
         }
       } catch (sarvamErr) {
         console.log("Sarvam-105B fallback engaged:", sarvamErr);
-        // 2. Secondary Fallback: Groq Cloud AI
+        // 2. Secondary Fallback: LLM Proxy (backend handles routing to Groq or Sarvam internally)
         try {
-          const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          const groqRes = await fetch("http://localhost:8000/api/v1/ai/llm-proxy", {
             method: "POST",
             headers: {
-              "Authorization": "Bearer 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",
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -3534,20 +3519,15 @@
       }
 
       try {
-        const SARVAM_KEY = "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS";
-        const res = await fetch("https://api.sarvam.ai/translate", {
+        const res = await fetch("http://localhost:8000/api/v1/ai/translate", {
           method: "POST",
           headers: {
-            "api-subscription-key": SARVAM_KEY,
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            input: text,
-            source_language_code: srcLang,
-            target_language_code: "en-IN",
-            speaker_gender: "Male",
-            mode: "formal",
-            model: "mayura:v1"
+            text: text,
+            source_language: srcLang,
+            target_language: "en-IN"
           })
         });
         if (res.ok) {

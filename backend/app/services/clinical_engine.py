@@ -30,7 +30,8 @@ DASHVAIDHA_QUESTIONS = [
     "Aapko sardi ya garmi mein se kisme zyada pareshani hoti hai (Prakriti / Sheeta-Ushna)?"
 ]
 
-SARVAM_API_KEY = os.getenv("SARVAM_API_KEY", "")
+from ..core.config import settings
+SARVAM_API_KEY = settings.SARVAM_API_KEY or ""
 SARVAM_LLM_URL = "https://api.sarvam.ai/v1/chat/completions"
 
 CLINICAL_SYSTEM_PROMPT = """You are the MediKiosk Sovereign AI Clinical Scribe & Decision Support Engine (AIIA Standard).

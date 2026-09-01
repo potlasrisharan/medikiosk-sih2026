@@ -5,7 +5,8 @@ from ..models.schemas import ExtractedMedication, ExtractedLabResult, OCRRespons
 
 class SarvamAIService:
     def __init__(self):
-        self.api_key = os.getenv("SARVAM_API_KEY", "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS")
+        from ..core.config import settings
+        self.api_key = settings.SARVAM_API_KEY or "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS"
         self.base_url = "https://api.sarvam.ai"
 
     async def generate_speech(self, text: str, language_code: str = "te-IN") -> Optional[str]:
