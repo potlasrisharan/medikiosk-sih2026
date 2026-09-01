@@ -1455,7 +1455,7 @@
         skipBtnText: "દસ્તાવેજો નથી ➔ આગળ વધો (Skip / No Documents ➔)"
       }
     };
-    let currentLanguage = "en-IN";
+    let currentLanguage = localStorage.getItem("MEDIKIOSK_PREF_LANG") || "en-IN";
     let isVoiceActive = true;
     let currentAudioPlayer = null;
     let availableVoices = [];
@@ -1666,6 +1666,7 @@
 
         function setLang(langCode) {
       currentLanguage = langCode;
+      localStorage.setItem("MEDIKIOSK_PREF_LANG", langCode);
       const dict = I18N[langCode] || I18N["en-IN"];
       
       function setTxt(id, val) {
@@ -2488,22 +2489,18 @@
         .replace(/\bOPD\b/gi, "OPD")
         .trim();
 
-      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        fetch("http://localhost:8000/api/v1/ai/tts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: cleanText, language_code: currentLanguage })
-        }).then(res => res.json()).then(data => {
-          if (data && data.audio_base64 && isVoiceActive) {
-            currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
-            currentAudioPlayer.play().catch(e => console.log("Audio play caught:", e));
-          }
-        }).catch(err => {
-          playBrowserSynthesis(cleanText);
-        });
-      } else {
+      fetch("http://localhost:8000/api/v1/ai/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: cleanText, language_code: currentLanguage })
+      }).then(res => res.json()).then(data => {
+        if (data && data.audio_base64 && isVoiceActive) {
+          currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
+          currentAudioPlayer.play().catch(e => console.log("Audio play caught:", e));
+        }
+      }).catch(err => {
         playBrowserSynthesis(cleanText);
-      }
+      });
     }
 
     function playBrowserSynthesis(text) {
