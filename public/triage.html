@@ -211,14 +211,7 @@
       }
     ];
 
-    function getSharedQueue() {
-      try {
-        const q = localStorage.getItem("MEDIKIOSK_SHARED_QUEUE");
-        return q ? JSON.parse(q) : [];
-      } catch (e) {
-        return [];
-      }
-    }
+    function getSharedQueue() { return []; }
 
     async function renderTriageQueue() {
       const container = document.getElementById("triage-cards-container");
@@ -392,8 +385,21 @@
         triageCode: "P1_STAT_RESPIRATORY"
       };
 
-      queue.unshift(newEmerg);
-      localStorage.setItem("MEDIKIOSK_SHARED_QUEUE", JSON.stringify(queue));
+      await window.supabase.from('encounters').insert([{
+         id: newEmerg.encId,
+         token_number: newEmerg.tokenNumber || newEmerg.token,
+         patient_id: "pat-unknown",
+         patient_name: newEmerg.patientName,
+         age: newEmerg.age,
+         gender: newEmerg.gender,
+         chief_complaint: newEmerg.englishTranslation || newEmerg.subjective,
+         triage_priority: 'EMERGENCY_RED',
+         pmjay_eligible: newEmerg.hasPmjay || false,
+         system_type: 'ALLOPATHIC',
+         status: 'EMERGENCY_TRIAGE',
+         language: newEmerg.nativeLang,
+         ui_data: newEmerg
+      }]);
       renderTriageQueue();
       showNotif("🚨 New STAT Emergency Ingested!", `Patient ${newEmerg.patientName} (${randToken}) intercepted at Kiosk #2.`);
       window.dispatchEvent(new Event('storage'));

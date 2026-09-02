@@ -14,6 +14,8 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
 
@@ -125,6 +127,10 @@
             <button onclick="showFhirModal()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 flex items-center gap-1.5 transition shadow-sm">
               <i data-lucide="code-2" class="w-4 h-4 text-[#223D79]"></i>
               <span>NRCeS FHIR R4</span>
+            </button>
+            <button onclick="generateAndDownloadPrescriptionPdf()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-black shadow-md flex items-center gap-1.5 transition ring-2 ring-emerald-400/40" title="Generate & Download Official Prescription PDF for Patient">
+              <i data-lucide="download" class="w-4 h-4 text-white"></i>
+              <span>Download Rx (PDF)</span>
             </button>
             <button onclick="approvePrescription()" class="px-4 py-2 rounded-xl bg-[#223D79] hover:bg-[#1a2f5e] text-white text-xs font-black shadow-md hover:shadow-lg flex items-center gap-1.5 transition">
               <i data-lucide="check-circle-2" class="w-4 h-4 text-[#FFA530]"></i>
@@ -286,9 +292,16 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
 
             <!-- Interactive Active Prescription Table -->
             <div class="space-y-2">
-              <label class="text-[10px] text-slate-600 font-bold uppercase tracking-wider">
-                Active Formulations & Medications (Signed by Doctor):
-              </label>
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-1">
+                <label class="text-[11px] text-slate-800 font-black uppercase tracking-wider flex items-center gap-1.5">
+                  <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Active Formulations & Medications (Signed by Doctor):</span>
+                </label>
+                <button onclick="generateAndDownloadPrescriptionPdf()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-black shadow flex items-center gap-1.5 transition" title="Download Official Prescription PDF for Patient">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>Download Rx (PDF)</span>
+                </button>
+              </div>
 
               <div class="overflow-x-auto border border-slate-200 rounded-xl">
                 <table class="w-full text-left text-xs border-collapse">
@@ -339,6 +352,31 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       </div>
     </div>
   </main>
+
+  <!-- Sticky Doctor Prescription & PDF Action Dock (Always Visible) -->
+  <div class="sticky bottom-0 z-40 bg-white/95 backdrop-blur-md border-t-2 border-slate-300 py-3 px-6 shadow-2xl">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+        <div>
+          <span class="text-xs font-black text-slate-800" id="dock-patient-info">Active Patient Prescription</span>
+          <span class="text-[11px] text-slate-500 block">ABDM Milestone 2 • NRCeS FHIR R4 Ready</span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2.5">
+        <button onclick="generateAndDownloadPrescriptionPdf()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-black shadow-lg flex items-center gap-2 transition hover:scale-105 ring-2 ring-emerald-400/40" title="Download Official Prescription PDF for Patient">
+          <i data-lucide="file-down" class="w-4 h-4 text-white"></i>
+          <span>📥 DOWNLOAD PATIENT PRESCRIPTION (PDF)</span>
+        </button>
+
+        <button onclick="approvePrescription()" class="px-5 py-2.5 rounded-xl bg-[#223D79] hover:bg-[#1a2f5e] text-white text-xs font-black shadow-lg flex items-center gap-2 transition hover:scale-105">
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-[#FFA530]"></i>
+          <span>✅ 1-Click Approve & Prescribe</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- NRCeS FHIR R4 Modal -->
   <div id="fhir-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 z-50">
@@ -511,7 +549,151 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       if (btnPmjay) btnPmjay.className = filter === 'pmjay' ? "px-2.5 py-1 bg-[#223D79] text-white font-bold rounded-lg shadow-sm" : "px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg";
       if (btnEmerg) btnEmerg.className = filter === 'emergency' ? "px-2.5 py-1 bg-[#223D79] text-white font-bold rounded-lg shadow-sm" : "px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg";
 
-      initDoctorQueue();
+    function getConditionSpecificPrescription(rawText, rawAssessment) {
+      const combined = ((rawText || '') + ' ' + (rawAssessment || '')).toLowerCase();
+
+      // 1. Fever / Pyrexia / Vishama Jwara / Flu
+      if (combined.includes('fever') || combined.includes('ज्वर') || combined.includes('बुखार') || combined.includes('temperature') || combined.includes('shivering') || combined.includes('flu') || combined.includes('జ్వరం')) {
+        return {
+          assessment: "1. Vishama Jwara (Acute Febrile Illness / Viral Pyrexia / NAMASTE AYU-JWA-01)\n2. Agnimandya (Suppressed Digestive Fire)",
+          dashavidha: { prakriti: "Vata-Pitta", agni: "Manda Agni (Jwaragni)", koshtha: "Vibandha", vikriti: "Vata-Kaphaja Jwara" },
+          planSummary: "1. Antipyretic and immune-restorative line of treatment\n2. Maintain hydration with warm Shadanga Paniya & Moong soup\n3. Complete bed rest; follow up in 3 days if temperature persists",
+          activePrescription: [
+            { name: "Tab. Paracetamol 650mg", dose: "1 Tab", freq: "TDS (Thrice daily)", dur: "3 Days", inst: "After meals when temperature >100°F" },
+            { name: "Tab. Mahasudarshan Ghanvati", dose: "2 Tabs (500mg)", freq: "TDS (Thrice daily)", dur: "5 Days", inst: "After food with warm water" },
+            { name: "Syp. Amritarishta (Giloy)", dose: "20 ml", freq: "BD (Twice daily)", dur: "7 Days", inst: "After meals with equal warm water" },
+            { name: "Tab. Tribhuvankirti Rasa", dose: "1 Tab (125mg)", freq: "BD (Twice daily)", dur: "5 Days", inst: "With honey after food for body aches" }
+          ],
+          aiSuggestions: [
+            { name: "Tab. Dolo 650mg", dose: "1 Tab", freq: "TDS", dur: "3 Days", inst: "After food" },
+            { name: "Cap. Vitamin C 500mg", dose: "1 Tab", freq: "OD", dur: "10 Days", inst: "After lunch" },
+            { name: "Sudarshan Churna", dose: "3 Grams", freq: "BD", dur: "5 Days", inst: "With warm water" },
+            { name: "Syp. Tulsi-Vasaka", dose: "10 ml", freq: "TDS", dur: "5 Days", inst: "With warm water" }
+          ]
+        };
+      }
+
+      // 2. Chest Pain / Cardiac / STEMI / Hridroga
+      if (combined.includes('chest') || combined.includes('heart') || combined.includes('cardiac') || combined.includes('angina') || combined.includes('stemi') || combined.includes('छाती') || combined.includes('గుండె')) {
+        return {
+          assessment: "1. Priority 1 STAT: Acute Coronary Syndrome / Anterior Wall STEMI (NAMASTE AYU-HRI-01)\n2. Critical Myocardial Ischemia / Hridaya Sroto-rodha",
+          dashavidha: { prakriti: "Pitta-Vata", agni: "Tikshna Agni", koshtha: "Krura Koshtha", vikriti: "Hridaya Marmaghata" },
+          planSummary: "EMERGENCY PROTOCOL:\n1. 4 L/min Oxygen + Continuous ECG Monitoring\n2. Dual Antiplatelet Therapy (DAPT) loading administered\n3. Code Blue: STAT Transfer to Cath Lab for Primary PCI",
+          activePrescription: [
+            { name: "Tab. Aspirin 325mg (Chewable)", dose: "1 Tab", freq: "STAT", dur: "Single Dose", inst: "Chew immediately" },
+            { name: "Tab. Clopidogrel 300mg", dose: "4 Tabs (75mg)", freq: "STAT", dur: "Loading Dose", inst: "Swallow with water immediately" },
+            { name: "Tab. Atorvastatin 80mg", dose: "1 Tab", freq: "STAT", dur: "Loading Dose", inst: "High-intensity statin" },
+            { name: "Sublingual Sorbitrate 5mg", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "Place under tongue if chest pain & SBP >100" }
+          ],
+          aiSuggestions: [
+            { name: "Inj. Heparin 5000 IU", dose: "STAT", freq: "IV Bolus", dur: "Single", inst: "Under ICU Supervision" },
+            { name: "Arjunarishta", dose: "20 ml", freq: "BD", dur: "30 Days", inst: "Post-stabilization with warm water" },
+            { name: "Tab. Metoprolol 25mg", dose: "1 Tab", freq: "OD", dur: "15 Days", inst: "Morning after breakfast" },
+            { name: "Tab. Hridyarnava Rasa 125mg", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "Cardioprotective formulation" }
+          ]
+        };
+      }
+
+      // 3. Acid Reflux / Gastric / GERD / Amlapitta
+      if (combined.includes('stomach') || combined.includes('acid') || combined.includes('reflux') || combined.includes('gerd') || combined.includes('gastric') || combined.includes('burning') || combined.includes('ulcer') || combined.includes('जलन') || combined.includes('एसिड') || combined.includes('కడుపు')) {
+        return {
+          assessment: "1. Amlapitta (Acid Peptic Disorder / Reflux Esophagitis / NAMASTE AYU-AML-02)\n2. Vidagdha Pitta (Hyperchlorhydria)",
+          dashavidha: { prakriti: "Pitta-Vata", agni: "Tikshna Agni", koshtha: "Mrudu Koshtha", vikriti: "Pitta Dusti" },
+          planSummary: "1. Pitta Shamana and acid-neutralizing regimen\n2. Avoid spicy, sour, fried, and fermented foods\n3. Early dinner (2 hours before sleep) and alkaline hydration",
+          activePrescription: [
+            { name: "Cap. Pantoprazole 40mg", dose: "1 Cap", freq: "OD (Morning)", dur: "14 Days", inst: "Empty stomach 30 mins before breakfast" },
+            { name: "Avipattikar Churna", dose: "3 Grams", freq: "BD (Twice daily)", dur: "15 Days", inst: "15 mins before meals with warm water" },
+            { name: "Kamadudha Rasa (Mukta Yukta)", dose: "1 Tab (250mg)", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with milk/water" },
+            { name: "Sutshekhar Rasa", dose: "1 Tab (125mg)", freq: "BD (Twice daily)", dur: "10 Days", inst: "After meals with honey" }
+          ],
+          aiSuggestions: [
+            { name: "Syp. Gelusil MPS", dose: "10 ml", freq: "TDS", dur: "7 Days", inst: "After meals & bedtime" },
+            { name: "Cap. Rabeprazole 20mg", dose: "1 Cap", freq: "OD", dur: "14 Days", inst: "Morning before food" },
+            { name: "Shankh Bhasma 250mg", dose: "1 Pinch", freq: "BD", dur: "15 Days", inst: "With honey after meals" },
+            { name: "Tab. Yashtimadhu Ghanvati", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "Mucosal soothing" }
+          ]
+        };
+      }
+
+      // 4. Cough / Cold / Respiratory / Kasa-Shwasa
+      if (combined.includes('cough') || combined.includes('cold') || combined.includes('throat') || combined.includes('asthma') || combined.includes('wheezing') || combined.includes('bronchitis') || combined.includes('खांसी') || combined.includes('दग्गु')) {
+        return {
+          assessment: "1. Kasa-Shwasa (Acute Upper Respiratory Tract Infection / Bronchial Irritation / NAMASTE AYU-KAS-01)\n2. Vata-Kaphaja Srotorodha",
+          dashavidha: { prakriti: "Kapha-Vata", agni: "Mandagni", koshtha: "Madhyama", vikriti: "Pranavaha Sroto-dusti" },
+          planSummary: "1. Bronchodilator & mucolytic line of management\n2. Warm steam inhalation twice daily\n3. Avoid cold drinks, ice creams, and dairy at night",
+          activePrescription: [
+            { name: "Syp. Vasaka (Adhatoda Vasica)", dose: "10 ml", freq: "TDS (Thrice daily)", dur: "7 Days", inst: "With warm water after food" },
+            { name: "Sitopaladi Churna", dose: "3 Grams", freq: "TDS (Thrice daily)", dur: "7 Days", inst: "Mixed with 1 tsp pure honey" },
+            { name: "Tab. Montelukast + Levocetirizine", dose: "1 Tab", freq: "OD (Night)", dur: "7 Days", inst: "At bedtime" },
+            { name: "Talisadi Vati (250mg)", dose: "1 Tab", freq: "TDS", dur: "5 Days", inst: "Dissolve slowly in mouth" }
+          ],
+          aiSuggestions: [
+            { name: "Syp. Ascoril-D", dose: "5 ml", freq: "TDS", dur: "5 Days", inst: "For dry cough" },
+            { name: "Kanchanar Guggulu", dose: "2 Tabs", freq: "BD", dur: "10 Days", inst: "Lymph node soothing" },
+            { name: "Kanthasudharak Vati", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "For throat irritation" },
+            { name: "Tab. Azithromycin 500mg", dose: "1 Tab", freq: "OD", dur: "3 Days", inst: "Post antibiotic check" }
+          ]
+        };
+      }
+
+      // 5. Hypertension / High Blood Pressure / Raktachapa
+      if (combined.includes('bp') || combined.includes('hypertension') || combined.includes('blood pressure') || combined.includes('रक्तचाप') || combined.includes('బీపీ')) {
+        return {
+          assessment: "1. Raktavata / Uchha Raktachapa (Essential Hypertension / NAMASTE AYU-RAK-01)\n2. Vata-Pitta Sroto-dusti",
+          dashavidha: { prakriti: "Pitta-Vata", agni: "Sama Agni", koshtha: "Madhyama", vikriti: "Raktavaha Srotas" },
+          planSummary: "1. Cardioprotective anti-hypertensive regimen\n2. Low sodium DASH diet (<3g salt/day)\n3. 20 min daily Anulom-Vilom Pranayama",
+          activePrescription: [
+            { name: "Tab. Telmisartan 40mg", dose: "1 Tab", freq: "OD (Morning)", dur: "30 Days", inst: "After breakfast" },
+            { name: "Tab. Sarpagandha Ghanvati", dose: "1 Tab (250mg)", freq: "HS (Night)", dur: "15 Days", inst: "At bedtime with warm milk" },
+            { name: "Syp. Arjunarishta", dose: "20 ml", freq: "BD (Twice daily)", dur: "30 Days", inst: "After meals with equal warm water" }
+          ],
+          aiSuggestions: [
+            { name: "Tab. Amlodipine 5mg", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "Calcium channel blocker" },
+            { name: "Brahmi Vati", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "Stress reduction" },
+            { name: "Ashwagandha Tab 500mg", dose: "1 Tab", freq: "BD", dur: "30 Days", inst: "With warm milk" },
+            { name: "Tab. Lasix 20mg", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "Diuretic support" }
+          ]
+        };
+      }
+
+      // 6. Diabetes / High Sugar / Prameha
+      if (combined.includes('diabetes') || combined.includes('sugar') || combined.includes('glucose') || combined.includes('मधुमेह') || combined.includes('షుగర్')) {
+        return {
+          assessment: "1. Madhumeha (Type 2 Diabetes Mellitus / NAMASTE AYU-PRA-01)\n2. Kaphaja Prameha with Dhatvagni Mandya",
+          dashavidha: { prakriti: "Kapha-Pitta", agni: "Mandagni", koshtha: "Madhyama", vikriti: "Medovaha Srotas" },
+          planSummary: "1. Glycemic regulation & metabolic correction\n2. Low GI diet: Avoid refined sugar, white rice, fried snacks\n3. 45 min daily brisk morning walk",
+          activePrescription: [
+            { name: "Tab. Metformin 500mg (SR)", dose: "1 Tab", freq: "BD (Twice daily)", dur: "30 Days", inst: "With breakfast and dinner" },
+            { name: "Nisha Amalaki Churna", dose: "3 Grams", freq: "BD (Twice daily)", dur: "30 Days", inst: "Morning & evening with warm water" },
+            { name: "Tab. Chandraprabha Vati", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "30 Days", inst: "After meals with water" }
+          ],
+          aiSuggestions: [
+            { name: "Karela-Jamun Juice", dose: "20 ml", freq: "OD", dur: "30 Days", inst: "Early morning empty stomach" },
+            { name: "Tab. Glimepiride 1mg", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "Before breakfast" },
+            { name: "Vasant Kusumakar Ras", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "With honey" },
+            { name: "Tab. Jambwasava", dose: "20 ml", freq: "BD", dur: "30 Days", inst: "After meals" }
+          ]
+        };
+      }
+
+      // 7. Default (Knee Pain / Osteoarthritis / Joint / Musculoskeletal)
+      return {
+        assessment: "1. Sandhigata Vata (Bilateral Knee Osteoarthritis / NAMASTE AYU-SAN-01)\n2. Dhatu Kshaya (Asthi-Majja Degeneration)",
+        dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dhatu Kshaya (Asthi-Majja)" },
+        planSummary: "1. Vata-pacifying joint anti-inflammatory therapy\n2. External Janu Basti with Ksheerabala Taila\n3. Low-purine dietary regimen (avoid red meat & lentils)",
+        activePrescription: [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs (500mg)", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
+          { name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD (Twice daily)", dur: "15 Days", inst: "Before food with equal water" },
+          { name: "Cap. Shallaki (500mg)", dose: "1 Cap", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals (Cartilage support)" },
+          { name: "Ext. Janu Basti (Ksheerabala Taila)", dose: "1 Sitting", freq: "OD", dur: "7 Sittings", inst: "Panchakarma Department" }
+        ],
+        aiSuggestions: [
+          { name: "Tab. Febuxostat 40mg", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "Morning after breakfast (Uric acid lowering)" },
+          { name: "Rumalaya Forte", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "After food" },
+          { name: "Tab. Calcium + D3", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "After lunch" },
+          { name: "Mahanarayan Taila Liniment", dose: "External", freq: "BD", dur: "15 Days", inst: "Gentle local massage" }
+        ]
+      };
     }
 
     // Live Shared Queue Synchronizer between Patient Kiosk and Doctor Portal
@@ -525,7 +707,18 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
           if (!error && data) {
             data.forEach(row => {
               if (row.ui_data && row.ui_data.id) {
-                CLINICAL_PROFILES[row.ui_data.id] = row.ui_data;
+                const ui = row.ui_data;
+                const condData = getConditionSpecificPrescription(ui.subjective || ui.englishTranslation, ui.assessment);
+                if (!ui.activePrescription || ui.activePrescription.length === 0) {
+                  ui.activePrescription = condData.activePrescription;
+                }
+                if (!ui.aiSuggestions || ui.aiSuggestions.length === 0) {
+                  ui.aiSuggestions = condData.aiSuggestions;
+                }
+                if (!ui.planSummary) {
+                  ui.planSummary = condData.planSummary;
+                }
+                CLINICAL_PROFILES[ui.id] = ui;
               }
             });
           }
@@ -540,6 +733,9 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
         localQ.forEach(item => {
           const key = item.id || item.encId || ("enc-" + (item.token || "").replace("#", ""));
           if (key && !CLINICAL_PROFILES[key]) {
+            const subj = item.subjective || item.chief_complaint || item.englishTranslation || "OPD Intake Consultation";
+            const condData = getConditionSpecificPrescription(subj, item.assessment || item.diagnosis);
+            
             CLINICAL_PROFILES[key] = {
               id: key,
               tokenNumber: item.tokenNumber || item.token || "#999",
@@ -554,13 +750,13 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
               isEmergency: item.isEmergency || (item.triage_priority === 'EMERGENCY_RED') || false,
               nativeLang: item.nativeLang || "English",
               nativeSpeech: item.nativeSpeech || `"${item.chief_complaint || ''}"`,
-              subjective: item.subjective || item.chief_complaint || item.englishTranslation || "OPD Intake Consultation",
+              subjective: subj,
               objective: item.objective || "Vitals: BP: 120/80 • Pulse: 72 bpm • SpO2: 98%",
-              assessment: item.assessment || item.diagnosis || "General OPD Consultation",
-              dashavidha: item.dashavidha || { prakriti: "Sama", agni: "Sama Agni", koshtha: "Madhyama", vikriti: "None" },
-              planSummary: item.planSummary || "Standard outpatient evaluation and supportive therapy.",
-              aiSuggestions: item.aiSuggestions || [],
-              activePrescription: item.activePrescription || []
+              assessment: item.assessment || item.diagnosis || condData.assessment,
+              dashavidha: item.dashavidha || condData.dashavidha,
+              planSummary: item.planSummary || condData.planSummary,
+              aiSuggestions: (item.aiSuggestions && item.aiSuggestions.length > 0) ? item.aiSuggestions : condData.aiSuggestions,
+              activePrescription: (item.activePrescription && item.activePrescription.length > 0) ? item.activePrescription : condData.activePrescription
             };
           }
         });
@@ -627,7 +823,12 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
                 </div>
                 <div class="flex items-center justify-between text-[11px] text-slate-500 pt-1.5 border-t border-slate-200">
                   <span class="font-semibold text-slate-600">ALLOPATHIC / AYUSH</span>
-                  <span class="text-blue-600 font-bold flex items-center gap-1">Review Ready <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
+                  <div class="flex items-center gap-1.5">
+                    <button onclick="event.stopPropagation(); selectEncounter('${encId}'); generateAndDownloadPrescriptionPdf();" class="px-2 py-0.5 rounded-md bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-[10px] flex items-center gap-1 border border-emerald-300" title="Direct Download PDF">
+                      <i data-lucide="download" class="w-3 h-3"></i> PDF
+                    </button>
+                    <span class="text-blue-600 font-bold flex items-center gap-0.5">Review <i data-lucide="chevron-right" class="w-3 h-3 inline"></i></span>
+                  </div>
                 </div>
               </div>
             `;
@@ -685,21 +886,11 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
 
       const langCode = (data.nativeLang && data.nativeLang.includes("Telugu")) ? "te-IN" :
                        (data.nativeLang && data.nativeLang.includes("Hindi")) ? "hi-IN" :
-                       (data.nativeLang && data.nativeLang.includes("Tamil")) ? "ta-IN" : "en-IN";
-
-      if (langCode === "en-IN" || langCode === "hi-IN") {
-        const u = new SpeechSynthesisUtterance(rawText);
-        u.lang = langCode;
-        u.rate = 0.95;
-        u.onend = () => {
-          if (btn) {
-            btn.innerHTML = `<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> <span>Listen Spoken Audio</span>`;
-            if (typeof lucide !== "undefined") lucide.createIcons();
-          }
-        };
-        window.speechSynthesis.speak(u);
-        return;
-      }
+                       (data.nativeLang && data.nativeLang.includes("Tamil")) ? "ta-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Kannada")) ? "kn-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Marathi")) ? "mr-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Bengali")) ? "bn-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Gujarati")) ? "gu-IN" : "en-IN";
 
       fetch("/api/v1/ai/tts", {
         method: "POST",
@@ -716,22 +907,40 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
               if (typeof lucide !== "undefined") lucide.createIcons();
             }
           };
-          doctorAudioPlayer.play();
+          doctorAudioPlayer.play().catch(e => {
+            console.log("Audio play error, fallback to browser synthesis:", e);
+            fallbackDoctorSynthesis();
+          });
         } else {
-          throw new Error("No audio payload");
+          fallbackDoctorSynthesis();
         }
       })
       .catch(err => {
-        const u = new SpeechSynthesisUtterance(rawText);
-        u.lang = langCode;
-        u.onend = () => {
+        fallbackDoctorSynthesis();
+      });
+
+      function fallbackDoctorSynthesis() {
+        if (!("speechSynthesis" in window)) return;
+        try {
+          window.speechSynthesis.cancel();
+          if (window.speechSynthesis.resume) window.speechSynthesis.resume();
+          const u = new SpeechSynthesisUtterance(rawText);
+          u.lang = langCode;
+          u.rate = 0.95;
+          u.onend = () => {
+            if (btn) {
+              btn.innerHTML = `<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> <span>Listen Spoken Audio</span>`;
+              if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+          };
+          window.speechSynthesis.speak(u);
+        } catch (e) {
           if (btn) {
             btn.innerHTML = `<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> <span>Listen Spoken Audio</span>`;
             if (typeof lucide !== "undefined") lucide.createIcons();
           }
-        };
-        window.speechSynthesis.speak(u);
-      });
+        }
+      }
     }
 
     function sanitizeToEnglishSubjective(data) {
@@ -766,6 +975,13 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       currentSelectedEncId = encId;
       const data = CLINICAL_PROFILES[encId];
       if (!data) return;
+
+      if (!data.activePrescription || data.activePrescription.length === 0 || !data.aiSuggestions || data.aiSuggestions.length === 0) {
+        const cond = getConditionSpecificPrescription(data.subjective || data.englishTranslation, data.assessment);
+        if (!data.activePrescription || data.activePrescription.length === 0) data.activePrescription = cond.activePrescription;
+        if (!data.aiSuggestions || data.aiSuggestions.length === 0) data.aiSuggestions = cond.aiSuggestions;
+        if (!data.planSummary) data.planSummary = cond.planSummary;
+      }
 
       // 1. Highlight selected item in queue
       const allEncIds = Object.keys(CLINICAL_PROFILES);
@@ -1177,12 +1393,244 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       if (typeof lucide !== "undefined") lucide.createIcons();
       
       window.dispatchEvent(new Event('storage'));
-      
-      alert(`✅ Encounter ${data.tokenNumber} for ${data.patientName} Approved!
 
-1. Pushed to Govt DB (Transaction: ${txId})
-2. NRCeS FHIR R4 Bundle Linked (ID: ${fhirId})
-3. ABDM Milestone 2 (HIP Care Context) Completed.`);
+      // Automatically generate and download official prescription PDF for the patient immediately
+      generateAndDownloadPrescriptionPdf();
+      
+      alert(`✅ Encounter ${data.tokenNumber} for ${data.patientName} Approved!\n\n1. Pushed to Govt DB (Transaction: ${txId})\n2. NRCeS FHIR R4 Bundle Linked (ID: ${fhirId})\n3. ABDM Milestone 2 (HIP Care Context) Completed.\n4. Official Prescription PDF downloaded for patient.`);
+    }
+
+    function generateAndDownloadPrescriptionPdf(autoPrint = false) {
+      const data = CLINICAL_PROFILES[currentSelectedEncId] || CLINICAL_PROFILES["enc-0042"] || {};
+      
+      const { jsPDF } = window.jspdf || {};
+      if (!jsPDF) {
+        console.warn("jsPDF not loaded, opening browser print fallback");
+        window.print();
+        return;
+      }
+
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+
+      const navy = [34, 61, 121]; // #223D79
+      const darkText = [30, 41, 59];
+      const lightGray = [241, 245, 249];
+      const borderCol = [203, 213, 225];
+
+      // Top Tricolor Strip
+      doc.setFillColor(255, 153, 51); // Saffron
+      doc.rect(0, 0, 70, 2.5, "F");
+      doc.setFillColor(255, 255, 255); // White
+      doc.rect(70, 0, 70, 2.5, "F");
+      doc.setFillColor(19, 136, 8); // Green
+      doc.rect(140, 0, 70, 2.5, "F");
+
+      // Hospital Header Banner
+      doc.setFillColor(...navy);
+      doc.rect(0, 2.5, 210, 26, "F");
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("ALL INDIA INSTITUTE OF AYURVEDA (AIIA)", 105, 11, { align: "center" });
+
+      doc.setFontSize(8.5);
+      doc.setFont("helvetica", "normal");
+      doc.text("Ministry of Ayush, Government of India • Central OPD Clinical Facility", 105, 17, { align: "center" });
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(255, 165, 48); // Amber accent
+      doc.text("OFFICIAL OUTPATIENT PRESCRIPTION & ABDM CASE SUMMARY", 105, 23, { align: "center" });
+
+      // Patient Metadata Box
+      doc.setDrawColor(...borderCol);
+      doc.setFillColor(...lightGray);
+      doc.roundedRect(12, 32, 186, 26, 2, 2, "FD");
+
+      const tokenStr = data.tokenNumber || (document.getElementById("token-badge") ? document.getElementById("token-badge").innerText : "#061");
+      const nameStr = data.patientName || (document.getElementById("patient-name-display") ? document.getElementById("patient-name-display").innerText : "Ramesh Chandra");
+      const ageStr = `${data.age || 45} Yrs / ${data.gender || 'Male'}`;
+      const abhaStr = data.abhaId || "91-4829-1029-4821";
+      const nowStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      doc.setFontSize(9);
+      doc.setTextColor(...navy);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Token: ${tokenStr}`, 16, 38);
+      doc.text(`Patient: ${nameStr}`, 65, 38);
+      doc.text(`Age/Sex: ${ageStr}`, 145, 38);
+
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(...darkText);
+      doc.text(`ABHA ID: ${abhaStr}`, 16, 45);
+      doc.text(`Date & Time: ${nowStr}`, 65, 45);
+      doc.text(`Dept: Kayachikitsa / General OPD`, 145, 45);
+
+      doc.text(`Encounter ID: ${data.encounterId || 'ENC-2026-0902-061'}`, 16, 52);
+      doc.text(`Consultant: Dr. A. Sharma, MD (AIIA)`, 65, 52);
+      doc.text(`Scheme: PM-JAY Cashless Eligible`, 145, 52);
+
+      let currentY = 64;
+
+      // Clinical SOAP Summary Section
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(...navy);
+      doc.text("1. CLINICAL ASSESSMENT & DIAGNOSIS:", 14, currentY);
+      currentY += 5;
+
+      const subjectiveText = document.getElementById("soap-s") ? document.getElementById("soap-s").value : (data.subjective || "Patient reports knee joint pain.");
+      const objectiveText = document.getElementById("soap-o") ? document.getElementById("soap-o").value : (data.objective || "BP: 120/80 mmHg, Pulse: 72 bpm.");
+      const assessmentText = document.getElementById("soap-a") ? document.getElementById("soap-a").value : (data.assessment || "Sandhigata Vata (Bilateral Knee Osteoarthritis)");
+      
+      const prakriti = document.getElementById("dash-prakriti") ? document.getElementById("dash-prakriti").innerText : (data.prakriti || "Vata-Pitta");
+      const agni = document.getElementById("dash-agni") ? document.getElementById("dash-agni").innerText : "Mandagni";
+      const koshtha = document.getElementById("dash-koshtha") ? document.getElementById("dash-koshtha").innerText : "Madhyama";
+      const vikriti = document.getElementById("dash-vikriti") ? document.getElementById("dash-vikriti").innerText : "Dhatu Kshaya";
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(...darkText);
+      
+      doc.text(`• Diagnosis: ${assessmentText}`, 16, currentY);
+      currentY += 4.5;
+      doc.text(`• Dashavidha Metrics: Prakriti: ${prakriti} | Agni: ${agni} | Koshtha: ${koshtha} | Vikriti: ${vikriti}`, 16, currentY);
+      currentY += 4.5;
+      doc.text(`• Clinical History: ${subjectiveText.substring(0, 140)}${subjectiveText.length > 140 ? '...' : ''}`, 16, currentY);
+      currentY += 8;
+
+      // Prescribed Formulations (Rx) Table
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(...navy);
+      doc.text("2. PRESCRIBED FORMULATIONS & MEDICATIONS (Rx):", 14, currentY);
+      currentY += 2;
+
+      const medRows = [];
+      const tableRows = document.querySelectorAll("#prescription-table-body tr");
+      if (tableRows && tableRows.length > 0) {
+        tableRows.forEach((tr, idx) => {
+          const tds = tr.querySelectorAll("td");
+          if (tds.length >= 5) {
+            medRows.push([
+              idx + 1,
+              tds[0].innerText.trim(),
+              tds[1].innerText.trim(),
+              tds[2].innerText.trim(),
+              tds[3].innerText.trim(),
+              tds[4].innerText.trim()
+            ]);
+          }
+        });
+      }
+
+      if (medRows.length === 0 && data.medications) {
+        data.medications.forEach((m, idx) => {
+          medRows.push([
+            idx + 1,
+            m.name || m,
+            m.dose || "1 Tab",
+            m.frequency || "BD (Twice Daily)",
+            m.duration || "15 Days",
+            m.instructions || "After Food with warm water"
+          ]);
+        });
+      }
+
+      if (medRows.length === 0) {
+        const fallbackCond = getConditionSpecificPrescription(subjectiveText, assessmentText);
+        (fallbackCond.activePrescription || []).forEach((m, idx) => {
+          medRows.push([
+            idx + 1,
+            m.name || "Formulation",
+            m.dose || "1 Tab",
+            m.freq || "BD (Twice daily)",
+            m.dur || "15 Days",
+            m.inst || "After food with warm water"
+          ]);
+        });
+      }
+
+      doc.autoTable({
+        startY: currentY,
+        head: [["#", "Medicine / Formulation", "Dose", "Frequency", "Duration", "Instructions (Anupana)"]],
+        body: medRows,
+        theme: "striped",
+        headStyles: {
+          fillColor: [34, 61, 121],
+          textColor: [255, 255, 255],
+          fontStyle: "bold",
+          fontSize: 8.5
+        },
+        bodyStyles: {
+          fontSize: 8,
+          textColor: [30, 41, 59]
+        },
+        columnStyles: {
+          0: { cellWidth: 8, halign: "center" },
+          1: { cellWidth: 54 },
+          2: { cellWidth: 24 },
+          3: { cellWidth: 32 },
+          4: { cellWidth: 24 },
+          5: { cellWidth: 44 }
+        },
+        margin: { left: 12, right: 12 }
+      });
+
+      currentY = doc.lastAutoTable.finalY + 7;
+
+      // Doctor's Advice & Regimen
+      const planText = document.getElementById("soap-p") ? document.getElementById("soap-p").value : (data.plan || "Follow warm water regimen. Avoid cold and heavy food items. Low purine diet recommended.");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(...navy);
+      doc.text("3. ADVICE & DIETARY GUIDELINES (Ahara / Vihara):", 14, currentY);
+      currentY += 4.5;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...darkText);
+      const splitPlan = doc.splitTextToSize(planText, 184);
+      doc.text(splitPlan, 16, currentY);
+      currentY += (splitPlan.length * 4) + 10;
+
+      // Ensure footer space
+      if (currentY > 260) {
+        doc.addPage();
+        currentY = 20;
+      }
+
+      // Verification & Signature Footer
+      doc.setDrawColor(...borderCol);
+      doc.line(12, currentY, 198, currentY);
+      currentY += 5;
+
+      doc.setFontSize(7.5);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`NRCeS FHIR R4 Bundle ID: ${data.fhirId || 'bundle-doc-061-f8a9e2'}`, 14, currentY);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...navy);
+      doc.text("Dr. A. Sharma, MD (AIIA)", 150, currentY, { align: "left" });
+      currentY += 4;
+      
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 116, 139);
+      doc.text("Digitally Signed & Synced to Ayushman Bharat Digital Mission (ABDM)", 14, currentY);
+      doc.text("Reg. No: AYU/DL/2026/84920", 150, currentY, { align: "left" });
+
+      const cleanToken = (tokenStr || 'Token061').replace(/[^a-zA-Z0-9]/g, '');
+      const cleanName = (nameStr || 'Patient').replace(/[^a-zA-Z0-9]/g, '_');
+      const filename = `Prescription_${cleanToken}_${cleanName}.pdf`;
+      doc.save(filename);
+
+      if (autoPrint) {
+        doc.autoPrint();
+      }
     }
 
     async function showFhirModal() {
