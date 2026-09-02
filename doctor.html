@@ -549,6 +549,9 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       if (btnPmjay) btnPmjay.className = filter === 'pmjay' ? "px-2.5 py-1 bg-[#223D79] text-white font-bold rounded-lg shadow-sm" : "px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg";
       if (btnEmerg) btnEmerg.className = filter === 'emergency' ? "px-2.5 py-1 bg-[#223D79] text-white font-bold rounded-lg shadow-sm" : "px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg";
 
+      initDoctorQueue();
+    }
+
     function getConditionSpecificPrescription(rawText, rawAssessment) {
       const combined = ((rawText || '') + ' ' + (rawAssessment || '')).toLowerCase();
 
