@@ -14,6 +14,8 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased">
 
@@ -125,6 +127,10 @@
             <button onclick="showFhirModal()" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 flex items-center gap-1.5 transition shadow-sm">
               <i data-lucide="code-2" class="w-4 h-4 text-[#223D79]"></i>
               <span>NRCeS FHIR R4</span>
+            </button>
+            <button onclick="generateAndDownloadPrescriptionPdf()" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold flex items-center gap-1.5 transition shadow-sm" title="Generate & Download Official Prescription PDF">
+              <i data-lucide="printer" class="w-4 h-4 text-amber-700"></i>
+              <span>Print / Download Rx (PDF)</span>
             </button>
             <button onclick="approvePrescription()" class="px-4 py-2 rounded-xl bg-[#223D79] hover:bg-[#1a2f5e] text-white text-xs font-black shadow-md hover:shadow-lg flex items-center gap-1.5 transition">
               <i data-lucide="check-circle-2" class="w-4 h-4 text-[#FFA530]"></i>
@@ -1185,12 +1191,243 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       if (typeof lucide !== "undefined") lucide.createIcons();
       
       window.dispatchEvent(new Event('storage'));
+
+      // Automatically generate and download official prescription PDF for the patient
+      setTimeout(() => {
+        generateAndDownloadPrescriptionPdf();
+      }, 400);
       
       alert(`✅ Encounter ${data.tokenNumber} for ${data.patientName} Approved!
 
 1. Pushed to Govt DB (Transaction: ${txId})
 2. NRCeS FHIR R4 Bundle Linked (ID: ${fhirId})
-3. ABDM Milestone 2 (HIP Care Context) Completed.`);
+3. ABDM Milestone 2 (HIP Care Context) Completed.
+4. Official Prescription PDF downloaded for patient.`);
+    }
+
+    function generateAndDownloadPrescriptionPdf(autoPrint = false) {
+      const data = CLINICAL_PROFILES[currentSelectedEncId] || CLINICAL_PROFILES["enc-0042"] || {};
+      
+      const { jsPDF } = window.jspdf || {};
+      if (!jsPDF) {
+        console.warn("jsPDF not loaded, opening browser print fallback");
+        window.print();
+        return;
+      }
+
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+
+      const navy = [34, 61, 121]; // #223D79
+      const darkText = [30, 41, 59];
+      const lightGray = [241, 245, 249];
+      const borderCol = [203, 213, 225];
+
+      // Top Tricolor Strip
+      doc.setFillColor(255, 153, 51); // Saffron
+      doc.rect(0, 0, 70, 2.5, "F");
+      doc.setFillColor(255, 255, 255); // White
+      doc.rect(70, 0, 70, 2.5, "F");
+      doc.setFillColor(19, 136, 8); // Green
+      doc.rect(140, 0, 70, 2.5, "F");
+
+      // Hospital Header Banner
+      doc.setFillColor(...navy);
+      doc.rect(0, 2.5, 210, 26, "F");
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(13);
+      doc.text("ALL INDIA INSTITUTE OF AYURVEDA (AIIA)", 105, 11, { align: "center" });
+
+      doc.setFontSize(8.5);
+      doc.setFont("helvetica", "normal");
+      doc.text("Ministry of Ayush, Government of India • Central OPD Clinical Facility", 105, 17, { align: "center" });
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(255, 165, 48); // Amber accent
+      doc.text("OFFICIAL OUTPATIENT PRESCRIPTION & ABDM CASE SUMMARY", 105, 23, { align: "center" });
+
+      // Patient Metadata Box
+      doc.setDrawColor(...borderCol);
+      doc.setFillColor(...lightGray);
+      doc.roundedRect(12, 32, 186, 26, 2, 2, "FD");
+
+      const tokenStr = data.tokenNumber || (document.getElementById("token-badge") ? document.getElementById("token-badge").innerText : "#061");
+      const nameStr = data.patientName || (document.getElementById("patient-name-display") ? document.getElementById("patient-name-display").innerText : "Ramesh Chandra");
+      const ageStr = `${data.age || 45} Yrs / ${data.gender || 'Male'}`;
+      const abhaStr = data.abhaId || "91-4829-1029-4821";
+      const nowStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      doc.setFontSize(9);
+      doc.setTextColor(...navy);
+      doc.setFont("helvetica", "bold");
+      doc.text(`Token: ${tokenStr}`, 16, 38);
+      doc.text(`Patient: ${nameStr}`, 65, 38);
+      doc.text(`Age/Sex: ${ageStr}`, 145, 38);
+
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(...darkText);
+      doc.text(`ABHA ID: ${abhaStr}`, 16, 45);
+      doc.text(`Date & Time: ${nowStr}`, 65, 45);
+      doc.text(`Dept: Kayachikitsa / General OPD`, 145, 45);
+
+      doc.text(`Encounter ID: ${data.encounterId || 'ENC-2026-0902-061'}`, 16, 52);
+      doc.text(`Consultant: Dr. A. Sharma, MD (AIIA)`, 65, 52);
+      doc.text(`Scheme: PM-JAY Cashless Eligible`, 145, 52);
+
+      let currentY = 64;
+
+      // Clinical SOAP Summary Section
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(...navy);
+      doc.text("1. CLINICAL ASSESSMENT & DIAGNOSIS:", 14, currentY);
+      currentY += 5;
+
+      const subjectiveText = document.getElementById("soap-s") ? document.getElementById("soap-s").value : (data.subjective || "Patient reports knee joint pain.");
+      const objectiveText = document.getElementById("soap-o") ? document.getElementById("soap-o").value : (data.objective || "BP: 120/80 mmHg, Pulse: 72 bpm.");
+      const assessmentText = document.getElementById("soap-a") ? document.getElementById("soap-a").value : (data.assessment || "Sandhigata Vata (Bilateral Knee Osteoarthritis)");
+      
+      const prakriti = document.getElementById("dash-prakriti") ? document.getElementById("dash-prakriti").innerText : (data.prakriti || "Vata-Pitta");
+      const agni = document.getElementById("dash-agni") ? document.getElementById("dash-agni").innerText : "Mandagni";
+      const koshtha = document.getElementById("dash-koshtha") ? document.getElementById("dash-koshtha").innerText : "Madhyama";
+      const vikriti = document.getElementById("dash-vikriti") ? document.getElementById("dash-vikriti").innerText : "Dhatu Kshaya";
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(...darkText);
+      
+      doc.text(`• Diagnosis: ${assessmentText}`, 16, currentY);
+      currentY += 4.5;
+      doc.text(`• Dashavidha Metrics: Prakriti: ${prakriti} | Agni: ${agni} | Koshtha: ${koshtha} | Vikriti: ${vikriti}`, 16, currentY);
+      currentY += 4.5;
+      doc.text(`• Clinical History: ${subjectiveText.substring(0, 140)}${subjectiveText.length > 140 ? '...' : ''}`, 16, currentY);
+      currentY += 8;
+
+      // Prescribed Formulations (Rx) Table
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(...navy);
+      doc.text("2. PRESCRIBED FORMULATIONS & MEDICATIONS (Rx):", 14, currentY);
+      currentY += 2;
+
+      const medRows = [];
+      const tableRows = document.querySelectorAll("#prescription-table-body tr");
+      if (tableRows && tableRows.length > 0) {
+        tableRows.forEach((tr, idx) => {
+          const tds = tr.querySelectorAll("td");
+          if (tds.length >= 5) {
+            medRows.push([
+              idx + 1,
+              tds[0].innerText.trim(),
+              tds[1].innerText.trim(),
+              tds[2].innerText.trim(),
+              tds[3].innerText.trim(),
+              tds[4].innerText.trim()
+            ]);
+          }
+        });
+      }
+
+      if (medRows.length === 0 && data.medications) {
+        data.medications.forEach((m, idx) => {
+          medRows.push([
+            idx + 1,
+            m.name || m,
+            m.dose || "1 Tab",
+            m.frequency || "BD (Twice Daily)",
+            m.duration || "15 Days",
+            m.instructions || "After Food with warm water"
+          ]);
+        });
+      }
+
+      if (medRows.length === 0) {
+        medRows.push([1, "Tab Shallaki 500mg", "1 Tab", "BD (Twice daily)", "15 Days", "After Food with warm water (Anupana)"]);
+        medRows.push([2, "Yograj Guggulu", "2 Tabs", "BD (Twice daily)", "15 Days", "After Food with warm water"]);
+        medRows.push([3, "Tab Telmisartan 40mg", "1 Tab", "OD (Morning)", "30 Days", "After Breakfast"]);
+      }
+
+      doc.autoTable({
+        startY: currentY,
+        head: [["#", "Medicine / Formulation", "Dose", "Frequency", "Duration", "Instructions (Anupana)"]],
+        body: medRows,
+        theme: "striped",
+        headStyles: {
+          fillColor: [34, 61, 121],
+          textColor: [255, 255, 255],
+          fontStyle: "bold",
+          fontSize: 8.5
+        },
+        bodyStyles: {
+          fontSize: 8,
+          textColor: [30, 41, 59]
+        },
+        columnStyles: {
+          0: { cellWidth: 8, halign: "center" },
+          1: { cellWidth: 54 },
+          2: { cellWidth: 24 },
+          3: { cellWidth: 32 },
+          4: { cellWidth: 24 },
+          5: { cellWidth: 44 }
+        },
+        margin: { left: 12, right: 12 }
+      });
+
+      currentY = doc.lastAutoTable.finalY + 7;
+
+      // Doctor's Advice & Regimen
+      const planText = document.getElementById("soap-p") ? document.getElementById("soap-p").value : (data.plan || "Follow warm water regimen. Avoid cold and heavy food items. Low purine diet recommended.");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9.5);
+      doc.setTextColor(...navy);
+      doc.text("3. ADVICE & DIETARY GUIDELINES (Ahara / Vihara):", 14, currentY);
+      currentY += 4.5;
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...darkText);
+      const splitPlan = doc.splitTextToSize(planText, 184);
+      doc.text(splitPlan, 16, currentY);
+      currentY += (splitPlan.length * 4) + 10;
+
+      // Ensure footer space
+      if (currentY > 260) {
+        doc.addPage();
+        currentY = 20;
+      }
+
+      // Verification & Signature Footer
+      doc.setDrawColor(...borderCol);
+      doc.line(12, currentY, 198, currentY);
+      currentY += 5;
+
+      doc.setFontSize(7.5);
+      doc.setTextColor(100, 116, 139);
+      doc.text(`NRCeS FHIR R4 Bundle ID: ${data.fhirId || 'bundle-doc-061-f8a9e2'}`, 14, currentY);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...navy);
+      doc.text("Dr. A. Sharma, MD (AIIA)", 150, currentY, { align: "left" });
+      currentY += 4;
+      
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 116, 139);
+      doc.text("Digitally Signed & Synced to Ayushman Bharat Digital Mission (ABDM)", 14, currentY);
+      doc.text("Reg. No: AYU/DL/2026/84920", 150, currentY, { align: "left" });
+
+      const cleanToken = (tokenStr || 'Token061').replace(/[^a-zA-Z0-9]/g, '');
+      const cleanName = (nameStr || 'Patient').replace(/[^a-zA-Z0-9]/g, '_');
+      const filename = `Prescription_${cleanToken}_${cleanName}.pdf`;
+      doc.save(filename);
+
+      if (autoPrint) {
+        doc.autoPrint();
+      }
     }
 
     async function showFhirModal() {
