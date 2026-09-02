@@ -3602,6 +3602,10 @@
       } catch (err) {
         console.log("Translation error:", err);
       } finally {
+        if (spinner) spinner.classList.add("hidden");
+      }
+    }
+
     function downloadPatientTokenPdf() {
       const { jsPDF } = window.jspdf || {};
       if (!jsPDF) {
