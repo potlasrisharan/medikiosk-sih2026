@@ -685,21 +685,11 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
 
       const langCode = (data.nativeLang && data.nativeLang.includes("Telugu")) ? "te-IN" :
                        (data.nativeLang && data.nativeLang.includes("Hindi")) ? "hi-IN" :
-                       (data.nativeLang && data.nativeLang.includes("Tamil")) ? "ta-IN" : "en-IN";
-
-      if (langCode === "en-IN" || langCode === "hi-IN") {
-        const u = new SpeechSynthesisUtterance(rawText);
-        u.lang = langCode;
-        u.rate = 0.95;
-        u.onend = () => {
-          if (btn) {
-            btn.innerHTML = `<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> <span>Listen Spoken Audio</span>`;
-            if (typeof lucide !== "undefined") lucide.createIcons();
-          }
-        };
-        window.speechSynthesis.speak(u);
-        return;
-      }
+                       (data.nativeLang && data.nativeLang.includes("Tamil")) ? "ta-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Kannada")) ? "kn-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Marathi")) ? "mr-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Bengali")) ? "bn-IN" :
+                       (data.nativeLang && data.nativeLang.includes("Gujarati")) ? "gu-IN" : "en-IN";
 
       fetch("/api/v1/ai/tts", {
         method: "POST",
@@ -716,22 +706,40 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
               if (typeof lucide !== "undefined") lucide.createIcons();
             }
           };
-          doctorAudioPlayer.play();
+          doctorAudioPlayer.play().catch(e => {
+            console.log("Audio play error, fallback to browser synthesis:", e);
+            fallbackDoctorSynthesis();
+          });
         } else {
-          throw new Error("No audio payload");
+          fallbackDoctorSynthesis();
         }
       })
       .catch(err => {
-        const u = new SpeechSynthesisUtterance(rawText);
-        u.lang = langCode;
-        u.onend = () => {
+        fallbackDoctorSynthesis();
+      });
+
+      function fallbackDoctorSynthesis() {
+        if (!("speechSynthesis" in window)) return;
+        try {
+          window.speechSynthesis.cancel();
+          if (window.speechSynthesis.resume) window.speechSynthesis.resume();
+          const u = new SpeechSynthesisUtterance(rawText);
+          u.lang = langCode;
+          u.rate = 0.95;
+          u.onend = () => {
+            if (btn) {
+              btn.innerHTML = `<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> <span>Listen Spoken Audio</span>`;
+              if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+          };
+          window.speechSynthesis.speak(u);
+        } catch (e) {
           if (btn) {
             btn.innerHTML = `<i data-lucide="volume-2" class="w-3.5 h-3.5"></i> <span>Listen Spoken Audio</span>`;
             if (typeof lucide !== "undefined") lucide.createIcons();
           }
-        };
-        window.speechSynthesis.speak(u);
-      });
+        }
+      }
     }
 
     function sanitizeToEnglishSubjective(data) {
