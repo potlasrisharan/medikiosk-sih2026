@@ -517,7 +517,151 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       if (btnPmjay) btnPmjay.className = filter === 'pmjay' ? "px-2.5 py-1 bg-[#223D79] text-white font-bold rounded-lg shadow-sm" : "px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg";
       if (btnEmerg) btnEmerg.className = filter === 'emergency' ? "px-2.5 py-1 bg-[#223D79] text-white font-bold rounded-lg shadow-sm" : "px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg";
 
-      initDoctorQueue();
+    function getConditionSpecificPrescription(rawText, rawAssessment) {
+      const combined = ((rawText || '') + ' ' + (rawAssessment || '')).toLowerCase();
+
+      // 1. Fever / Pyrexia / Vishama Jwara / Flu
+      if (combined.includes('fever') || combined.includes('ज्वर') || combined.includes('बुखार') || combined.includes('temperature') || combined.includes('shivering') || combined.includes('flu') || combined.includes('జ్వరం')) {
+        return {
+          assessment: "1. Vishama Jwara (Acute Febrile Illness / Viral Pyrexia / NAMASTE AYU-JWA-01)\n2. Agnimandya (Suppressed Digestive Fire)",
+          dashavidha: { prakriti: "Vata-Pitta", agni: "Manda Agni (Jwaragni)", koshtha: "Vibandha", vikriti: "Vata-Kaphaja Jwara" },
+          planSummary: "1. Antipyretic and immune-restorative line of treatment\n2. Maintain hydration with warm Shadanga Paniya & Moong soup\n3. Complete bed rest; follow up in 3 days if temperature persists",
+          activePrescription: [
+            { name: "Tab. Paracetamol 650mg", dose: "1 Tab", freq: "TDS (Thrice daily)", dur: "3 Days", inst: "After meals when temperature >100°F" },
+            { name: "Tab. Mahasudarshan Ghanvati", dose: "2 Tabs (500mg)", freq: "TDS (Thrice daily)", dur: "5 Days", inst: "After food with warm water" },
+            { name: "Syp. Amritarishta (Giloy)", dose: "20 ml", freq: "BD (Twice daily)", dur: "7 Days", inst: "After meals with equal warm water" },
+            { name: "Tab. Tribhuvankirti Rasa", dose: "1 Tab (125mg)", freq: "BD (Twice daily)", dur: "5 Days", inst: "With honey after food for body aches" }
+          ],
+          aiSuggestions: [
+            { name: "Tab. Dolo 650mg", dose: "1 Tab", freq: "TDS", dur: "3 Days", inst: "After food" },
+            { name: "Cap. Vitamin C 500mg", dose: "1 Tab", freq: "OD", dur: "10 Days", inst: "After lunch" },
+            { name: "Sudarshan Churna", dose: "3 Grams", freq: "BD", dur: "5 Days", inst: "With warm water" },
+            { name: "Syp. Tulsi-Vasaka", dose: "10 ml", freq: "TDS", dur: "5 Days", inst: "With warm water" }
+          ]
+        };
+      }
+
+      // 2. Chest Pain / Cardiac / STEMI / Hridroga
+      if (combined.includes('chest') || combined.includes('heart') || combined.includes('cardiac') || combined.includes('angina') || combined.includes('stemi') || combined.includes('छाती') || combined.includes('గుండె')) {
+        return {
+          assessment: "1. Priority 1 STAT: Acute Coronary Syndrome / Anterior Wall STEMI (NAMASTE AYU-HRI-01)\n2. Critical Myocardial Ischemia / Hridaya Sroto-rodha",
+          dashavidha: { prakriti: "Pitta-Vata", agni: "Tikshna Agni", koshtha: "Krura Koshtha", vikriti: "Hridaya Marmaghata" },
+          planSummary: "EMERGENCY PROTOCOL:\n1. 4 L/min Oxygen + Continuous ECG Monitoring\n2. Dual Antiplatelet Therapy (DAPT) loading administered\n3. Code Blue: STAT Transfer to Cath Lab for Primary PCI",
+          activePrescription: [
+            { name: "Tab. Aspirin 325mg (Chewable)", dose: "1 Tab", freq: "STAT", dur: "Single Dose", inst: "Chew immediately" },
+            { name: "Tab. Clopidogrel 300mg", dose: "4 Tabs (75mg)", freq: "STAT", dur: "Loading Dose", inst: "Swallow with water immediately" },
+            { name: "Tab. Atorvastatin 80mg", dose: "1 Tab", freq: "STAT", dur: "Loading Dose", inst: "High-intensity statin" },
+            { name: "Sublingual Sorbitrate 5mg", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "Place under tongue if chest pain & SBP >100" }
+          ],
+          aiSuggestions: [
+            { name: "Inj. Heparin 5000 IU", dose: "STAT", freq: "IV Bolus", dur: "Single", inst: "Under ICU Supervision" },
+            { name: "Arjunarishta", dose: "20 ml", freq: "BD", dur: "30 Days", inst: "Post-stabilization with warm water" },
+            { name: "Tab. Metoprolol 25mg", dose: "1 Tab", freq: "OD", dur: "15 Days", inst: "Morning after breakfast" },
+            { name: "Tab. Hridyarnava Rasa 125mg", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "Cardioprotective formulation" }
+          ]
+        };
+      }
+
+      // 3. Acid Reflux / Gastric / GERD / Amlapitta
+      if (combined.includes('stomach') || combined.includes('acid') || combined.includes('reflux') || combined.includes('gerd') || combined.includes('gastric') || combined.includes('burning') || combined.includes('ulcer') || combined.includes('जलन') || combined.includes('एसिड') || combined.includes('కడుపు')) {
+        return {
+          assessment: "1. Amlapitta (Acid Peptic Disorder / Reflux Esophagitis / NAMASTE AYU-AML-02)\n2. Vidagdha Pitta (Hyperchlorhydria)",
+          dashavidha: { prakriti: "Pitta-Vata", agni: "Tikshna Agni", koshtha: "Mrudu Koshtha", vikriti: "Pitta Dusti" },
+          planSummary: "1. Pitta Shamana and acid-neutralizing regimen\n2. Avoid spicy, sour, fried, and fermented foods\n3. Early dinner (2 hours before sleep) and alkaline hydration",
+          activePrescription: [
+            { name: "Cap. Pantoprazole 40mg", dose: "1 Cap", freq: "OD (Morning)", dur: "14 Days", inst: "Empty stomach 30 mins before breakfast" },
+            { name: "Avipattikar Churna", dose: "3 Grams", freq: "BD (Twice daily)", dur: "15 Days", inst: "15 mins before meals with warm water" },
+            { name: "Kamadudha Rasa (Mukta Yukta)", dose: "1 Tab (250mg)", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with milk/water" },
+            { name: "Sutshekhar Rasa", dose: "1 Tab (125mg)", freq: "BD (Twice daily)", dur: "10 Days", inst: "After meals with honey" }
+          ],
+          aiSuggestions: [
+            { name: "Syp. Gelusil MPS", dose: "10 ml", freq: "TDS", dur: "7 Days", inst: "After meals & bedtime" },
+            { name: "Cap. Rabeprazole 20mg", dose: "1 Cap", freq: "OD", dur: "14 Days", inst: "Morning before food" },
+            { name: "Shankh Bhasma 250mg", dose: "1 Pinch", freq: "BD", dur: "15 Days", inst: "With honey after meals" },
+            { name: "Tab. Yashtimadhu Ghanvati", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "Mucosal soothing" }
+          ]
+        };
+      }
+
+      // 4. Cough / Cold / Respiratory / Kasa-Shwasa
+      if (combined.includes('cough') || combined.includes('cold') || combined.includes('throat') || combined.includes('asthma') || combined.includes('wheezing') || combined.includes('bronchitis') || combined.includes('खांसी') || combined.includes('दग्गु')) {
+        return {
+          assessment: "1. Kasa-Shwasa (Acute Upper Respiratory Tract Infection / Bronchial Irritation / NAMASTE AYU-KAS-01)\n2. Vata-Kaphaja Srotorodha",
+          dashavidha: { prakriti: "Kapha-Vata", agni: "Mandagni", koshtha: "Madhyama", vikriti: "Pranavaha Sroto-dusti" },
+          planSummary: "1. Bronchodilator & mucolytic line of management\n2. Warm steam inhalation twice daily\n3. Avoid cold drinks, ice creams, and dairy at night",
+          activePrescription: [
+            { name: "Syp. Vasaka (Adhatoda Vasica)", dose: "10 ml", freq: "TDS (Thrice daily)", dur: "7 Days", inst: "With warm water after food" },
+            { name: "Sitopaladi Churna", dose: "3 Grams", freq: "TDS (Thrice daily)", dur: "7 Days", inst: "Mixed with 1 tsp pure honey" },
+            { name: "Tab. Montelukast + Levocetirizine", dose: "1 Tab", freq: "OD (Night)", dur: "7 Days", inst: "At bedtime" },
+            { name: "Talisadi Vati (250mg)", dose: "1 Tab", freq: "TDS", dur: "5 Days", inst: "Dissolve slowly in mouth" }
+          ],
+          aiSuggestions: [
+            { name: "Syp. Ascoril-D", dose: "5 ml", freq: "TDS", dur: "5 Days", inst: "For dry cough" },
+            { name: "Kanchanar Guggulu", dose: "2 Tabs", freq: "BD", dur: "10 Days", inst: "Lymph node soothing" },
+            { name: "Kanthasudharak Vati", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "For throat irritation" },
+            { name: "Tab. Azithromycin 500mg", dose: "1 Tab", freq: "OD", dur: "3 Days", inst: "Post antibiotic check" }
+          ]
+        };
+      }
+
+      // 5. Hypertension / High Blood Pressure / Raktachapa
+      if (combined.includes('bp') || combined.includes('hypertension') || combined.includes('blood pressure') || combined.includes('रक्तचाप') || combined.includes('బీపీ')) {
+        return {
+          assessment: "1. Raktavata / Uchha Raktachapa (Essential Hypertension / NAMASTE AYU-RAK-01)\n2. Vata-Pitta Sroto-dusti",
+          dashavidha: { prakriti: "Pitta-Vata", agni: "Sama Agni", koshtha: "Madhyama", vikriti: "Raktavaha Srotas" },
+          planSummary: "1. Cardioprotective anti-hypertensive regimen\n2. Low sodium DASH diet (<3g salt/day)\n3. 20 min daily Anulom-Vilom Pranayama",
+          activePrescription: [
+            { name: "Tab. Telmisartan 40mg", dose: "1 Tab", freq: "OD (Morning)", dur: "30 Days", inst: "After breakfast" },
+            { name: "Tab. Sarpagandha Ghanvati", dose: "1 Tab (250mg)", freq: "HS (Night)", dur: "15 Days", inst: "At bedtime with warm milk" },
+            { name: "Syp. Arjunarishta", dose: "20 ml", freq: "BD (Twice daily)", dur: "30 Days", inst: "After meals with equal warm water" }
+          ],
+          aiSuggestions: [
+            { name: "Tab. Amlodipine 5mg", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "Calcium channel blocker" },
+            { name: "Brahmi Vati", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "Stress reduction" },
+            { name: "Ashwagandha Tab 500mg", dose: "1 Tab", freq: "BD", dur: "30 Days", inst: "With warm milk" },
+            { name: "Tab. Lasix 20mg", dose: "1 Tab", freq: "SOS", dur: "As Needed", inst: "Diuretic support" }
+          ]
+        };
+      }
+
+      // 6. Diabetes / High Sugar / Prameha
+      if (combined.includes('diabetes') || combined.includes('sugar') || combined.includes('glucose') || combined.includes('मधुमेह') || combined.includes('షుగర్')) {
+        return {
+          assessment: "1. Madhumeha (Type 2 Diabetes Mellitus / NAMASTE AYU-PRA-01)\n2. Kaphaja Prameha with Dhatvagni Mandya",
+          dashavidha: { prakriti: "Kapha-Pitta", agni: "Mandagni", koshtha: "Madhyama", vikriti: "Medovaha Srotas" },
+          planSummary: "1. Glycemic regulation & metabolic correction\n2. Low GI diet: Avoid refined sugar, white rice, fried snacks\n3. 45 min daily brisk morning walk",
+          activePrescription: [
+            { name: "Tab. Metformin 500mg (SR)", dose: "1 Tab", freq: "BD (Twice daily)", dur: "30 Days", inst: "With breakfast and dinner" },
+            { name: "Nisha Amalaki Churna", dose: "3 Grams", freq: "BD (Twice daily)", dur: "30 Days", inst: "Morning & evening with warm water" },
+            { name: "Tab. Chandraprabha Vati", dose: "2 Tabs", freq: "BD (Twice daily)", dur: "30 Days", inst: "After meals with water" }
+          ],
+          aiSuggestions: [
+            { name: "Karela-Jamun Juice", dose: "20 ml", freq: "OD", dur: "30 Days", inst: "Early morning empty stomach" },
+            { name: "Tab. Glimepiride 1mg", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "Before breakfast" },
+            { name: "Vasant Kusumakar Ras", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "With honey" },
+            { name: "Tab. Jambwasava", dose: "20 ml", freq: "BD", dur: "30 Days", inst: "After meals" }
+          ]
+        };
+      }
+
+      // 7. Default (Knee Pain / Osteoarthritis / Joint / Musculoskeletal)
+      return {
+        assessment: "1. Sandhigata Vata (Bilateral Knee Osteoarthritis / NAMASTE AYU-SAN-01)\n2. Dhatu Kshaya (Asthi-Majja Degeneration)",
+        dashavidha: { prakriti: "Vata-Kapha", agni: "Manda Agni", koshtha: "Madhyama", vikriti: "Dhatu Kshaya (Asthi-Majja)" },
+        planSummary: "1. Vata-pacifying joint anti-inflammatory therapy\n2. External Janu Basti with Ksheerabala Taila\n3. Low-purine dietary regimen (avoid red meat & lentils)",
+        activePrescription: [
+          { name: "Tab. Yograj Guggulu", dose: "2 Tabs (500mg)", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water" },
+          { name: "Kwath. Maharasnadi", dose: "20 ml", freq: "BD (Twice daily)", dur: "15 Days", inst: "Before food with equal water" },
+          { name: "Cap. Shallaki (500mg)", dose: "1 Cap", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals (Cartilage support)" },
+          { name: "Ext. Janu Basti (Ksheerabala Taila)", dose: "1 Sitting", freq: "OD", dur: "7 Sittings", inst: "Panchakarma Department" }
+        ],
+        aiSuggestions: [
+          { name: "Tab. Febuxostat 40mg", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "Morning after breakfast (Uric acid lowering)" },
+          { name: "Rumalaya Forte", dose: "1 Tab", freq: "BD", dur: "15 Days", inst: "After food" },
+          { name: "Tab. Calcium + D3", dose: "1 Tab", freq: "OD", dur: "30 Days", inst: "After lunch" },
+          { name: "Mahanarayan Taila Liniment", dose: "External", freq: "BD", dur: "15 Days", inst: "Gentle local massage" }
+        ]
+      };
     }
 
     // Live Shared Queue Synchronizer between Patient Kiosk and Doctor Portal
@@ -531,7 +675,18 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
           if (!error && data) {
             data.forEach(row => {
               if (row.ui_data && row.ui_data.id) {
-                CLINICAL_PROFILES[row.ui_data.id] = row.ui_data;
+                const ui = row.ui_data;
+                const condData = getConditionSpecificPrescription(ui.subjective || ui.englishTranslation, ui.assessment);
+                if (!ui.activePrescription || ui.activePrescription.length === 0) {
+                  ui.activePrescription = condData.activePrescription;
+                }
+                if (!ui.aiSuggestions || ui.aiSuggestions.length === 0) {
+                  ui.aiSuggestions = condData.aiSuggestions;
+                }
+                if (!ui.planSummary) {
+                  ui.planSummary = condData.planSummary;
+                }
+                CLINICAL_PROFILES[ui.id] = ui;
               }
             });
           }
@@ -546,6 +701,9 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
         localQ.forEach(item => {
           const key = item.id || item.encId || ("enc-" + (item.token || "").replace("#", ""));
           if (key && !CLINICAL_PROFILES[key]) {
+            const subj = item.subjective || item.chief_complaint || item.englishTranslation || "OPD Intake Consultation";
+            const condData = getConditionSpecificPrescription(subj, item.assessment || item.diagnosis);
+            
             CLINICAL_PROFILES[key] = {
               id: key,
               tokenNumber: item.tokenNumber || item.token || "#999",
@@ -560,13 +718,13 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
               isEmergency: item.isEmergency || (item.triage_priority === 'EMERGENCY_RED') || false,
               nativeLang: item.nativeLang || "English",
               nativeSpeech: item.nativeSpeech || `"${item.chief_complaint || ''}"`,
-              subjective: item.subjective || item.chief_complaint || item.englishTranslation || "OPD Intake Consultation",
+              subjective: subj,
               objective: item.objective || "Vitals: BP: 120/80 • Pulse: 72 bpm • SpO2: 98%",
-              assessment: item.assessment || item.diagnosis || "General OPD Consultation",
-              dashavidha: item.dashavidha || { prakriti: "Sama", agni: "Sama Agni", koshtha: "Madhyama", vikriti: "None" },
-              planSummary: item.planSummary || "Standard outpatient evaluation and supportive therapy.",
-              aiSuggestions: item.aiSuggestions || [],
-              activePrescription: item.activePrescription || []
+              assessment: item.assessment || item.diagnosis || condData.assessment,
+              dashavidha: item.dashavidha || condData.dashavidha,
+              planSummary: item.planSummary || condData.planSummary,
+              aiSuggestions: (item.aiSuggestions && item.aiSuggestions.length > 0) ? item.aiSuggestions : condData.aiSuggestions,
+              activePrescription: (item.activePrescription && item.activePrescription.length > 0) ? item.activePrescription : condData.activePrescription
             };
           }
         });
@@ -780,6 +938,13 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       currentSelectedEncId = encId;
       const data = CLINICAL_PROFILES[encId];
       if (!data) return;
+
+      if (!data.activePrescription || data.activePrescription.length === 0 || !data.aiSuggestions || data.aiSuggestions.length === 0) {
+        const cond = getConditionSpecificPrescription(data.subjective || data.englishTranslation, data.assessment);
+        if (!data.activePrescription || data.activePrescription.length === 0) data.activePrescription = cond.activePrescription;
+        if (!data.aiSuggestions || data.aiSuggestions.length === 0) data.aiSuggestions = cond.aiSuggestions;
+        if (!data.planSummary) data.planSummary = cond.planSummary;
+      }
 
       // 1. Highlight selected item in queue
       const allEncIds = Object.keys(CLINICAL_PROFILES);
@@ -1348,9 +1513,17 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       }
 
       if (medRows.length === 0) {
-        medRows.push([1, "Tab Shallaki 500mg", "1 Tab", "BD (Twice daily)", "15 Days", "After Food with warm water (Anupana)"]);
-        medRows.push([2, "Yograj Guggulu", "2 Tabs", "BD (Twice daily)", "15 Days", "After Food with warm water"]);
-        medRows.push([3, "Tab Telmisartan 40mg", "1 Tab", "OD (Morning)", "30 Days", "After Breakfast"]);
+        const fallbackCond = getConditionSpecificPrescription(subjectiveText, assessmentText);
+        (fallbackCond.activePrescription || []).forEach((m, idx) => {
+          medRows.push([
+            idx + 1,
+            m.name || "Formulation",
+            m.dose || "1 Tab",
+            m.freq || "BD (Twice daily)",
+            m.dur || "15 Days",
+            m.inst || "After food with warm water"
+          ]);
+        });
       }
 
       doc.autoTable({
