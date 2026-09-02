@@ -1461,30 +1461,30 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       const abhaStr = data.abhaId || "91-4829-1029-4821";
       const nowStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
-      doc.setFontSize(9);
+      doc.setFontSize(8.5);
       doc.setTextColor(...navy);
       doc.setFont("helvetica", "bold");
       doc.text(`Token: ${tokenStr}`, 16, 38);
-      doc.text(`Patient: ${nameStr}`, 65, 38);
-      doc.text(`Age/Sex: ${ageStr}`, 145, 38);
+      doc.text(`Patient: ${nameStr}`, 70, 38);
+      doc.text(`Age/Sex: ${ageStr}`, 142, 38);
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(...darkText);
       doc.text(`ABHA ID: ${abhaStr}`, 16, 45);
-      doc.text(`Date & Time: ${nowStr}`, 65, 45);
-      doc.text(`Dept: Kayachikitsa / General OPD`, 145, 45);
+      doc.text(`Date & Time: ${nowStr}`, 70, 45);
+      doc.text(`Dept: Kayachikitsa / OPD`, 142, 45);
 
-      doc.text(`Encounter ID: ${data.encounterId || 'ENC-2026-0902-061'}`, 16, 52);
-      doc.text(`Consultant: Dr. A. Sharma, MD (AIIA)`, 65, 52);
-      doc.text(`Scheme: PM-JAY Cashless Eligible`, 145, 52);
+      doc.text(`Encounter: ${data.encounterId || 'ENC-0042'}`, 16, 52);
+      doc.text(`Doctor: Dr. A. Sharma, MD (AIIA)`, 70, 52);
+      doc.text(`Scheme: PM-JAY Cashless Eligible`, 142, 52);
 
       let currentY = 64;
 
-      // Clinical SOAP Summary Section
+      // 1. Clinical Assessment & Diagnosis Section
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.5);
+      doc.setFontSize(9);
       doc.setTextColor(...navy);
-      doc.text("1. CLINICAL ASSESSMENT & DIAGNOSIS:", 14, currentY);
+      doc.text("1. CLINICAL ASSESSMENT & AYURVEDIC EXAMINATION:", 14, currentY);
       currentY += 5;
 
       const soapSEl = document.getElementById("soap-s");
@@ -1494,7 +1494,7 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       const objectiveText = String((soapOEl ? (soapOEl.innerText || soapOEl.textContent || soapOEl.value) : '') || data.objective || "Vitals within normal limits.").trim();
 
       const soapAEl = document.getElementById("soap-a");
-      const assessmentText = String((soapAEl ? (soapAEl.innerText || soapAEl.textContent || soapAEl.value) : '') || data.assessment || "Clinical Evaluation").trim();
+      const assessmentRaw = String((soapAEl ? (soapAEl.innerText || soapAEl.textContent || soapAEl.value) : '') || data.assessment || "Clinical Evaluation").trim();
       
       const prakriti = String((document.getElementById("dash-prakriti") ? document.getElementById("dash-prakriti").innerText : '') || data.prakriti || (data.dashavidha ? data.dashavidha.prakriti : "Vata-Pitta"));
       const agni = String((document.getElementById("dash-agni") ? document.getElementById("dash-agni").innerText : '') || (data.dashavidha ? data.dashavidha.agni : "Mandagni"));
@@ -1502,19 +1502,30 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       const vikriti = String((document.getElementById("dash-vikriti") ? document.getElementById("dash-vikriti").innerText : '') || (data.dashavidha ? data.dashavidha.vikriti : "Dhatu Kshaya"));
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8.5);
+      doc.setFontSize(8);
       doc.setTextColor(...darkText);
-      
-      doc.text(`• Diagnosis: ${assessmentText}`, 16, currentY);
-      currentY += 4.5;
-      doc.text(`• Dashavidha Metrics: Prakriti: ${prakriti} | Agni: ${agni} | Koshtha: ${koshtha} | Vikriti: ${vikriti}`, 16, currentY);
-      currentY += 4.5;
-      doc.text(`• Clinical History: ${subjectiveText.substring(0, 140)}${subjectiveText.length > 140 ? '...' : ''}`, 16, currentY);
-      currentY += 8;
 
-      // Prescribed Formulations (Rx) Table
+      // Clean single-line or multi-line diagnosis
+      const assessmentClean = assessmentRaw.replace(/\n+/g, " • ");
+      const assessmentLines = doc.splitTextToSize(`• Primary Diagnosis: ${assessmentClean}`, 180);
+      doc.text(assessmentLines, 16, currentY);
+      currentY += (assessmentLines.length * 3.8) + 1.5;
+
+      const dashavidhaText = `• Dashavidha Pariksha: Prakriti: ${prakriti} | Agni: ${agni} | Koshtha: ${koshtha} | Vikriti: ${vikriti}`;
+      const dashavidhaLines = doc.splitTextToSize(dashavidhaText, 180);
+      doc.text(dashavidhaLines, 16, currentY);
+      currentY += (dashavidhaLines.length * 3.8) + 1.5;
+
+      const historyClean = subjectiveText.replace(/\n+/g, " ");
+      const historyLines = doc.splitTextToSize(`• Clinical History: ${historyClean}`, 180);
+      const shortHist = historyLines.slice(0, 2);
+      if (historyLines.length > 2) shortHist[1] += '...';
+      doc.text(shortHist, 16, currentY);
+      currentY += (shortHist.length * 3.8) + 4.5;
+
+      // 2. Prescribed Formulations (Rx) Table
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.5);
+      doc.setFontSize(9);
       doc.setTextColor(...navy);
       doc.text("2. PRESCRIBED FORMULATIONS & MEDICATIONS (Rx):", 14, currentY);
       currentY += 2;
@@ -1551,7 +1562,7 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       }
 
       if (medRows.length === 0) {
-        const fallbackCond = getConditionSpecificPrescription(subjectiveText, assessmentText);
+        const fallbackCond = getConditionSpecificPrescription(subjectiveText, assessmentRaw);
         (fallbackCond.activePrescription || []).forEach((m, idx) => {
           medRows.push([
             idx + 1,
@@ -1573,40 +1584,42 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
           fillColor: [34, 61, 121],
           textColor: [255, 255, 255],
           fontStyle: "bold",
-          fontSize: 8.5
+          fontSize: 8
         },
         bodyStyles: {
-          fontSize: 8,
+          fontSize: 7.5,
           textColor: [30, 41, 59]
         },
         columnStyles: {
           0: { cellWidth: 8, halign: "center" },
-          1: { cellWidth: 54 },
+          1: { cellWidth: 52 },
           2: { cellWidth: 24 },
           3: { cellWidth: 32 },
-          4: { cellWidth: 24 },
-          5: { cellWidth: 44 }
+          4: { cellWidth: 22 },
+          5: { cellWidth: 46 }
         },
         margin: { left: 12, right: 12 }
       });
 
-      currentY = doc.lastAutoTable.finalY + 7;
+      currentY = doc.lastAutoTable.finalY + 6;
 
-      // Doctor's Advice & Regimen
+      // 3. Doctor's Advice & Regimen
       const soapPEl = document.getElementById("soap-p");
       const planText = String((soapPEl ? (soapPEl.value || soapPEl.innerText || soapPEl.textContent) : '') || data.plan || data.planSummary || "Follow prescribed diet and medication instructions.").trim();
+      
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.5);
+      doc.setFontSize(9);
       doc.setTextColor(...navy);
       doc.text("3. ADVICE & DIETARY GUIDELINES (Ahara / Vihara):", 14, currentY);
-      currentY += 4.5;
+      currentY += 4;
 
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(8);
+      doc.setFontSize(7.5);
       doc.setTextColor(...darkText);
-      const splitPlan = doc.splitTextToSize(planText, 184);
+      const planClean = planText.replace(/\n+/g, " • ");
+      const splitPlan = doc.splitTextToSize(planClean, 180);
       doc.text(splitPlan, 16, currentY);
-      currentY += (splitPlan.length * 4) + 10;
+      currentY += (splitPlan.length * 3.8) + 6;
 
       // Ensure footer space
       if (currentY > 260) {
@@ -1617,20 +1630,20 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       // Verification & Signature Footer
       doc.setDrawColor(...borderCol);
       doc.line(12, currentY, 198, currentY);
-      currentY += 5;
+      currentY += 4.5;
 
-      doc.setFontSize(7.5);
+      doc.setFontSize(7);
       doc.setTextColor(100, 116, 139);
       doc.text(`NRCeS FHIR R4 Bundle ID: ${data.fhirId || 'bundle-doc-061-f8a9e2'}`, 14, currentY);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(...navy);
-      doc.text("Dr. A. Sharma, MD (AIIA)", 150, currentY, { align: "left" });
-      currentY += 4;
+      doc.text("Dr. A. Sharma, MD (AIIA)", 140, currentY, { align: "left" });
+      currentY += 3.5;
       
       doc.setFont("helvetica", "normal");
       doc.setTextColor(100, 116, 139);
       doc.text("Digitally Signed & Synced to Ayushman Bharat Digital Mission (ABDM)", 14, currentY);
-      doc.text("Reg. No: AYU/DL/2026/84920", 150, currentY, { align: "left" });
+      doc.text("Reg. No: AYU/DL/2026/84920", 140, currentY, { align: "left" });
 
       const cleanToken = (tokenStr || 'Token061').replace(/[^a-zA-Z0-9]/g, '');
       const cleanName = (nameStr || 'Patient').replace(/[^a-zA-Z0-9]/g, '_');
