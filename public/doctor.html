@@ -1487,14 +1487,19 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       doc.text("1. CLINICAL ASSESSMENT & DIAGNOSIS:", 14, currentY);
       currentY += 5;
 
-      const subjectiveText = document.getElementById("soap-s") ? document.getElementById("soap-s").value : (data.subjective || "Patient reports knee joint pain.");
-      const objectiveText = document.getElementById("soap-o") ? document.getElementById("soap-o").value : (data.objective || "BP: 120/80 mmHg, Pulse: 72 bpm.");
-      const assessmentText = document.getElementById("soap-a") ? document.getElementById("soap-a").value : (data.assessment || "Sandhigata Vata (Bilateral Knee Osteoarthritis)");
+      const soapSEl = document.getElementById("soap-s");
+      const subjectiveText = String((soapSEl ? (soapSEl.innerText || soapSEl.textContent || soapSEl.value) : '') || data.subjective || "Patient reports symptoms via Kiosk.").trim();
+
+      const soapOEl = document.getElementById("soap-o");
+      const objectiveText = String((soapOEl ? (soapOEl.innerText || soapOEl.textContent || soapOEl.value) : '') || data.objective || "Vitals within normal limits.").trim();
+
+      const soapAEl = document.getElementById("soap-a");
+      const assessmentText = String((soapAEl ? (soapAEl.innerText || soapAEl.textContent || soapAEl.value) : '') || data.assessment || "Clinical Evaluation").trim();
       
-      const prakriti = document.getElementById("dash-prakriti") ? document.getElementById("dash-prakriti").innerText : (data.prakriti || "Vata-Pitta");
-      const agni = document.getElementById("dash-agni") ? document.getElementById("dash-agni").innerText : "Mandagni";
-      const koshtha = document.getElementById("dash-koshtha") ? document.getElementById("dash-koshtha").innerText : "Madhyama";
-      const vikriti = document.getElementById("dash-vikriti") ? document.getElementById("dash-vikriti").innerText : "Dhatu Kshaya";
+      const prakriti = String((document.getElementById("dash-prakriti") ? document.getElementById("dash-prakriti").innerText : '') || data.prakriti || (data.dashavidha ? data.dashavidha.prakriti : "Vata-Pitta"));
+      const agni = String((document.getElementById("dash-agni") ? document.getElementById("dash-agni").innerText : '') || (data.dashavidha ? data.dashavidha.agni : "Mandagni"));
+      const koshtha = String((document.getElementById("dash-koshtha") ? document.getElementById("dash-koshtha").innerText : '') || (data.dashavidha ? data.dashavidha.koshtha : "Madhyama"));
+      const vikriti = String((document.getElementById("dash-vikriti") ? document.getElementById("dash-vikriti").innerText : '') || (data.dashavidha ? data.dashavidha.vikriti : "Dhatu Kshaya"));
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
@@ -1588,7 +1593,8 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       currentY = doc.lastAutoTable.finalY + 7;
 
       // Doctor's Advice & Regimen
-      const planText = document.getElementById("soap-p") ? document.getElementById("soap-p").value : (data.plan || "Follow warm water regimen. Avoid cold and heavy food items. Low purine diet recommended.");
+      const soapPEl = document.getElementById("soap-p");
+      const planText = String((soapPEl ? (soapPEl.value || soapPEl.innerText || soapPEl.textContent) : '') || data.plan || data.planSummary || "Follow prescribed diet and medication instructions.").trim();
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.5);
       doc.setTextColor(...navy);
