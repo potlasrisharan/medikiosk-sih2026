@@ -128,9 +128,9 @@
               <i data-lucide="code-2" class="w-4 h-4 text-[#223D79]"></i>
               <span>NRCeS FHIR R4</span>
             </button>
-            <button onclick="generateAndDownloadPrescriptionPdf()" class="px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold flex items-center gap-1.5 transition shadow-sm" title="Generate & Download Official Prescription PDF">
-              <i data-lucide="printer" class="w-4 h-4 text-amber-700"></i>
-              <span>Print / Download Rx (PDF)</span>
+            <button onclick="generateAndDownloadPrescriptionPdf()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-black shadow-md flex items-center gap-1.5 transition ring-2 ring-emerald-400/40" title="Generate & Download Official Prescription PDF for Patient">
+              <i data-lucide="download" class="w-4 h-4 text-white"></i>
+              <span>Download Rx (PDF)</span>
             </button>
             <button onclick="approvePrescription()" class="px-4 py-2 rounded-xl bg-[#223D79] hover:bg-[#1a2f5e] text-white text-xs font-black shadow-md hover:shadow-lg flex items-center gap-1.5 transition">
               <i data-lucide="check-circle-2" class="w-4 h-4 text-[#FFA530]"></i>
@@ -292,9 +292,16 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
 
             <!-- Interactive Active Prescription Table -->
             <div class="space-y-2">
-              <label class="text-[10px] text-slate-600 font-bold uppercase tracking-wider">
-                Active Formulations & Medications (Signed by Doctor):
-              </label>
+              <div class="flex flex-wrap items-center justify-between gap-2 pb-1">
+                <label class="text-[11px] text-slate-800 font-black uppercase tracking-wider flex items-center gap-1.5">
+                  <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-600"></i>
+                  <span>Active Formulations & Medications (Signed by Doctor):</span>
+                </label>
+                <button onclick="generateAndDownloadPrescriptionPdf()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-black shadow flex items-center gap-1.5 transition" title="Download Official Prescription PDF for Patient">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>Download Rx (PDF)</span>
+                </button>
+              </div>
 
               <div class="overflow-x-auto border border-slate-200 rounded-xl">
                 <table class="w-full text-left text-xs border-collapse">
@@ -1357,17 +1364,10 @@ Physical Exam: Bilateral knee joint crepitus on flexion, mild suprapatellar tend
       
       window.dispatchEvent(new Event('storage'));
 
-      // Automatically generate and download official prescription PDF for the patient
-      setTimeout(() => {
-        generateAndDownloadPrescriptionPdf();
-      }, 400);
+      // Automatically generate and download official prescription PDF for the patient immediately
+      generateAndDownloadPrescriptionPdf();
       
-      alert(`✅ Encounter ${data.tokenNumber} for ${data.patientName} Approved!
-
-1. Pushed to Govt DB (Transaction: ${txId})
-2. NRCeS FHIR R4 Bundle Linked (ID: ${fhirId})
-3. ABDM Milestone 2 (HIP Care Context) Completed.
-4. Official Prescription PDF downloaded for patient.`);
+      alert(`✅ Encounter ${data.tokenNumber} for ${data.patientName} Approved!\n\n1. Pushed to Govt DB (Transaction: ${txId})\n2. NRCeS FHIR R4 Bundle Linked (ID: ${fhirId})\n3. ABDM Milestone 2 (HIP Care Context) Completed.\n4. Official Prescription PDF downloaded for patient.`);
     }
 
     function generateAndDownloadPrescriptionPdf(autoPrint = false) {
