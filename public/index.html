@@ -1558,7 +1558,7 @@
       }
     }
 
-    function goToScreen(screenId) {
+    function goToScreen(screenId, suppressAudio = false) {
       stopCameraStream();
       currentScreenIndex = screenOrder.indexOf(screenId);
       screenOrder.forEach(s => {
@@ -1581,7 +1581,9 @@
       window.scrollTo(0, 0);
       
       // Automatically announce screen instructions in the patient's language
-      speakScreenInstructions(screenId);
+      if (!suppressAudio) {
+        speakScreenInstructions(screenId);
+      }
     }
 
     function updateStepBadges() {
@@ -1742,7 +1744,7 @@
 
       // Audio feedback
       speakAudio(dict.welcomeVoice);
-      goToScreen("screen-identify");
+      goToScreen("screen-identify", true);
     }
 
     const cardVoicePrompts = {
@@ -2499,11 +2501,6 @@
         .replace(/\bOPD\b/gi, "OPD")
         .trim();
 
-      if (currentLanguage === "en-IN" || currentLanguage === "hi-IN") {
-        playBrowserSynthesis(cleanText);
-        return;
-      }
-
       const thisRequestId = currentTtsRequestId;
       fetch("/api/v1/ai/tts", {
         method: "POST",
@@ -2513,34 +2510,50 @@
         if (thisRequestId !== currentTtsRequestId) return; // Stale request, audio was stopped/overridden
         if (data && data.audio_base64 && isVoiceActive) {
           currentAudioPlayer = new Audio("data:audio/wav;base64," + data.audio_base64);
-          currentAudioPlayer.play().catch(e => console.log("Audio play caught:", e));
+          currentAudioPlayer.play().catch(e => {
+            console.log("Sarvam Audio play caught, falling back to browser synthesis:", e);
+            playBrowserSynthesis(cleanText);
+          });
+        } else {
+          playBrowserSynthesis(cleanText);
         }
       }).catch(err => {
         if (thisRequestId === currentTtsRequestId) {
-            playBrowserSynthesis(cleanText);
+          playBrowserSynthesis(cleanText);
         }
       });
     }
 
     function playBrowserSynthesis(text) {
       if (!("speechSynthesis" in window) || !isVoiceActive) return;
-      window.speechSynthesis.cancel();
+      try {
+        window.speechSynthesis.cancel();
+        if (window.speechSynthesis.resume) window.speechSynthesis.resume();
 
-      let speakText = text;
-      if (currentLanguage !== "en-IN") {
-        speakText = speakText.replace(/\./g, " ").replace(/,/g, " ");
+        let speakText = text;
+        if (currentLanguage !== "en-IN") {
+          speakText = speakText.replace(/\./g, " ").replace(/,/g, " ");
+        }
+
+        const utterance = new SpeechSynthesisUtterance(speakText);
+        utterance.lang = currentLanguage;
+        utterance.rate = 0.95;
+        utterance.pitch = 1.0;
+
+        const voices = (window.speechSynthesis.getVoices && window.speechSynthesis.getVoices().length > 0)
+          ? window.speechSynthesis.getVoices()
+          : availableVoices;
+
+        const prefix = currentLanguage.split("-")[0];
+        let match = voices.find(v => v.lang === currentLanguage);
+        if (!match) match = voices.find(v => v.lang.startsWith(prefix));
+        if (!match && prefix === "en") match = voices.find(v => v.lang.includes("en") || v.name.includes("English"));
+        if (match) utterance.voice = match;
+
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        console.warn("Browser Speech Synthesis exception:", e);
       }
-
-      const utterance = new SpeechSynthesisUtterance(speakText);
-      utterance.lang = currentLanguage;
-      utterance.rate = 0.95;
-      utterance.pitch = 1.0;
-
-      const prefix = currentLanguage.split("-")[0];
-      const match = availableVoices.find(v => v.lang === currentLanguage || v.lang.startsWith(prefix));
-      if (match) utterance.voice = match;
-
-      window.speechSynthesis.speak(utterance);
     }
 
     function speakCurrentScreen() {
