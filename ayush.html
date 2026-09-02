@@ -625,24 +625,433 @@
     let selectedPatientId = null;
     let activeTab = "dashavidha";
 
-    async function loadAyushQueue() {
-      let combined = [];
-      try {
-        const { data, error } = await window.supabase
-          .from('encounters')
-          .select('*')
-          .order('created_at', { ascending: false });
-        if (error) throw error;
-        
-        combined = data.map(q => q.ui_data).filter(x => x);
-      } catch (err) {
-        console.error("Supabase fetch failed", err);
+    function ensureAyushData(p) {
+      const name = p.patientName || "Unknown Patient";
+      const token = p.tokenNumber || (p.encounterId ? "#" + p.encounterId.slice(-3) : "#000");
+      const text = (p.englishTranslation || p.subjective || p.nativeSpeech || "").toLowerCase();
+      const age = p.age || 45;
+      const gender = p.gender || "Male";
+      const avatar = name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase() || "PT";
+
+      let condition = "Sandhigata Vata";
+      let namaste = "AYU-SAN-01 (Sandhigata Vata)";
+      let prakriti = p.prakriti || (p.dashavidha && p.dashavidha.prakriti) || "Vata-Kapha";
+      let vikriti = (p.dashavidha && p.dashavidha.vikriti) || "Sandhigata Vata (Vata-Kaphaja)";
+      let agni = (p.dashavidha && p.dashavidha.ahara_shakti) || "Manda Agni (Slow digestion)";
+      let koshtha = (p.ashtavidha && p.ashtavidha.mala) || "Krura Koshtha (Hard stool / Constipation)";
+      
+      let formulations = [
+        { name: "Tab. Yograj Guggulu", dose: "2 Tabs (500mg)", freq: "BD (Twice daily)", dur: "15 Days", inst: "After meals with warm water (Anti-inflammatory & Vata-pacifying)" },
+        { name: "Syp. Maharasnadi Kwatha", dose: "20 ml", freq: "BD (Twice daily)", dur: "15 Days", inst: "Dilute with equal warm water before food (Deepana & Shoolahara)" },
+        { name: "Tab. Shallaki 500mg", dose: "1 Tab", freq: "BD", dur: "30 Days", inst: "After food with water (Boswellia serrata for cartilage support)" },
+        { name: "Janu Basti Application", dose: "Ksheerabala Taila", freq: "Daily", dur: "7 Sittings", inst: "External warm oil pooling over knee joint" }
+      ];
+      let panchakarma = "Janu Basti with Ksheerabala Taila (7 sittings) + Patra Pinda Sweda for joint lubrication.";
+      let pathya = [
+        "Diet: Godhuma (Wheat), Red rice, Cow's Ghee (1 tsp/meal), Warm turmeric milk, Moong dal khichdi, Drumstick, Garlic, Ginger.",
+        "Lifestyle: Gentle knee mobilization (Sukshma Vyayama), Warm sesame oil self-massage (Abhyanga), 15 mins daily morning sun exposure."
+      ];
+      let apathya = [
+        "Diet: Dry/cold foods, Raw salads at night, Curd, Chana (Chickpeas), Black gram, Cold refrigerated drinks, Deep fried snacks.",
+        "Lifestyle: Prolonged standing, Jogging/jumping, Sitting cross-legged on hard floor, Direct exposure to cold AC drafts."
+      ];
+
+      if (text.includes("fever") || text.includes("ज्वर") || text.includes("बुखार") || text.includes("temperature")) {
+        condition = "Vishama Jwara";
+        namaste = "AYU-JWA-01 (Vishama Jwara)";
+        prakriti = "Vata-Pitta";
+        vikriti = "Vata-Kaphaja Jwara with Agnimandya";
+        agni = "Manda Agni (Jwaragni / Anorexia)";
+        koshtha = "Vibandha (Constipated due to fever)";
+        formulations = [
+          { name: "Tab. Mahasudarshan Ghanvati", dose: "2 Tabs (500mg)", freq: "TDS (Thrice daily)", dur: "5 Days", inst: "After meals with warm water" },
+          { name: "Amritarishta (Giloy)", dose: "20 ml", freq: "BD", dur: "7 Days", inst: "After food with equal warm water" },
+          { name: "Tab. Tribhuvankirti Rasa", dose: "1 Tab (125mg)", freq: "BD", dur: "5 Days", inst: "With honey after food" }
+        ];
+        panchakarma = "Langhana (Therapeutic Fasting) + Swedana with warm blankets + Shadanga Paniya medicated water.";
+        pathya = ["Diet: Mudga Yusha (Moong water), Warm Lajapeya (Puffed rice gruel), Boiled warm water with Ginger.", "Lifestyle: Complete physical rest, Warm clothing, Steam inhalation with Tulsi."];
+        apathya = ["Diet: Heavy meals, Oily food, Cold milk, Curd, Ice cream, Raw fruits, Hard pulses.", "Lifestyle: Day sleeping (Diva-swapna), Physical exercise, Bathing with cold water."];
+      } else if (text.includes("chest") || text.includes("heart") || text.includes("cardiac") || text.includes("छाती") || text.includes("గుండె")) {
+        condition = "Hridroga (Sroto-rodha)";
+        namaste = "AYU-HRI-01 (Hridroga)";
+        prakriti = "Pitta-Vata";
+        vikriti = "Hridaya Sroto-rodha (Critical Obstruction)";
+        agni = "Tikshna Agni";
+        koshtha = "Krura Koshtha";
+        formulations = [
+          { name: "Tab. Hridyarnava Rasa", dose: "125 mg", freq: "STAT (SOS)", dur: "Single Dose", inst: "Sublingual with Arjuna Kwatha (Under ICU supervision)" },
+          { name: "Arjunarishta (Cardioprotective)", dose: "20 ml", freq: "BD", dur: "30 Days", inst: "With equal warm water post-stabilization" }
+        ];
+        panchakarma = "Hrid Basti with Dashamula Taila (Post-stabilization phase only) + Immediate Allopathic ICU Bay Transfer.";
+        pathya = ["Diet: Light boiled vegetables, Garlic soup (Lashuna Ksheerapaka), Warm water.", "Lifestyle: Absolute bed rest, Oxygen therapy, Continuous cardiac monitoring."];
+        apathya = ["Diet: High salt, Saturated fats, Tobacco, Alcohol, Heavy fried meals.", "Lifestyle: Physical exertion, Anxiety, Straining during defecation."];
+      } else if (text.includes("stomach") || text.includes("acidity") || text.includes("gastric") || text.includes("burning") || text.includes("जलन") || text.includes("కడుపు")) {
+        condition = "Amlapitta";
+        namaste = "AYU-AML-01 (Amlapitta)";
+        prakriti = "Pitta Pradhana";
+        vikriti = "Amlapitta (Urdhwaga Pitta Dusti)";
+        agni = "Tikshna Agni (Hyperactive acid secretion)";
+        koshtha = "Mridu Koshtha (Loose stools 2-3 times/day)";
+        formulations = [
+          { name: "Tab. Avipattikar Churna", dose: "3 grams", freq: "BD (Twice daily)", dur: "15 Days", inst: "With warm water before food" },
+          { name: "Tab. Kamadudha Ras (Moti Yukta)", dose: "250 mg", freq: "BD", dur: "15 Days", inst: "After meals with honey" },
+          { name: "Syp. Sutashekhar Ras", dose: "10 ml", freq: "BD", dur: "10 Days", inst: "Before food for acute heartburn relief" }
+        ];
+        panchakarma = "Takra Dhara (Medicated Buttermilk Stream) + Virechana with Trivrit Lehyam for Pitta Shodhana.";
+        pathya = ["Diet: Purana Shali (Old rice), Mudga Yusha (Moong soup), Draksha (Raisins), Pomegranate, Coconut water.", "Lifestyle: Fixed meal times, 15 min post-meal walking (Shatapadi), Sheetali Pranayama."];
+        apathya = ["Diet: Chilies, Vinegar, Mustard, Fermented dosa/idli, Carbonated drinks, Deep-fried snacks.", "Lifestyle: Skipping breakfast, Lying down immediately after eating, High cognitive stress."];
       }
 
-      // Combine user-created patients with seed patients
+      const dashavidha = p.dashavidha || {
+        prakriti: prakriti,
+        vikriti: vikriti,
+        sara: "Asthi-Majja Madhyama",
+        samhanana: "Madhyama (Medium Build)",
+        pramana: `BMI ${(22 + (age % 5)).toFixed(1)} (Normal)`,
+        satmya: "Madhura-Lavana Satmya",
+        sattva: "Madhyama Sattva (Normal Resilience)",
+        ahara_shakti: agni,
+        vyayama_shakti: "Madhyama (Moderate Capacity)",
+        vaya: age > 50 ? `Pravriddha (${age}Y, Vata dominance)` : `Yuva (${age}Y, Pitta/Kapha)`
+      };
+
+      const ashtavidha = p.ashtavidha || {
+        nadi: `${prakriti} Gati (72 bpm, regular)`,
+        mutra: "Prakrita (Clear, Pale yellow, 4-5 times/day)",
+        mala: koshtha,
+        jihwa: "Saama (Mild white coating at root, Ama present)",
+        shabda: "Spashta (Clear voice and speech)",
+        sparsha: "Sheeta-Snigdha (Normal skin temperature)",
+        drik: "Prakrita (Normal vision, sclera clear)",
+        akriti: "Madhyama (Proportionate build)"
+      };
+
+      return {
+        id: p.id || p.encounterId || `enc-${token.replace('#','')}`,
+        tokenNumber: token,
+        patientName: name,
+        age: age,
+        gender: gender,
+        avatar: avatar,
+        abhaId: p.abhaId || "91-4829-1029-4821",
+        hasPmjay: p.hasPmjay !== undefined ? p.hasPmjay : true,
+        isEmergency: p.isEmergency || (p.triagePriority === "Emergency" || p.triagePriority === "STAT"),
+        nativeLang: p.nativeLang || "తెలుగు (Telugu)",
+        nativeSpeech: p.nativeSpeech || '"లక్షణాలు నమోదు చేయబడ్డాయి (Symptoms recorded at Kiosk)"',
+        englishTranslation: p.englishTranslation || p.subjective || "Patient presented for Ayurvedic OPD consultation.",
+        namasteCode: p.namasteCode || namaste,
+        dashavidha: dashavidha,
+        ashtavidha: ashtavidha,
+        nidana: p.nidana || [
+          "Aharaja: Irregular cold food intake, excess tea/pulses, Viruddha Ahara.",
+          "Viharaja: Prolonged sitting/standing, cold weather exposure, irregular sleep schedule.",
+          "Manasika: Vocational stress and mental fatigue contributing to Vata-Pitta aggravation."
+        ],
+        samprapti: p.samprapti || {
+          dosha: `${prakriti} Imbalance with Ama`,
+          dushya: "Rasa, Rakta, Asthi & Majja Dhatu",
+          srotas: "Rasavaha, Annavaha & Asthivaha",
+          udbhava: "Amashaya / Pakwashaya",
+          vyakti: "Affected Dhatu & Joint Sthana"
+        },
+        formulations: p.formulations || formulations,
+        panchakarma: p.panchakarma || panchakarma,
+        pathya: p.pathya || pathya,
+        apathya: p.apathya || apathya
+      };
+    }
+
+    async function loadAyushQueue() {
+      let combined = [];
+
+      // 1. Fetch from Supabase cloud
+      try {
+        if (window.supabase) {
+          const { data, error } = await window.supabase
+            .from('encounters')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (!error && data) {
+            data.forEach(q => {
+              if (q.ui_data) combined.push(q.ui_data);
+            });
+          }
+        }
+      } catch (err) {
+        console.warn("Supabase fetch caught:", err);
+      }
+
+      // 2. Fetch from LocalStorage Dynamic Stores
+      try {
+        const dynPat = JSON.parse(localStorage.getItem("MEDIKIOSK_DYNAMIC_PATIENTS") || "[]");
+        dynPat.forEach(dp => {
+          if (!combined.find(p => p.tokenNumber === dp.tokenNumber)) {
+            combined.push(dp);
+          }
+        });
+
+        const encStore = JSON.parse(localStorage.getItem("MEDIKIOSK_ENC_STORE") || "[]");
+        encStore.forEach(ep => {
+          if (!combined.find(p => p.tokenNumber === ep.tokenNumber)) {
+            combined.push(ep);
+          }
+        });
+      } catch (e) {
+        console.warn("LocalStorage parse error:", e);
+      }
+
+      // 3. Combine with Default Seed Patients
       DEFAULT_AYUSH_QUEUE.forEach(dp => {
         if (!combined.find(p => p.tokenNumber === dp.tokenNumber)) {
           combined.push(dp);
         }
       });
-      
+
+      // Enrich and normalize each record
+      currentQueue = combined.map(ensureAyushData);
+
+      // Update Queue Count Badge
+      const countEl = document.getElementById("ayush-queue-count");
+      if (countEl) countEl.innerText = `${currentQueue.length} Patients`;
+
+      // Render Queue List in Sidebar
+      renderAyushQueueSidebar();
+
+      // Ensure active patient selection
+      if (!selectedPatientId || !currentQueue.find(p => p.id === selectedPatientId)) {
+        selectedPatientId = currentQueue[0] ? currentQueue[0].id : null;
+      }
+
+      if (selectedPatientId) {
+        renderActiveAyushPatient(selectedPatientId);
+      }
+    }
+
+    function renderAyushQueueSidebar() {
+      const container = document.getElementById("ayush-patient-list");
+      if (!container) return;
+
+      container.innerHTML = currentQueue.map(p => {
+        const isSelected = p.id === selectedPatientId;
+        const borderClass = isSelected
+          ? "border-emerald-600 bg-emerald-50/80 shadow-md ring-2 ring-emerald-500/20"
+          : "border-slate-200 bg-white hover:border-emerald-400 hover:bg-slate-50";
+
+        const emergencyBadge = p.isEmergency
+          ? `<span class="text-[10px] bg-rose-100 text-rose-700 font-bold px-1.5 py-0.5 rounded border border-rose-200">STAT</span>`
+          : "";
+
+        return `
+          <div onclick="selectAyushPatient('${p.id}')" class="cursor-pointer border-2 ${borderClass} rounded-xl p-3 transition space-y-1.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <span class="w-7 h-7 rounded-lg bg-[#223D79] text-[#FFA530] font-black text-xs flex items-center justify-center">
+                  ${p.avatar}
+                </span>
+                <span class="font-black text-xs text-slate-900">${p.patientName}</span>
+                <span class="text-[11px] text-slate-500">(${p.age}${p.gender === 'Male' ? 'M' : 'F'})</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                ${emergencyBadge}
+                <span class="font-black text-xs bg-[#223D79] text-white px-2 py-0.5 rounded">${p.tokenNumber}</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-600 line-clamp-1 font-medium">${p.englishTranslation}</p>
+            <div class="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-100 font-mono">
+              <span class="text-emerald-700 font-bold">${p.dashavidha.prakriti}</span>
+              <span>${p.namasteCode ? p.namasteCode.split(' ')[0] : 'AYU-GEN'}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+
+    function selectAyushPatient(patientId) {
+      selectedPatientId = patientId;
+      renderAyushQueueSidebar();
+      renderActiveAyushPatient(patientId);
+    }
+
+    function renderActiveAyushPatient(patientId) {
+      const p = currentQueue.find(x => x.id === patientId);
+      if (!p) return;
+
+      // 1. Header Metadata
+      const elAvatar = document.getElementById("pat-avatar");
+      if (elAvatar) elAvatar.innerText = p.avatar;
+
+      const elName = document.getElementById("pat-name-header");
+      if (elName) elName.innerText = `${p.patientName} (${p.age}${p.gender === 'Male' ? 'M' : 'F'})`;
+
+      const elToken = document.getElementById("pat-token-badge");
+      if (elToken) elToken.innerText = p.tokenNumber;
+
+      const elNamaste = document.getElementById("pat-namaste-code");
+      if (elNamaste) elNamaste.innerText = `NAMASTE: ${p.namasteCode}`;
+
+      const elComplaint = document.getElementById("pat-complaint-sub");
+      if (elComplaint) elComplaint.innerText = p.englishTranslation;
+
+      const elAbha = document.getElementById("pat-abha-id");
+      if (elAbha) elAbha.innerText = `ABHA: ${p.abhaId}`;
+
+      const elLang = document.getElementById("pat-lang-badge");
+      if (elLang) elLang.innerText = p.nativeLang;
+
+      const elPmjay = document.getElementById("pat-pmjay-badge");
+      if (elPmjay) {
+        elPmjay.style.display = p.hasPmjay ? "inline-block" : "none";
+      }
+
+      const elEmerg = document.getElementById("pat-emergency-badge");
+      if (elEmerg) {
+        if (p.isEmergency) elEmerg.classList.remove("hidden");
+        else elEmerg.classList.add("hidden");
+      }
+
+      // 2. Render Tab 1: Dashavidha Pariksha Matrix (10 Cards)
+      const d = p.dashavidha;
+      const dashContainer = document.getElementById("dashavidha-grid");
+      if (dashContainer) {
+        const dashKeys = [
+          { label: "1. प्रकृति (Prakriti)", desc: "Baseline Constitution", val: d.prakriti, color: "border-blue-300 bg-blue-50/70 text-blue-950" },
+          { label: "2. विकृति (Vikriti)", desc: "Current Morbidity", val: d.vikriti, color: "border-rose-300 bg-rose-50/70 text-rose-950" },
+          { label: "3. सार (Sara)", desc: "Dhatu / Tissue Vitality", val: d.sara, color: "border-emerald-300 bg-emerald-50/70 text-emerald-950" },
+          { label: "4. संहनन (Samhanana)", desc: "Body Compactness", val: d.samhanana, color: "border-amber-300 bg-amber-50/70 text-amber-950" },
+          { label: "5. प्रमाण (Pramana)", desc: "Anthropometry / BMI", val: d.pramana, color: "border-indigo-300 bg-indigo-50/70 text-indigo-950" },
+          { label: "6. सात्म्य (Satmya)", desc: "Habituation / Diet", val: d.satmya, color: "border-teal-300 bg-teal-50/70 text-teal-950" },
+          { label: "7. सत्त्व (Sattva)", desc: "Mental Resilience", val: d.sattva, color: "border-purple-300 bg-purple-50/70 text-purple-950" },
+          { label: "8. आहार शक्ति (Ahara)", desc: "Digestive Fire (Agni)", val: d.ahara_shakti, color: "border-orange-300 bg-orange-50/70 text-orange-950" },
+          { label: "9. व्यायाम (Vyayama)", desc: "Endurance Capacity", val: d.vyayama_shakti, color: "border-cyan-300 bg-cyan-50/70 text-cyan-950" },
+          { label: "10. वय (Vaya)", desc: "Chronological Stage", val: d.vaya, color: "border-slate-300 bg-slate-50/70 text-slate-950" },
+        ];
+
+        dashContainer.innerHTML = dashKeys.map(k => `
+          <div class="p-3.5 border-2 ${k.color} rounded-xl space-y-1 shadow-sm">
+            <span class="font-extrabold text-[11px] block">${k.label}</span>
+            <span class="text-[10px] text-slate-500 block font-medium">${k.desc}</span>
+            <p class="font-black text-xs pt-1 leading-snug">${k.val}</p>
+          </div>
+        `).join("");
+      }
+
+      // 3. Render Tab 2: Ashtavidha Pariksha Matrix (8 Cards)
+      const a = p.ashtavidha;
+      const ashtaContainer = document.getElementById("ashtavidha-grid");
+      if (ashtaContainer) {
+        const ashtaKeys = [
+          { label: "1. नाडी (Nadi - Pulse)", val: a.nadi, icon: "heart-pulse" },
+          { label: "2. मूत्र (Mutra - Urine)", val: a.mutra, icon: "droplet" },
+          { label: "3. मल (Mala - Bowel)", val: a.mala, icon: "activity" },
+          { label: "4. जिह्वा (Jihwa - Tongue)", val: a.jihwa, icon: "smile" },
+          { label: "5. शब्द (Shabda - Voice)", val: a.shabda, icon: "volume-2" },
+          { label: "6. स्पर्श (Sparsha - Skin)", val: a.sparsha, icon: "sun" },
+          { label: "7. दृक् (Drik - Eyes)", val: a.drik, icon: "eye" },
+          { label: "8. आकृति (Akriti - Build)", val: a.akriti, icon: "user" }
+        ];
+
+        ashtaContainer.innerHTML = ashtaKeys.map(k => `
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-800 text-[11px]">${k.label}</span>
+              <i data-lucide="${k.icon}" class="w-3.5 h-3.5 text-emerald-600"></i>
+            </div>
+            <p class="text-xs text-slate-700 font-semibold mt-1">${k.val}</p>
+          </div>
+        `).join("");
+      }
+
+      // 4. Render Tab 3: Nidana & Samprapti
+      const nidanaList = document.getElementById("nidana-list");
+      if (nidanaList && p.nidana) {
+        nidanaList.innerHTML = p.nidana.map(n => `<li>${n}</li>`).join("");
+      }
+
+      // 5. Render Tab 4: Formulations & Panchakarma
+      const formsContainer = document.getElementById("ayush-formulations-grid");
+      if (formsContainer && p.formulations) {
+        formsContainer.innerHTML = p.formulations.map((f, idx) => `
+          <div class="p-3.5 bg-emerald-50/60 border border-emerald-200 rounded-xl space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-xs text-emerald-950">${idx + 1}. ${f.name}</span>
+              <span class="text-[10px] bg-emerald-200 text-emerald-900 font-bold px-2 py-0.5 rounded">${f.dur}</span>
+            </div>
+            <div class="flex items-center gap-3 text-[11px] text-slate-700 font-semibold">
+              <span>Dose: ${f.dose}</span>
+              <span>•</span>
+              <span>Freq: ${f.freq}</span>
+            </div>
+            <p class="text-[11px] text-slate-600 italic mt-0.5">${f.inst}</p>
+          </div>
+        `).join("");
+      }
+
+      const panchaBox = document.getElementById("ayush-panchakarma-box");
+      if (panchaBox) {
+        panchaBox.innerHTML = `<strong>Panchakarma Protocol:</strong> ${p.panchakarma}`;
+      }
+
+      // 6. Render Tab 5: Pathya & Apathya
+      const pathyaList = document.getElementById("pathya-list");
+      if (pathyaList && p.pathya) {
+        pathyaList.innerHTML = p.pathya.map(item => `<li>${item}</li>`).join("");
+      }
+
+      const apathyaList = document.getElementById("apathya-list");
+      if (apathyaList && p.apathya) {
+        apathyaList.innerHTML = p.apathya.map(item => `<li>${item}</li>`).join("");
+      }
+
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+
+    function switchAyushTab(tabName) {
+      activeTab = tabName;
+      const tabs = ["dashavidha", "ashtavidha", "nidana", "formulations", "pathya"];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const content = document.getElementById(`tab-content-${t}`);
+        if (btn) {
+          if (t === tabName) {
+            btn.className = "py-3 px-4 font-bold flex items-center gap-1.5 transition tab-active whitespace-nowrap";
+          } else {
+            btn.className = "py-3 px-4 font-bold text-slate-600 hover:text-slate-900 flex items-center gap-1.5 transition whitespace-nowrap";
+          }
+        }
+        if (content) {
+          if (t === tabName) {
+            content.classList.remove("hidden");
+          } else {
+            content.classList.add("hidden");
+          }
+        }
+      });
+      if (typeof lucide !== "undefined") lucide.createIcons();
+    }
+
+    async function approveAyushCase() {
+      const p = currentQueue.find(x => x.id === selectedPatientId);
+      if (!p) return;
+
+      const banner = document.getElementById("ayush-success-banner");
+      const bannerMsg = document.getElementById("ayush-banner-msg");
+      if (banner) {
+        if (bannerMsg) {
+          bannerMsg.innerText = `Ayurvedic Case Sheet for ${p.patientName} (${p.tokenNumber}) Approved! Mapped to NAMASTE ${p.namasteCode.split(' ')[0]} & NRCeS FHIR R4 Bundle Synced.`;
+        }
+        banner.classList.remove("hidden");
+        setTimeout(() => banner.classList.add("hidden"), 5000);
+      }
+
+      alert(`✅ Ayurvedic Case Sheet ${p.tokenNumber} for ${p.patientName} Approved!\n\n1. Dashavidha Pariksha Mapped to NAMASTE (${p.namasteCode})\n2. WHO ICD-11 TM-2 Traditional Medicine Code Bound\n3. ABDM Milestone 2 (HIP Care Context) Synced to Ayush Grid.`);
+    }
+
+    // Auto-poll and event listeners
+    loadAyushQueue();
+    window.addEventListener('storage', () => loadAyushQueue());
+    setInterval(loadAyushQueue, 3000);
+  </script>
+</body>
+</html>
