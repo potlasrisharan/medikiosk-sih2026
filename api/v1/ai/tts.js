@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
   const lang = language_code || "te-IN";
   const speaker = ["te-IN", "ta-IN", "kn-IN"].includes(lang) ? "kavitha" : "priya";
-  const SARVAM_API_KEY = process.env.SARVAM_API_KEY || "sk_jhbe1o0i_GhNGNUabxXw4STNBMoLlfsYS";
+  const SARVAM_API_KEY = process.env.SARVAM_API_KEY;
 
   try {
     const response = await fetch("https://api.sarvam.ai/text-to-speech", {
