@@ -1,25 +1,41 @@
 # 🏥 MediKiosk — AI-Powered Patient Case-Taking Software
 ### *Smart India Hackathon (SIH 2026) | Problem Statement ID: 26047*
-**Ministry/Department:** All India Institute of Ayurveda (AIIA), Ministry of Ayush  
-**Theme:** MedTech / HealthTech / BioTech • **Category:** Software  
-**Architecture:** Hybrid Production Stack (Native Flutter Kiosk + 5+1 Web PWA Suite + FastAPI Python Microservices + Vercel Edge Serverless + Supabase Managed PostgreSQL + Sovereign Indic AI)
+
+[![SIH 2026](https://img.shields.io/badge/SIH_2026-PS_26047-orange.svg)](https://www.sih.gov.in/)
+[![Ministry](https://img.shields.io/badge/Ministry-Ayush_&_AIIA-008080.svg)](https://aiia.gov.in/)
+[![Standards](https://img.shields.io/badge/Standards-NRCeS_FHIR_R4_|_ABDM_M1--M3-blue.svg)](https://nrces.in/ndhm/fhir/r4/)
+[![AI Stack](https://img.shields.io/badge/Sovereign_AI-Sarvam_Indic_Stack-green.svg)](https://www.sarvam.ai/)
+[![Database](https://img.shields.io/badge/Database-Supabase_PostgreSQL_16-3ECF8E.svg)](https://supabase.com/)
+[![License](https://img.shields.io/badge/License-Proprietary_/_SIH-lightgrey.svg)](#)
+
+> **Ministry/Department:** All India Institute of Ayurveda (AIIA), Ministry of Ayush  
+> **Theme:** MedTech / HealthTech / BioTech • **Category:** Software  
+> **Architecture:** Hybrid Production Stack (Native Flutter Touch Kiosk + 5+1 Web PWA Suite + FastAPI Python Microservices + Vercel Edge Serverless + Supabase Managed PostgreSQL + Sovereign Indic AI)
 
 ---
 
-## 📌 Executive Summary & Problem Context
+## 📌 1. Project Overview & Clinical Context
 
-In Indian government tertiary hospitals and apex institutes (e.g., AIIMS, AIIA), outpatient departments (OPDs) register **4,000–10,000 patients daily**. A landmark study published in *BMJ Open (2017)* across 67 countries placed India's average primary-care consultation time at **just over 2 minutes**. 
+In Indian government tertiary hospitals and apex institutes (e.g., AIIMS, AIIA), outpatient departments (OPDs) register **4,000–10,000 patients daily**. A landmark study published in *BMJ Open (2017)* across 67 countries placed India's average primary-care consultation time at **just 2.1 minutes**.
 
-Within this window, physicians must:
-1. Elicit complex medical history across multiple regional languages and dialects.
-2. Manually decipher crumpled, handwritten prior paper prescriptions and lab reports.
-3. Perform physical examinations, assess Ayurveda's deep *Dashavidha Pariksha* (Prakriti, Vikriti, Agni, Koshtha), formulate diagnoses, and prescribe.
+Within this narrow window, physicians are burdened with three simultaneous cognitive loads:
+1. Eliciting comprehensive medical histories across diverse regional languages and colloquial dialects.
+2. Manually deciphering crumpled, handwritten past paper prescriptions and biomarker lab reports.
+3. Conducting physical exams, scoring traditional Ayurveda clinical protocols (*Dashavidha Pariksha* — Prakriti, Vikriti, Agni, Koshtha), formulating differential diagnoses, and prescribing.
 
-**MediKiosk** solves this "first-mile" clinical bottleneck. It is an autonomous, multimodal, self-service clinical intake platform that captures structured medical history through natural voice conversations in 11+ Indic languages, digitizes paper documents with Vision AI, flags emergency red-flags, and pushes standardized, physician-ready SOAP notes and FHIR bundles to the ABDM ecosystem before the patient enters the consultation room.
+**MediKiosk** eliminates this first-mile bottleneck. It is an autonomous, multimodal, self-service clinical intake system that engages patients in natural voice conversations across 11+ Indic languages, digitizes handwritten prescriptions using Vision AI, detects critical red flags in under 150ms, and compiles verified [NRCeS-compliant HL7 FHIR R4](https://nrces.in/ndhm/fhir/r4/) bundles and standardized SOAP notes before the patient steps into the doctor's chamber.
+
+### Key Capabilities
+- **Multilingual Voice Intake:** Hands-free, conversational dialogue powered by Sarvam AI (`Saaras v3` STT & `Bulbul v3` TTS) in 11+ languages with regional dialect resilience.
+- **Vision Document OCR:** Multi-document parsing extracting past medications, dosages, and abnormal lab biomarkers from crumpled physical paper.
+- **Emergency Red-Flag Interceptor:** Real-time clinical safety engine that triggers visual and auditory Code Blue / STAT triage alerts under 150ms for chest pain, acute dyspnea, and neurological deficits.
+- **AYUSH & Modern Integration:** Native support for Ayurvedic *Dashavidha Pariksha*, Prakriti radar profiling, and dual coding via **NAMASTE Morbidity Codes** and **WHO ICD-11 TM-2**.
+- **ABDM Milestone 1, 2 & 3 Compliance:** Instant ABHA creation/verification via Aadhaar OTP/QR, automated HIP Care Context linking, and consent-managed longitudinal record retrieval.
+- **National Health Claims Integration:** Real-time PM-JAY BIS coverage checks over the National Health Claims Exchange (NHCX) using FHIR `CoverageEligibilityRequest`.
 
 ---
 
-## 🏛️ System Architecture
+## 🏛️ 2. System Architecture
 
 ```mermaid
 flowchart TD
@@ -61,19 +77,32 @@ flowchart TD
     FA --> ABDM & NHCX
 ```
 
+### Request Lifecycle & Data Flow
+1. **Patient Check-in:** Patient scans ABHA QR or creates ABHA using Aadhaar OTP on the Kiosk (Flutter or Web PWA).
+2. **Vernacular Dialogue:** Patient speaks in their native tongue; audio streams to `Saaras v3` STT. `Sarvam-105B` conducts adaptive SOCRATES intake and responds via `Bulbul v3` voice synthesis.
+3. **Safety Evaluation:** Every conversational turn runs through the Red-Flag Interceptor in `<150ms`. Emergencies trigger immediate alerts on `/triage`.
+4. **Document Digitization:** Prior physical prescriptions are scanned and processed via `Vision 3B VLM`, outputting normalized active medications and flagged abnormal lab biomarkers.
+5. **Real-time Clinical Synchronization:** Encounter state synchronizes into Supabase PostgreSQL over WebSockets/CDC.
+6. **Physician Review & ABDM Export:** Doctor opens `/doctor` to review the pre-structured SOAP summary, validates diagnoses, and dispatches the signed FHIR R4 Bundle to the national ABDM network with one click.
+
 ---
 
-## 📱 Dual-Client Intake Ecosystem
+## 🛠️ 3. Tech Stack
 
-### 1. Native Flutter Hardware Kiosk (`kiosk_app/`)
-* **Technology:** Flutter 3.x, Dart Null-Safety, Riverpod 2.x (code-gen), GoRouter, Clean Architecture.
-* **Target Hardware:** OPD kiosk kiosks, Android tablets, touch displays, Linux terminals.
-* **Capabilities:** 
-  - Direct hardware device integration (Webcam/scanner, thermal printer for OPD tokens).
-  - High-performance, offline-resilient local cache fallback.
-  - Riverpod-driven conversational intake flow with zero layout jank.
+| Tier | Technologies |
+| :--- | :--- |
+| **Native Touch Kiosk** | **Flutter 3.x**, **Dart 3.x** (Strict Null Safety), **Riverpod** (Code-Gen), **GoRouter**, Clean Architecture |
+| **Web Dashboards (PWA)** | Vanilla JavaScript (ES2023+), Tailwind CSS, Lucide Icons, WebRTC Audio, HTML5 Canvas Pain Mapping |
+| **Microservices Backend** | **Python 3.11+**, **FastAPI**, **Uvicorn**, **Pydantic v2**, `httpx`, `python-dotenv` |
+| **Serverless Edge Layer** | **Node.js 18+**, Vercel Edge Serverless Functions (`api/v1/`) |
+| **Database & Realtime** | **Supabase Managed PostgreSQL 16**, Row Level Security (RLS), Realtime CDC replication, JSONB |
+| **Sovereign Indian AI** | **Sarvam AI Suite**: `Saaras v3` (STT), `Bulbul v3` (TTS), `Mayura v1` (Translation), `Sarvam-105B` (LLM), `Vision 3B` (VLM) |
+| **National Health Standards** | **NRCeS HL7 FHIR R4** (`bdl-11`), **ABDM M1 / M2 / M3**, **Eka Care Developer Gateway**, **NHCX / PM-JAY BIS**, **DPDPA 2023** |
 
-### 2. 5+1 Unified Web Dashboard Suite
+---
+
+## 🏛️ 4. The 5+1 Unified Dashboard Suite
+
 | Portal | Route | Target User | Key Capabilities |
 | :--- | :--- | :--- | :--- |
 | **1. Patient Intake Kiosk** | `/` (`index.html`) | Patients / Attendants | Multilingual voice (Sarvam AI), ABHA OTP/QR login, DPDPA 2023 audio consent, Vision OCR scan, Red-flag STAT triage |
@@ -85,99 +114,88 @@ flowchart TD
 
 ---
 
-## 🧠 Sovereign Indian AI Stack (100% Indigenous)
+## 🗄️ 5. Database Schema & Data Models
+
+The database runs on **PostgreSQL 16** managed via Supabase with full Row-Level Security (RLS). Complete DDL source is documented in [`docs/03_DATABASE_SCHEMA_AND_ERD.sql`](docs/03_DATABASE_SCHEMA_AND_ERD.sql).
 
 ```
-┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   SOVEREIGN INDIC AI INTEGRATION                                 │
-├──────────────────────────────────────────┬───────────────────────────────────────────────────────┤
-│    AI MODEL / SERVICE                    │ FUNCTION & CLINICAL ROLE                              │
-├──────────────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ • Sarvam-105B Indic LLM                  │ Adaptive clinical reasoning, SOCRATES symptom triage, │
-│                                          │ SOAP note generation, and pharmacology suggestions.   │
-│ • Sarvam Bulbul v3 TTS                   │ High-fidelity Indic voice output in 11 regional       │
-│                                          │ languages (Telugu, Tamil, Kannada, Hindi, etc.).      │
-│ • Sarvam Saaras v3 STT                   │ Robust vernacular speech-to-text with medical dialect │
-│                                          │ adaptation across 22 Indian languages.               │
-│ • Sarvam Mayura v1 Translation           │ Real-time medical translation of Indic vernacular     │
-│                                          │ narrative into standardized clinical English.         │
-│ • Sarvam Vision 3B VLM                   │ High-accuracy multi-document OCR for handwritten      │
-│                                          │ prescriptions and laboratory biomarker extraction.    │
-└──────────────────────────────────────────┴───────────────────────────────────────────────────────┘
-```
+facilities (hospitals & apex institutes)
+├── id (UUID, PK)
+├── facility_code (VARCHAR, UNIQUE)
+└── facility_name, system_type, state, district
 
----
+departments (OPD clinics & AYUSH units)
+├── id (UUID, PK)
+├── facility_id (UUID, FK → facilities)
+└── name, code, is_ayush_specialty
 
-## 🇮🇳 ABDM, FHIR R4 & Regulatory Compliance
+patients (registered citizens)
+├── id (UUID, PK)
+├── abha_number (VARCHAR, UNIQUE)
+├── abha_address (VARCHAR, UNIQUE)
+├── name, gender, dob, mobile_hash
+└── consent_dpdpa_timestamp, consent_audio_url
 
-* **ABDM Milestone 1 (M1):** Seamless ABHA ID verification, Aadhaar OTP authentication, and Instant ABHA QR card scanning.
-* **ABDM Milestone 2 (M2 - HIP):** Automatic linking of digitized clinical encounters to the patient's Care Context and publishing to the Government Health Information Exchange.
-* **ABDM Milestone 3 (M3 - HIU):** Consent-driven patient longitudinal health history pull.
-* **NRCeS FHIR R4 Compliant:** Generates structured `bdl-11` compliant `Bundle` documents containing `Patient`, `Encounter`, `Condition`, `Observation`, and `MedicationRequest` resources.
-* **AYUSH & Global Coding:** Integrated with **NAMASTE Morbidity Codes** and **WHO ICD-11 Traditional Medicine Module 2 (TM-2)** alongside standard ICD-10.
-* **PM-JAY & NHCX Integration:** Instant insurance pre-check via NRCeS FHIR R4 `CoverageEligibilityRequest` against the National Health Claims Exchange.
-* **DPDPA 2023 Aligned:** Multilingual, audio-guided, granular consent modal ensuring full legal compliance for low-literacy and elderly populations.
+encounters (clinical intake sessions)
+├── id (UUID, PK)
+├── patient_id (UUID, FK → patients)
+├── department_id (UUID, FK → departments)
+├── session_status (INITIALIZED | IN_PROGRESS | COMPLETED | ABORTED)
+├── triage_priority (ROUTINE | URGENT | EMERGENCY_RED)
+└── chief_complaint, mother_tongue, intake_audio_url
 
----
+symptoms_intake (granular SOCRATES assessment)
+├── id (UUID, PK)
+├── encounter_id (UUID, FK → encounters)
+└── symptom_name, anatomical_site, onset, severity_score (1-10)
 
-## 📁 Repository Structure
+ayush_assessments (Dashavidha Pariksha & Prakriti)
+├── id (UUID, PK)
+├── encounter_id (UUID, FK → encounters)
+├── prakriti_vata, prakriti_pitta, prakriti_kapha (0-100 radar)
+├── agni_type (MANDA | TIKSHNA | VISHAMA | SAMA)
+└── koshtha_type (KRURA | MRIDU | MADHYAMA)
 
-```
-medikiosk-sih2026/
-├── kiosk_app/                  # Native Flutter Kiosk (Clean Architecture, Riverpod, GoRouter)
-│   ├── lib/
-│   │   ├── core/               # Constants, theme, router, utilities
-│   │   ├── features/intake/    # Patient voice intake, models, presentation
-│   │   └── main.dart
-│   └── pubspec.yaml
-├── backend/                    # High-throughput Python FastAPI Microservices
-│   ├── app/
-│   │   ├── core/               # Configuration, security & Pydantic settings
-│   │   ├── models/             # Pydantic v2 schemas (FHIR, Patients, Prescriptions)
-│   │   ├── routers/            # AI, ABDM, Doctor, Documents, Intake, Insurance
-│   │   ├── services/           # Sarvam AI drivers & external integrations
-│   │   └── main.py             # FastAPI entrypoint
-│   └── requirements.txt
-├── api/v1/                     # Vercel Serverless Edge API Functions
-│   ├── abdm/                   # Edge ABDM verification endpoints
-│   ├── ai/                     # Edge AI proxies for Sarvam services
-│   ├── doctor/                 # Edge prescription and queue handlers
-│   └── documents/              # OCR prescription & lab uploads
-├── docs/                       # Official Specifications & Jury Defense Suite
-│   ├── MASTER_PRD.md           # Comprehensive Master PRD
-│   ├── 01_PRODUCT_REQUIREMENTS_DOCUMENT.md
-│   ├── 02_SYSTEM_ARCHITECTURE_AND_APIS.md
-│   ├── 03_DATABASE_SCHEMA_AND_ERD.sql
-│   ├── 04_ABDM_FHIR_AND_SECURITY_SPEC.md
-│   ├── 05_DEVOPS_CICD_AND_DEPLOYMENT.md
-│   ├── 06_SIH_PITCH_DECK_AND_DEMO_SCRIPT.md
-│   ├── 07_REFERENCES_AND_CITATIONS.md
-│   └── 08_TECH_STACK_AND_COMPATIBILITY.md
-├── index.html                  # Portal 1: Patient Multimodal Intake Kiosk
-├── doctor.html                 # Portal 2: Doctor Consultation & ABDM Export
-├── triage.html                 # Portal 3: Emergency Nursing Triage Console
-├── ayush.html                  # Portal 4: AYUSH Dashavidha Pariksha Portal
-├── patient.html                # Portal 5: Patient Health Record Portal
-├── admin.html                  # Portal 6: Hospital Administration & ABDM Gateway
-├── SIH_2026_MediKiosk_Comprehensive_Jury_Report.pdf
-├── SIH_2026_MediKiosk_Pitch_and_Jury_Defense_Manual.pdf
-├── MediKiosk_SIH2026_Master_Pitch_and_50_Jury_QA.pdf
-├── MediKiosk_SIH2026_Pitch.pptx
-└── README.md
+extracted_medications & extracted_lab_observations (Vision OCR)
+├── id (UUID, PK)
+├── encounter_id (UUID, FK → encounters)
+└── medication_name / test_name, value, unit, is_abnormal
+
+clinical_summaries (physician notes & FHIR export)
+├── id (UUID, PK)
+├── encounter_id (UUID, FK → encounters)
+├── subjective_text, objective_text, assessment_text, plan_text
+├── fhir_bundle (JSONB - NRCeS bdl-11 document)
+└── abdm_care_context_linked (BOOLEAN)
 ```
 
 ---
 
-## 🚀 Quickstart & Local Development
+## 📋 6. Prerequisites
 
-### 1. Clone the Repository
+Ensure your workstation has the following installed:
+- **Node.js**: `v18.x` or `v20.x LTS`
+- **Python**: `3.10` or `3.11` (Python 3.11 recommended)
+- **Flutter**: `3.19+` (Stable channel with Dart 3.3+)
+- **Git**: `2.30+`
+- **Browsers**: Modern Chromium-based browser (Chrome, Edge) or Safari for WebRTC audio testing.
+
+---
+
+## 🚀 7. Getting Started & Local Development
+
+### Step 1: Clone Repository
 ```bash
 git clone https://github.com/potlasrisharan/medikiosk-sih2026.git
 cd medikiosk-sih2026
 ```
 
-### 2. Environment Configuration
-Create a `.env` file at root or configure your hosting provider:
+### Step 2: Environment Configuration
+Create a `.env` file at the root or within `backend/`:
+```bash
+cp .env.example .env
+```
+Populate with valid credentials:
 ```env
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_KEY=your_supabase_anon_key
@@ -186,35 +204,42 @@ ABDM_CLIENT_ID=your_abdm_client_id
 ABDM_CLIENT_SECRET=your_abdm_client_secret
 ```
 
-### 3. Run Web Portals & Edge Functions
+### Step 3: Run Full Local Prototype (All-In-One Script)
+The repository provides an automated startup script that launches both the FastAPI gateway and Web Portals simultaneously:
 ```bash
-# Install Web dependencies
-npm install
-
-# Run with Vercel CLI (recommended for full edge routing)
-npx vercel dev
-
-# OR run with any local HTTP server
-python3 -m http.server 3000
+chmod +x start_prototype.sh
+./start_prototype.sh
 ```
-- Patient Kiosk: `http://localhost:3000/`
-- Doctor Portal: `http://localhost:3000/doctor`
-- Emergency Triage: `http://localhost:3000/triage`
-- AYUSH Portal: `http://localhost:3000/ayush`
-- Patient Records: `http://localhost:3000/patient`
-- Admin Gateway: `http://localhost:3000/admin`
+This serves:
+- 📱 **Patient Intake Kiosk:** `http://localhost:3000`
+- 🩺 **Doctor Consultation Portal:** `http://localhost:3000/doctor`
+- 🌿 **AYUSH Dashavidha Hub:** `http://localhost:3000/ayush`
+- 🚨 **Emergency Triage Console:** `http://localhost:3000/triage`
+- 📊 **Admin & ABDM Console:** `http://localhost:3000/admin`
+- ⚡ **FastAPI Gateway Swagger Docs:** `http://localhost:8000/docs`
 
-### 4. Run Python FastAPI Backend
+---
+
+### Step 4: Run Services Individually
+
+#### Option A: Web Portals & Edge Functions
+```bash
+npm install
+npx vercel dev
+# OR run a lightweight local static server:
+python3 -m http.server 3000 --directory public
+```
+
+#### Option B: Python FastAPI Microservices
 ```bash
 cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-Interactive Swagger API docs available at `http://localhost:8000/docs`.
 
-### 5. Run Native Flutter Kiosk App
+#### Option C: Native Flutter Kiosk App
 ```bash
 cd kiosk_app
 flutter pub get
@@ -223,20 +248,133 @@ flutter run -d macos  # or -d chrome, or connect an Android tablet
 
 ---
 
-## 🏆 SIH 2026 Jury Defense & Evaluation Artifacts
+## ⚙️ 8. Environment Variables Reference
 
-* **Comprehensive Jury Report:** [SIH_2026_MediKiosk_Comprehensive_Jury_Report.pdf](SIH_2026_MediKiosk_Comprehensive_Jury_Report.pdf)
-* **Jury Defense & Viva Manual:** [SIH_2026_MediKiosk_Pitch_and_Jury_Defense_Manual.pdf](SIH_2026_MediKiosk_Pitch_and_Jury_Defense_Manual.pdf)
-* **Master Pitch & 50 Jury Q&A:** [docs/MediKiosk_SIH2026_Master_Pitch_and_50_Jury_QA.pdf](docs/MediKiosk_SIH2026_Master_Pitch_and_50_Jury_QA.pdf)
-* **Master Pitch Presentation:** [MediKiosk_SIH2026_Pitch.pptx](MediKiosk_SIH2026_Pitch.pptx)
-* **Master PRD:** [docs/MASTER_PRD.md](docs/MASTER_PRD.md)
-* **PostgreSQL Production Schema:** [docs/03_DATABASE_SCHEMA_AND_ERD.sql](docs/03_DATABASE_SCHEMA_AND_ERD.sql)
+| Variable | Required | Description | Example / Source |
+| :--- | :---: | :--- | :--- |
+| `SUPABASE_URL` | **Yes** | Supabase Project URL | `https://xyzcompany.supabase.co` |
+| `SUPABASE_KEY` | **Yes** | Supabase Anonymous Public API Key | `eyJhbGciOiJIUzI1NiIsInR5c...` |
+| `SARVAM_API_KEY` | **Yes** | Sarvam AI Production API Key | [Sarvam Dashboard](https://dashboard.sarvam.ai) |
+| `ABDM_CLIENT_ID` | Optional | NHA / Eka Care Sandbox Client ID | [Eka Developer Portal](https://developer.eka.care/) |
+| `ABDM_CLIENT_SECRET`| Optional | NHA / Eka Care Sandbox Secret | [Eka Developer Portal](https://developer.eka.care/) |
+| `RED_FLAG_TIMEOUT_MS` | Optional | Critical Triage Interceptor SLA | `150` (default) |
+| `DEFAULT_HOSPITAL_NAME`| Optional | Hospital / Institute Label | `All India Institute of Ayurveda (AIIA)` |
+| `DEFAULT_HOSPITAL_ID` | Optional | National Health Facility Registry (HFR) Code | `IN0110000142` |
 
 ---
 
-## 👥 Contributors & Acknowledgements
+## 💻 9. Available Scripts & Commands
 
-* **Lead Architect & Developer:** Potla Sri Sharan
-* **Problem Statement:** #26047 — *Patient Case-Taking Software*
+| Scope | Command | Description |
+| :--- | :--- | :--- |
+| **Prototype** | `./start_prototype.sh` | Launches both FastAPI (:8000) and Web Suite (:3000) concurrently |
+| **Web** | `npm install` | Installs frontend NPM dependencies (`@supabase/supabase-js`, etc.) |
+| **Web** | `npx vercel dev` | Runs Vercel edge functions and web dashboards locally |
+| **Backend** | `pip install -r backend/requirements.txt` | Installs Python FastAPI dependencies |
+| **Backend** | `uvicorn backend.app.main:app --reload --port 8000` | Runs FastAPI server with live code reload |
+| **Backend** | `pytest backend/tests/test_clinical_gateway.py` | Runs clinical gateway integration tests |
+| **Flutter** | `flutter pub get` | Fetches Flutter packages in `kiosk_app/` |
+| **Flutter** | `flutter analyze` | Runs Dart static analysis across the kiosk codebase |
+| **Flutter** | `flutter test` | Executes Flutter unit and widget test suite |
+| **Flutter** | `flutter build apk --release` | Compiles release APK for Android kiosk hardware |
+
+---
+
+## 🧪 10. Testing Guide
+
+### 1. Backend Microservices Testing
+Automated integration tests verify ABHA authentication, PM-JAY eligibility queries, <150ms red-flag triggering, Vision OCR extraction, and NRCeS FHIR R4 document structure:
+```bash
+pytest backend/tests/test_clinical_gateway.py -v
+```
+Sample test coverage output:
+```
+test_root_endpoint                     PASSED [ 14%]
+test_abha_verification                 PASSED [ 28%]
+test_insurance_eligibility             PASSED [ 42%]
+test_red_flag_interceptor (<150ms)     PASSED [ 57%]
+test_document_ocr_extraction           PASSED [ 71%]
+test_doctor_queue_and_soap             PASSED [ 85%]
+test_nrces_fhir_bundle (bdl-11)        PASSED [100%]
+```
+
+### 2. Flutter Kiosk Quality Suite
+```bash
+cd kiosk_app
+flutter test
+flutter analyze
+```
+
+---
+
+## 🚢 11. Production Deployment
+
+### 1. Web Suite & Edge APIs (Vercel)
+The repository is configured for automated Vercel deployment:
+```bash
+vercel --prod
+```
+Set `SUPABASE_URL`, `SUPABASE_KEY`, and `SARVAM_API_KEY` in the Vercel Project Environment Variables.
+
+### 2. FastAPI Python Backend (Docker / Cloud Run / VPS)
+A lightweight production containerization pattern:
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY backend/app ./app
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
+```
+
+### 3. Native Flutter Kiosk (Android Hardware APK)
+Compile a high-performance, obfuscated release APK for Android kiosk terminals:
+```bash
+cd kiosk_app
+flutter build apk --release --obfuscate --split-debug-info=build/debug-info
+```
+
+---
+
+## 🔧 12. Troubleshooting
+
+### 1. Browser Microphone Access Blocked
+- **Symptom:** Voice intake button shows error or does not start recording.
+- **Fix:** WebRTC requires HTTPS or `http://localhost`. Open browser settings -> Site Permissions -> Microphone -> Allow `localhost:3000`.
+
+### 2. Sarvam AI Authentication Failures (401 / 403)
+- **Symptom:** Voice STT transcription or TTS playback returns blank audio.
+- **Fix:** Verify `SARVAM_API_KEY` in `.env`. Ensure your account has active credits in the [Sarvam Dashboard](https://dashboard.sarvam.ai).
+
+### 3. Supabase Row Level Security (RLS) Permission Denied
+- **Symptom:** Real-time queue on `/doctor` shows 0 patients or insert fails on `/`.
+- **Fix:** Execute [`docs/03_DATABASE_SCHEMA_AND_ERD.sql`](docs/03_DATABASE_SCHEMA_AND_ERD.sql) in your Supabase SQL Editor to initialize all tables, enums, and permissive RLS intake policies.
+
+### 4. Port 8000 or 3000 Already in Use
+- **Symptom:** `start_prototype.sh` reports `Address already in use`.
+- **Fix:** Free the occupied ports:
+  ```bash
+  lsof -ti:3000,8000 | xargs kill -9
+  ```
+
+---
+
+## 🏆 13. SIH 2026 Jury Defense & Evaluation Artifacts
+
+* **Comprehensive Master PRD:** [`docs/MASTER_PRD.md`](docs/MASTER_PRD.md)
+* **Comprehensive Jury Report:** [`SIH_2026_MediKiosk_Comprehensive_Jury_Report.pdf`](SIH_2026_MediKiosk_Comprehensive_Jury_Report.pdf)
+* **Jury Defense & Viva Manual:** [`SIH_2026_MediKiosk_Pitch_and_Jury_Defense_Manual.pdf`](SIH_2026_MediKiosk_Pitch_and_Jury_Defense_Manual.pdf)
+* **Master Pitch & 50 Jury Q&A:** [`docs/MediKiosk_SIH2026_Master_Pitch_and_50_Jury_QA.pdf`](docs/MediKiosk_SIH2026_Master_Pitch_and_50_Jury_QA.pdf)
+* **Master Pitch Presentation Deck:** [`MediKiosk_SIH2026_Pitch.pptx`](MediKiosk_SIH2026_Pitch.pptx)
+* **PostgreSQL Production DDL Schema:** [`docs/03_DATABASE_SCHEMA_AND_ERD.sql`](docs/03_DATABASE_SCHEMA_AND_ERD.sql)
+* **ABDM FHIR R4 & Security Specification:** [`docs/04_ABDM_FHIR_AND_SECURITY_SPEC.md`](docs/04_ABDM_FHIR_AND_SECURITY_SPEC.md)
+
+---
+
+## 👥 14. Contributors & Acknowledgements
+
+* **Lead Architect & Developer:** [Potla Sri Sharan](https://github.com/potlasrisharan)
+* **Problem Statement:** #26047 — *AI-Powered Patient Case-Taking Software*
 * **Target Ministry:** Ministry of Ayush & All India Institute of Ayurveda (AIIA)
 * **National Initiative:** Smart India Hackathon (SIH 2026)
